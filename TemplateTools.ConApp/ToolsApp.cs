@@ -91,60 +91,60 @@ namespace TemplateTools.ConApp
                     Text = ToLabelText("Copier", "Copy this solution to a domain solution"),
                     Action = (self) => new CopierApp().Run([]),
                 },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Preprocessor", "Setting defines for project options"),
-                    Action = (self) => new PreprocessorApp().Run([]),
-                },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
-                    Action = (self) => new CodeGeneratorApp().Run([]),
-                },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Comparison", "Compares a project with the template"),
-                    Action = (self) => new ComparisonApp().Run([]),
-                },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Documentation", "Generate documentation for this solution"),
-                    Action = (self) => new DocuGeneratorApp().Run([]),
-                },
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("Preprocessor", "Setting defines for project options"),
+                //    Action = (self) => new PreprocessorApp().Run([]),
+                //},
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
+                //    Action = (self) => new CodeGeneratorApp().Run([]),
+                //},
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("Comparison", "Compares a project with the template"),
+                //    Action = (self) => new ComparisonApp().Run([]),
+                //},
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("Documentation", "Generate documentation for this solution"),
+                //    Action = (self) => new DocuGeneratorApp().Run([]),
+                //},
                 //new()
                 //{
                 //    Key = (++mnuIdx).ToString(),
                 //    Text = ToLabelText("Formatting", "Formatting source code files"),
                 //    Action = (self) => new FormatterApp().Run([]),
                 //},
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Deleting", "Deleting generated files"),
-                    Action = (self) => DeleteGeneratedFiles(),
-                },
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("Deleting", "Deleting generated files"),
+                //    Action = (self) => DeleteGeneratedFiles(),
+                //},
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
                     Text = ToLabelText("Cleanup", "Deletes the temporary directories"),
                     Action = (self) => new CleanupApp().Run([]),
                 },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Html-Tools", "Useful html tools like formatter etc."),
-                    Action = (self) => new HtmlToolsApp().Run([]),
-                },
-                new()
-                {
-                    Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("ChatGPT", "Question to ChatGPT"),
-                    Action = (self) => new ChatGPTApp().Run([]),
-                },
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("Html-Tools", "Useful html tools like formatter etc."),
+                //    Action = (self) => new HtmlToolsApp().Run([]),
+                //},
+                //new()
+                //{
+                //    Key = (++mnuIdx).ToString(),
+                //    Text = ToLabelText("ChatGPT", "Question to ChatGPT"),
+                //    Action = (self) => new ChatGPTApp().Run([]),
+                //},
             };
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
@@ -155,12 +155,9 @@ namespace TemplateTools.ConApp
         /// <param name="sourcePath">The path of the solution.</param>
         protected override void PrintHeader()
         {
-            List<KeyValuePair<string, object>> headerParams = new();
+            List<KeyValuePair<string, object>> headerParams = [new("Force flag:", Force), new("Solution path:", SolutionPath)];
 
-            headerParams.Add(new("Force flag:", Force));
-            headerParams.Add(new("Solution path:", SolutionPath));
-
-            base.PrintHeader("Template Tools", headerParams.ToArray());
+            base.PrintHeader("Template Tools", [.. headerParams]);
         }
         #endregion overrides
 

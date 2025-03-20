@@ -1,5 +1,7 @@
 //@BaseCode
 //MdStart
+using SETemplate.Common.Modules.Template;
+
 namespace TemplateTools.ConApp
 {
     /// <summary>
@@ -122,7 +124,7 @@ namespace TemplateTools.ConApp
                 new("Cleanup path:", CleanupPath),
             ];
 
-            base.PrintHeader("Template Cleanup Directories", headerParams.ToArray());
+            base.PrintHeader("Template Cleanup Directories", [.. headerParams]);
         }
         #endregion overrides
 
