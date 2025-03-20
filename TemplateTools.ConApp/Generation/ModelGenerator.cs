@@ -1,11 +1,10 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.Logic.Generation
+namespace TemplateTools.ConApp.Generation
 {
     using System.Reflection;
     using TemplateTools.ConApp.Common;
     using TemplateTools.ConApp.Contracts;
-    using TemplateTools.ConApp.Generation;
     using TemplateTools.ConApp.Models;
 
     /// <summary>

@@ -9,7 +9,7 @@ namespace SETemplate.Logic.Entities
         /// <summary>
         /// Gets or sets the identifier of the entity.
         /// </summary>
-        [System.ComponentModel.DataAnnotations.Key]
+        [Key]
         public int Id { get; set; }
     }
 }
