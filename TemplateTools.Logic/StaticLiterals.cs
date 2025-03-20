@@ -1,0 +1,336 @@
+//@BaseCode
+//MdStart
+namespace TemplateTools.Logic
+{
+    /// <summary>
+    /// Static class containing various literals used throughout the application.
+    /// </summary>
+    public static partial class StaticLiterals
+    {
+        #region Code-Generation
+        /// <summary>
+        /// Gets the name of the generated code file.
+        /// </summary>
+        public static string GeneratedCodeFileName => "_GeneratedCode.cs";
+        /// <summary>
+        /// Gets the custom file extension.
+        /// </summary>
+        public static string CustomFileExtension => ".custom";
+        /// <summary>
+        /// Gets or sets the source file extensions.
+        /// </summary>
+        public static string SourceFileExtensions => CommonStaticLiterals.SourceFileExtensions;
+        /// <summary>
+        /// Gets the file extension for C# files.
+        /// </summary>
+        public static string CSharpFileExtension => CommonStaticLiterals.CSharpFileExtension;
+        /// <summary>
+        /// Gets the file extension for razor page files.
+        /// </summary>
+        public static string RazorFileExtension => CommonStaticLiterals.RazorFileExtension;
+        /// <summary>
+        /// Gets the code file extension for razor page files.
+        /// </summary>
+        public static string RazorCodeFileExtension => CommonStaticLiterals.RazorCodeFileExtension;
+        /// <summary>
+        /// Gets the HTML file extension for C# files.
+        /// </summary>
+        public static string CSharpHtmlFileExtension => $"{CommonStaticLiterals.CSharpFileExtension}html";
+        /// <summary>
+        /// Gets the HTML file extension for C# files.
+        /// </summary>
+        public static string PlantUmlFileExtension => CommonStaticLiterals.PlantUmlFileExtension;
+        /// <summary>
+        /// Gets the label for generated code.
+        /// </summary>
+        public static string GeneratedCodeLabel => CommonStaticLiterals.GeneratedCodeLabel;
+        /// <summary>
+        /// Gets or sets the customized and generated code label.
+        /// </summary>
+        public static string CustomizedAndGeneratedCodeLabel => CommonStaticLiterals.CustomizedAndGeneratedCodeLabel;
+        
+        /// <summary>
+        /// Gets or sets the beginning label for custom imports in Angular.
+        /// </summary>
+        public static string AngularCustomImportBeginLabel => "//@CustomImportBegin";
+        ///<summary>
+        /// Gets or sets the end label for custom imports in Angular.
+        ///</summary>
+        public static string AngularCustomImportEndLabel => "//@CustomImportEnd";
+        /// <summary>
+        /// Gets or sets the Angular custom code begin label.
+        /// </summary>
+        public static string AngularCustomCodeBeginLabel => "//@CustomCodeBegin";
+        /// <summary>
+        /// Gets the end label of custom code for Angular.
+        /// </summary>
+        public static string AngularCustomCodeEndLabel => "//@CustomCodeEnd";
+        
+        /// <summary>
+        /// Gets or sets the alias for the entity.
+        /// </summary>
+        public static string EntityAlias => "TEntity";
+        /// <summary>
+        /// Gets or sets the alias for the model.
+        /// </summary>
+        public static string ModelAlias => "TModel";
+        #endregion Code-Generation
+        
+        #region Project Extensions
+        /// <summary>
+        /// Gets or sets the logic extension for the property.
+        /// </summary>
+        /// <remarks>
+        /// The logic extension determines the file extension used for logic files.
+        /// </remarks>
+        public static string LogicExtension => CommonStaticLiterals.LogicExtension;
+        /// <summary>
+        /// Gets the WebApiExtension property.
+        /// This property represents the Web API extension.
+        /// </summary>
+        public static string WebApiExtension => CommonStaticLiterals.WebApiExtension;
+        /// <summary>
+        /// Gets the ASP.NET MVC extension.
+        /// </summary>
+        public static string AspMvcExtension => CommonStaticLiterals.AspMvcExtension;
+        /// <summary>
+        /// Gets the MVVM extension.
+        /// </summary>
+        public static string MVVMExtension => CommonStaticLiterals.MVVMExtension;
+        /// <summary>
+        /// Gets the angular extension used by the application.
+        /// </summary>
+        public static string AngularExtension => CommonStaticLiterals.AngularExtension;
+        /// <summary>
+        /// Gets the extension for the Client Blazor.
+        /// </summary>
+        public static string ClientBlazorExtension => CommonStaticLiterals.ClientBlazorExtension;
+        #endregion Project Extensions
+        
+        #region Entity and service properties
+        public static readonly string IdentityProperty = "Id";
+        public static readonly string EntityObjectName = "EntityObject";
+        public static readonly string VersionEntityName = "VersionEntity";
+        public static readonly string RowVersionProperty = "RowVersion";
+        public static readonly string[] IdentityProperties = [IdentityProperty];
+        public static readonly string[] VersionProperties = [IdentityProperty, RowVersionProperty];
+        public static readonly string[] ExtendedProperties = ["Guid", "CreatedOn", "ModifiedOn", "IdentityId_CreatedBy", "IdentityId_ModifiedBy"];
+        /// <summary>
+        /// Gets an array of properties that should not go through the generation process.
+        /// </summary>
+        public static string[] NoGenerationProperties => IdentityProperties.Union(VersionProperties).ToArray();
+        #endregion Entity and service properties
+        
+        #region Model properties
+        public static readonly string IdType = nameof(IdType);
+        public static readonly string ModelObjectName = "ModelObject";
+        public static readonly string VersionModelName = "VersionModel";
+        public static readonly string ServiceModelName = "ServiceModel";
+        #endregion Model properties
+        
+        public static readonly string[] ModelBaseClasses =
+        [
+            ModelObjectName,
+            VersionModelName
+        ];
+        public static readonly Dictionary<string, string> BaseClassMapping = new()
+        {
+            { EntityObjectName, ModelObjectName },
+            { VersionEntityName, VersionModelName },
+            { ServiceModelName, ServiceModelName },
+        };
+        
+        #region Folders and Files
+        /// <summary>
+        /// Gets the folder path where entities are stored.
+        /// </summary>
+        public static string EntitiesFolder => "Entities";
+        /// <summary>
+        /// Gets the name of the folder where the models are stored.
+        /// </summary>
+        public static string ModelsFolder => "Models";
+        /// <summary>
+        /// Gets the path of the service models folder.
+        /// </summary>
+        public static string ServiceModelsFolder => "ServiceModels";
+        /// <summary>
+        /// Gets or sets an array of module folders.
+        /// </summary>
+        public static string[] ModuleFolders => [EntitiesFolder, ModelsFolder, ServiceModelsFolder];
+        
+        /// <summary>
+        /// Gets the folder name for the account.
+        /// </summary>
+        public static string AccountFolder => "Account";
+        /// <summary>
+        /// Gets or sets the folder where log files are stored.
+        /// </summary>
+        public static string LoggingFolder => "Logging";
+        /// <summary>
+        /// Gets the folder name for revisions.
+        /// </summary>
+        public static string RevisionFolder => "Revision";
+        /// <summary>
+        /// Gets the folder name for contracts.
+        /// </summary>
+        public static string ContractsFolder => "Contracts";
+        /// <summary>
+        /// Gets the path of the DataContext folder.
+        /// </summary>
+        public static string DataContextFolder => "DataContext";
+        /// <summary>
+        /// Gets the path to the Controllers folder.
+        /// </summary>
+        public static string ControllersFolder => "Controllers";
+        ///<summary>
+        /// Gets or sets the folder name where services are stored.
+        ///</summary>
+        public static string ServicesFolder => "Services";
+        /// <summary>
+        /// Gets or sets the folder name for facades.
+        /// </summary>
+        public static string FacadesFolder => "Facades";
+        /// <summary>
+        /// Gets the folder name where views are stored.
+        /// </summary>
+        public static string ViewsFolder => "Views";
+        /// <summary>
+        /// Gets the folder name where pages are stored.
+        /// </summary>
+        public static string PagesFolder => "Pages";
+        /// <summary>
+        /// Gets the path of the shared folder.
+        /// </summary>
+        /// <value>The path of the shared folder.</value>
+        public static string SharedFolder => "Shared";
+        /// <summary>
+        /// Gets the folder name for the components.
+        /// </summary>
+        /// <value>
+        /// The folder name for the components.
+        /// </value>
+        public static string ComponentsFolder => "Components";
+        /// <summary>
+        /// Gets the folder name for the view templates.
+        /// </summary>
+        /// <value>
+        /// The folder name for the view templates.
+        /// </value>
+        public static string ViewTemplatesFolder => "ViewTemplates";
+        /// <summary>
+        /// Gets the folder name for the diagrams.
+        /// </summary>
+        /// <value>
+        /// The folder name for the diagrams.
+        /// </value>
+        public static string DiagramsFolder => "Diagrams";
+        #endregion Folders and Files
+        
+        #region Settings
+        /// <summary>
+        /// Gets the value "All" representing all items.
+        /// </summary>
+        public static string AllItems => "All";
+        /// <summary>
+        /// Gets the name of the item.
+        /// </summary>
+        public static string Names => nameof(Names);
+        /// <summary>
+        /// Represents the name of the TProperty property as a string.
+        /// </summary>
+        public static string TProperty => nameof(TProperty);
+        /// <summary>
+        /// Gets the name of the Copy property.
+        /// </summary>
+        public static string Copy => nameof(Copy);
+        /// <summary>
+        /// Gets the name of the property "Generate".
+        /// </summary>
+        public static string Generate => nameof(Generate);
+        /// <summary>
+        /// Gets the name of the Definition.
+        /// </summary>
+        public static string Definition => nameof(Definition);
+        /// <summary>
+        /// Represents the name of the HTML tag.
+        /// </summary>
+        public static string HTMLTag => nameof(HTMLTag);
+        /// <summary>
+        /// Gets the name of the PropertyNames property.
+        /// </summary>
+        public static string PropertyNames => nameof(PropertyNames);
+        /// <summary>
+        /// Gets the name of the get accessor.
+        /// </summary>
+        public static string GetAccessor => nameof(GetAccessor);
+        /// <summary>
+        /// Gets the string value of the set accessor.
+        /// </summary>
+        public static string SetAccessor => nameof(SetAccessor);
+        /// <summary>
+        /// Gets the name of the "Visibility" property.
+        /// </summary>
+        public static string Visibility => nameof(Visibility);
+        /// <summary>
+        /// Gets the name of the Attribute property.
+        /// </summary>
+        public static string Attribute => nameof(Attribute);
+        /// <summary>
+        /// Gets the name of the ControllerGenericType property.
+        /// </summary>
+        public static string ControllerGenericType => nameof(ControllerGenericType);
+        /// <summary>
+        /// Gets the name of the FacadeGenericType property.
+        /// </summary>
+        public static string FacadeGenericType => nameof(FacadeGenericType);
+        /// <summary>
+        /// Gets the name of the ServiceGenericType property.
+        /// </summary>
+        public static string ServiceGenericType => nameof(ServiceGenericType);
+        
+        /// <summary>
+        /// Gets the name of the ViewTemplate property.
+        /// </summary>
+        public static string ViewTemplate => nameof(ViewTemplate);
+        #endregion Settings
+        
+        #region Modules
+        /// <summary>
+        /// Gets the name of the Account property.
+        /// </summary>
+        /// <value>
+        /// The name of the Account property.
+        /// </value>
+        public static string Account => nameof(Account);
+        /// <summary>
+        /// Gets the string representation of the 'Access' property name.
+        /// </summary>
+        public static string Access => nameof(Access);
+        /// <summary>
+        /// Gets the name of the Logging property.
+        /// </summary>
+        /// <value>
+        /// The name of the Logging property.
+        /// </value>
+        public static string Logging => nameof(Logging);
+        /// <summary>
+        /// Gets the name of the Revision property.
+        /// </summary>
+        /// <value>The name of the Revision property.</value>
+        public static string Revision => nameof(Revision);
+        /// <summary>
+        /// Gets the name of the secure identity.
+        /// </summary>
+        /// <value>
+        /// The secure identity name.
+        /// </value>
+        public static string SecureIdentity => nameof(SecureIdentity);
+        /// <summary>
+        /// Gets the login session property name.
+        /// </summary>
+        /// <value>The login session property name.</value>
+        public static string LoginSession => nameof(LoginSession);
+        #endregion Modules
+    }
+}
+//MdEnd

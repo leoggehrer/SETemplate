@@ -10,4 +10,9 @@
     <ProjectReference Include="..\SETemplate.Common\SETemplate.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Generation/" />
+    <Folder Include="Models/" />
+  </ItemGroup>
+
 </Project>
