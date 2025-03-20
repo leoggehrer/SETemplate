@@ -1,10 +1,10 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp.Generation
+namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
-    using TemplateTools.ConApp.Common;
-    using TemplateTools.ConApp.Contracts;
+    using TemplateTools.Logic.Common;
+    using TemplateTools.Logic.Contracts;
 
     /// <summary>
     /// This class provides many methods for generating program parts.

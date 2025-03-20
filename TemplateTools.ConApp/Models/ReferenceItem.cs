@@ -1,6 +1,6 @@
 ﻿//@BaseCode
 //MdStart
-namespace TemplateTools.ConApp.Models
+namespace TemplateTools.Logic.Models
 {
     public partial class ReferenceItem
     {

@@ -1,10 +1,10 @@
 //@BaseCode
 //MdStart
-using TemplateTools.ConApp.Common;
-using TemplateTools.ConApp.Contracts;
-using TemplateTools.ConApp.Models;
+using TemplateTools.Logic.Common;
+using TemplateTools.Logic.Contracts;
+using TemplateTools.Logic.Models;
 
-namespace TemplateTools.ConApp.Generation
+namespace TemplateTools.Logic.Generation
 {
     /// <summary>
     /// Represents a diagram generator class that generates entity diagrams.

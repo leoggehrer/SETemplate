@@ -2,7 +2,7 @@
 //MdStart
 using System.Text.Json.Serialization;
 
-namespace TemplateTools.ConApp.Models.ChatGPT
+namespace TemplateTools.Logic.Models.ChatGPT
 {
     public partial class Request
     {

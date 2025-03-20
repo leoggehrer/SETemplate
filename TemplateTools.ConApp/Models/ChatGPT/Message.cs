@@ -2,7 +2,7 @@
 //MdStart
 using System.Text.Json.Serialization;
 
-namespace TemplateTools.ConApp.Models.ChatGPT
+namespace TemplateTools.Logic.Models.ChatGPT
 {
     /// <summary>
     /// Represents a message object.

@@ -1,6 +1,6 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
     using SETemplate.Common.Extensions;
     using System.Text;

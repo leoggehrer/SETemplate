@@ -1,12 +1,12 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp.Generation
+namespace TemplateTools.Logic.Generation
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Reflection;
-    using TemplateTools.ConApp.Common;
-    using TemplateTools.ConApp.Contracts;
+    using TemplateTools.Logic.Common;
+    using TemplateTools.Logic.Contracts;
 
     /// <summary>
     /// Represents a generator object.

@@ -1,7 +1,7 @@
 //@BaseCode
 //MdStart
 
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
     /// <summary>
     /// Represents a solution's properties.
@@ -360,7 +360,7 @@ namespace TemplateTools.ConApp
         /// </returns>
         private static string GetCurrentSolutionPath()
         {
-            int endPos = AppContext.BaseDirectory.IndexOf($"{nameof(TemplateCodeGenerator)}", StringComparison.CurrentCultureIgnoreCase);
+            int endPos = AppContext.BaseDirectory.IndexOf($"{nameof(TemplateTools)}", StringComparison.CurrentCultureIgnoreCase);
             
             return AppContext.BaseDirectory[..endPos];
         }

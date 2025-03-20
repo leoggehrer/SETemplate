@@ -1,11 +1,11 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp.Generation
+namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
-    using TemplateTools.ConApp.Common;
-    using TemplateTools.ConApp.Contracts;
-    using TemplateTools.ConApp.Models;
+    using TemplateTools.Logic.Common;
+    using TemplateTools.Logic.Contracts;
+    using TemplateTools.Logic.Models;
 
     /// <summary>
     /// Represents a class that generates models based on a given type. This class is abstract and internal.

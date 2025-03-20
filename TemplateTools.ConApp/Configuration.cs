@@ -1,12 +1,12 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
     using CommonTool.Extensions;
     using System.Reflection;
-    using TemplateTools.ConApp.Common;
-    using TemplateTools.ConApp.Contracts;
-    using TemplateTools.ConApp.Models;
+    using TemplateTools.Logic.Common;
+    using TemplateTools.Logic.Contracts;
+    using TemplateTools.Logic.Models;
     /// <summary>
     /// Represents a configuration for code generation.
     /// </summary>

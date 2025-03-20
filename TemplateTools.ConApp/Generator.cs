@@ -1,10 +1,11 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
+    using SETemplate.Common.Extensions;
     using System.Collections.Concurrent;
     using System.Text;
-    using TemplateTools.ConApp.Contracts;
+    using TemplateTools.Logic.Contracts;
 
     /// <summary>
     /// A static partial class that contains methods for generating code based on a solution.
@@ -95,38 +96,6 @@ namespace TemplateTools.ConApp
                 }));
             }
             #endregion MVVMApp
-
-            #region AspMvcApp
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.AspMvc.ToString(), "All", "All", "Generate", "True"))
-            {
-                var generator = new Generation.AspMvcGenerator(solutionProperties);
-
-                tasks.Add(Task.Factory.StartNew(() =>
-                {
-                    var generatedItems = new List<IGeneratedItem>();
-
-                    WriteLogging("Create AspMvc-Components...");
-                    generatedItems.AddRange(generator.GenerateAll());
-                    result.AddRangeSafe(generatedItems);
-                }));
-            }
-            #endregion AspMvcApp
-
-            #region ClientBlazorApp
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.ClientBlazorApp.ToString(), "All", "All", "Generate", "True"))
-            {
-                var generator = new Generation.ClientBlazorGenerator(solutionProperties);
-
-                tasks.Add(Task.Factory.StartNew(() =>
-                {
-                    var generatedItems = new List<IGeneratedItem>();
-
-                    WriteLogging("Create Client-Blazor-Components...");
-                    generatedItems.AddRange(generator.GenerateAll());
-                    result.AddRangeSafe(generatedItems);
-                }));
-            }
-            #endregion ClientBlazorApp
 
             #region AngularApp
             if (configuration.QuerySettingValue<bool>(Common.UnitType.AngularApp.ToString(), "All", "All", "Generate", "True"))

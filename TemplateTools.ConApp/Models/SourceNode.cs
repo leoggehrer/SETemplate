@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace TemplateTools.ConApp.Models
+namespace TemplateTools.Logic.Models
 {
     /// <summary>
     /// This class forwards the corresponding queries to the CSharpSyntaxNode class.

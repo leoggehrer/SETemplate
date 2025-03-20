@@ -1,6 +1,6 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
     /// <summary>
     /// Represents an application for copying template solutions to a target solution.

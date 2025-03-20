@@ -2,7 +2,7 @@
 //MdStart
 using System.Reflection;
 
-namespace TemplateTools.ConApp.Generation
+namespace TemplateTools.Logic.Generation
 {
     /// <summary>
     /// Represents a class that contains properties and methods related to item properties.

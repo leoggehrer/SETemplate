@@ -1,6 +1,6 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp.Models.ChatGPT
+namespace TemplateTools.Logic.Models.ChatGPT
 {
     /// <summary>
     /// Represents the usage of tokens.

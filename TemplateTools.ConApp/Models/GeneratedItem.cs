@@ -1,8 +1,8 @@
 //@BaseCode
 //MdStart
-using TemplateTools.ConApp.Common;
+using TemplateTools.Logic.Common;
 
-namespace TemplateTools.ConApp.Models
+namespace TemplateTools.Logic.Models
 {
     /// <summary>
     /// Represents a generated item.

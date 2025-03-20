@@ -1,6 +1,6 @@
 ﻿//@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.Logic
 {
     /// <summary>
     /// Represents the main application class for the ToolsApp.
