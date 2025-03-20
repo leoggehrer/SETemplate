@@ -17,4 +17,8 @@
     <ProjectReference Include="..\SETemplate.Common\SETemplate.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
