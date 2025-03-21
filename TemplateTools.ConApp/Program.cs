@@ -1,4 +1,4 @@
-﻿namespace TemplateTools.Logic
+﻿namespace TemplateTools.ConApp
 {
     internal partial class Program
     {

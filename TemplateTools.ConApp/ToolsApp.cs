@@ -1,6 +1,9 @@
 ﻿//@BaseCode
 //MdStart
-namespace TemplateTools.Logic
+using TemplateTools.Logic;
+using TemplateTools.Logic.Git;
+
+namespace TemplateTools.ConApp
 {
     /// <summary>
     /// Represents the main application class for the ToolsApp.
@@ -103,12 +106,12 @@ namespace TemplateTools.Logic
                 //    Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
                 //    Action = (self) => new CodeGeneratorApp().Run([]),
                 //},
-                //new()
-                //{
-                //    Key = (++mnuIdx).ToString(),
-                //    Text = ToLabelText("Comparison", "Compares a project with the template"),
-                //    Action = (self) => new ComparisonApp().Run([]),
-                //},
+                new()
+                {
+                    Key = (++mnuIdx).ToString(),
+                    Text = ToLabelText("Comparison", "Compares a project with the template"),
+                    Action = (self) => new ComparisonApp().Run([]),
+                },
                 //new()
                 //{
                 //    Key = (++mnuIdx).ToString(),

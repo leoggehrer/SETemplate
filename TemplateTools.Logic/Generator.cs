@@ -2,7 +2,6 @@
 //MdStart
 namespace TemplateTools.Logic
 {
-    using SETemplate.Common.Extensions;
     using System.Collections.Concurrent;
     using System.Text;
     using TemplateTools.Logic.Contracts;
@@ -66,51 +65,51 @@ namespace TemplateTools.Logic
             #endregion Logic
 
             #region WebApiApp
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.WebApi.ToString(), "All", "All", "Generate", "True"))
-            {
-                var generator = new Generation.WebApiGenerator(solutionProperties);
+            //if (configuration.QuerySettingValue<bool>(Common.UnitType.WebApi.ToString(), "All", "All", "Generate", "True"))
+            //{
+            //    var generator = new Generation.WebApiGenerator(solutionProperties);
 
-                tasks.Add(Task.Factory.StartNew(() =>
-                {
-                    var generatedItems = new List<IGeneratedItem>();
+            //    tasks.Add(Task.Factory.StartNew(() =>
+            //    {
+            //        var generatedItems = new List<IGeneratedItem>();
 
-                    WriteLogging("Create WebApi-Components...");
-                    generatedItems.AddRange(generator.GenerateAll());
-                    result.AddRangeSafe(generatedItems);
-                }));
-            }
+            //        WriteLogging("Create WebApi-Components...");
+            //        generatedItems.AddRange(generator.GenerateAll());
+            //        result.AddRangeSafe(generatedItems);
+            //    }));
+            //}
             #endregion WebApiApp
 
             #region MVVMApp
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.MVVMApp.ToString(), "All", "All", "Generate", "True"))
-            {
-                var generator = new Generation.MVVMGenerator(solutionProperties);
+            //if (configuration.QuerySettingValue<bool>(Common.UnitType.MVVMApp.ToString(), "All", "All", "Generate", "True"))
+            //{
+            //    var generator = new Generation.MVVMGenerator(solutionProperties);
 
-                tasks.Add(Task.Factory.StartNew(() =>
-                {
-                    var generatedItems = new List<IGeneratedItem>();
+            //    tasks.Add(Task.Factory.StartNew(() =>
+            //    {
+            //        var generatedItems = new List<IGeneratedItem>();
 
-                    WriteLogging("Create MVVM-Components...");
-                    generatedItems.AddRange(generator.GenerateAll());
-                    result.AddRangeSafe(generatedItems);
-                }));
-            }
+            //        WriteLogging("Create MVVM-Components...");
+            //        generatedItems.AddRange(generator.GenerateAll());
+            //        result.AddRangeSafe(generatedItems);
+            //    }));
+            //}
             #endregion MVVMApp
 
             #region AngularApp
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.AngularApp.ToString(), "All", "All", "Generate", "True"))
-            {
-                var generator = new Generation.AngularGenerator(solutionProperties);
+            //if (configuration.QuerySettingValue<bool>(Common.UnitType.AngularApp.ToString(), "All", "All", "Generate", "True"))
+            //{
+            //    var generator = new Generation.AngularGenerator(solutionProperties);
 
-                tasks.Add(Task.Factory.StartNew(() =>
-                {
-                    var generatedItems = new List<IGeneratedItem>();
+            //    tasks.Add(Task.Factory.StartNew(() =>
+            //    {
+            //        var generatedItems = new List<IGeneratedItem>();
 
-                    WriteLogging("Create AspMvc-Components...");
-                    generatedItems.AddRange(generator.GenerateAll());
-                    result.AddRangeSafe(generatedItems);
-                }));
-            }
+            //        WriteLogging("Create AspMvc-Components...");
+            //        generatedItems.AddRange(generator.GenerateAll());
+            //        result.AddRangeSafe(generatedItems);
+            //    }));
+            //}
             #endregion AngularApp
 
             Task.WaitAll([.. tasks]);

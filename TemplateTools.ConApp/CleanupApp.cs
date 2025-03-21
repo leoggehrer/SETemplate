@@ -1,8 +1,6 @@
 //@BaseCode
 //MdStart
-using SETemplate.Common.Modules.Template;
-
-namespace TemplateTools.Logic
+namespace TemplateTools.ConApp
 {
     /// <summary>
     /// Represents an internal class used for cleaning up directories.

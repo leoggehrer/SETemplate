@@ -1,6 +1,6 @@
 ﻿//@BaseCode
 //MdStart
-namespace TemplateTools.Logic
+namespace TemplateTools.ConApp
 {
     public abstract partial class ConsoleApplication : CommonTool.ConsoleApplication
     {

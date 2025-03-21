@@ -1,6 +1,5 @@
 ﻿//@BaseCode
 using SETemplate.Logic.Contracts;
-using Microsoft.EntityFrameworkCore;
 
 namespace SETemplate.Logic.DataContext
 {
@@ -13,12 +12,12 @@ namespace SETemplate.Logic.DataContext
         /// <summary>
         /// The type of the database (e.g., "Sqlite", "SqlServer").
         /// </summary>
-        private static string DatabaseType = "Sqlite";
+        private static readonly string DatabaseType = "Sqlite";
 
         /// <summary>
         /// The connection string for the database.
         /// </summary>
-        private static string ConnectionString = "data source=SETemplate.db";
+        private static readonly string ConnectionString = "data source=SETemplate.db";
         #endregion fields
 
         /// <summary>

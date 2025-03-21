@@ -16,8 +16,8 @@ namespace TemplateTools.Logic.Preprocessor
         static ProjectFile()
         {
             ClassConstructing();
-            Defines = new string[]
-            {
+            Defines =
+            [
                 "ACCOUNT_OFF",
                 "ACCESSRULES_ON",
                 "LOGGING_OFF",
@@ -37,7 +37,7 @@ namespace TemplateTools.Logic.Preprocessor
                 "DOCKER_OFF",
                 "DEVELOP_OFF",
                 $"{GeneratedCodePrefix}_OFF",
-            };
+            ];
             ClassConstructed();
         }
         /// <summary>
@@ -174,7 +174,7 @@ namespace TemplateTools.Logic.Preprocessor
                     result.Add(startDefine);
                 }
             }
-            return result.ToArray();
+            return [.. result];
         }
         /// <summary>
         /// Reads defines in project files.
@@ -229,7 +229,7 @@ namespace TemplateTools.Logic.Preprocessor
                     result.Add(startDefine);
                 }
             }
-            return result.ToArray();
+            return [.. result];
         }
         
         /// <summary>
@@ -272,17 +272,17 @@ namespace TemplateTools.Logic.Preprocessor
                     insertIdx = insertIdx < 0 ? result.Count - 2 : insertIdx;
                     hasChanged = true;
                     
-                    result.InsertRange(insertIdx + 1, new string[]
-                    {
+                    result.InsertRange(insertIdx + 1,
+                    [
                         string.Empty,
                         "  <PropertyGroup>",
                         $"    <DefineConstants>{defineConstants}</DefineConstants>",
                         "  </PropertyGroup>",
-                    });
+                    ]);
                 }
                 if (hasChanged)
                 {
-                    File.WriteAllLines(filePath, result.ToArray(), Encoding.Default);
+                    File.WriteAllLines(filePath, [.. result], Encoding.Default);
                 }
             }
         }

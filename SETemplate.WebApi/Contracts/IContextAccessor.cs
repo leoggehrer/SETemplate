@@ -1,4 +1,5 @@
-﻿using SETemplate.Logic.Contracts;
+﻿//@BaseCode
+using SETemplate.Logic.Contracts;
 using SETemplate.Logic.DataContext;
 
 namespace SETemplate.WebApi.Contracts
@@ -6,7 +7,7 @@ namespace SETemplate.WebApi.Contracts
     /// <summary>
     /// Provides access to the context and entity sets.
     /// </summary>
-    public interface IContextAccessor : IDisposable
+    public partial interface IContextAccessor : IDisposable
     {
         /// <summary>
         /// Gets the current context.

@@ -1,40 +1,33 @@
 ﻿//@BaseCode
-using Microsoft.EntityFrameworkCore;
-
 namespace SETemplate.Logic.DataContext
 {
     /// <summary>
     /// Represents a set of entities that can be queried from a database and provides methods to manipulate them.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class EntitySet<TEntity> where TEntity : Entities.EntityObject, new()
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EntitySet{TEntity}"/> class.
+    /// </remarks>
+    /// <param name="context">The database context.</param>
+    /// <param name="dbSet">The set of entities.</param>
+    public abstract partial class EntitySet<TEntity>(DbContext context, DbSet<TEntity> dbSet) where TEntity : Entities.EntityObject, new()
     {
         #region fields
-        protected DbSet<TEntity> _dbSet;
+        protected DbSet<TEntity> _dbSet = dbSet;
         #endregion fields
 
         #region properties
         /// <summary>
         /// Gets the database context.
         /// </summary>
-        internal DbContext Context { get; private set; }
+        internal DbContext Context { get; private set; } = context;
 
         /// <summary>
         /// Gets the queryable set of entities.
         /// </summary>
         public IQueryable<TEntity> QuerySet => _dbSet.AsQueryable();
-        #endregion properties
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EntitySet{TEntity}"/> class.
-        /// </summary>
-        /// <param name="context">The database context.</param>
-        /// <param name="dbSet">The set of entities.</param>
-        public EntitySet(DbContext context, DbSet<TEntity> dbSet)
-        {
-            Context = context;
-            _dbSet = dbSet;
-        }
+        #endregion properties
 
         #region methods
         protected abstract void CopyProperties(TEntity target, TEntity source);

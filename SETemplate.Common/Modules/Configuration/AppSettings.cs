@@ -6,11 +6,11 @@ namespace SETemplate.Common.Modules.Configuration
     /// <summary>
     /// Singleton class to manage application settings.
     /// </summary>
-    public sealed class AppSettings : Contracts.ISettings
+    public sealed partial class AppSettings : Contracts.ISettings
     {
         #region fields
-        private static AppSettings _instance = new AppSettings();
-        private static IConfigurationRoot _configurationRoot;
+        private static readonly AppSettings _instance = new();
+        private static readonly IConfigurationRoot _configurationRoot;
         #endregion fields
 
         /// <summary>

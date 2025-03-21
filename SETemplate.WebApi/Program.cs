@@ -1,6 +1,6 @@
 ﻿namespace SETemplate.WebApi
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {

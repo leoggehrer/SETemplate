@@ -4,7 +4,7 @@ namespace SETemplate.Logic.Contracts
     /// <summary>
     /// Represents a context that provides access to entity sets and supports saving changes.
     /// </summary>
-    public interface IContext : IDisposable
+    public partial interface IContext : IDisposable
     {
         /// <summary>
         /// Saves all changes made in this context to the underlying database.

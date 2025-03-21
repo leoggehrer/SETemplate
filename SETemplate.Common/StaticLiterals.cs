@@ -17,7 +17,7 @@ namespace SETemplate.Common
             ];
             TemplateToolProjects =
             [
-                "TemplateCodeGenerator.Logic",
+                "TemplateTools.Logic",
                 "TemplateTools.ConApp",
             ];
             TemplateProjectExtensions =

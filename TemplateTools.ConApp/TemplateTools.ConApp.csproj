@@ -8,17 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommonTool.Console" Version="1.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SETemplate.Common\SETemplate.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
+    <ProjectReference Include="..\TemplateTools.Logic\TemplateTools.Logic.csproj" />
   </ItemGroup>
 
 </Project>

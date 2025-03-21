@@ -1,11 +1,12 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.Logic
+namespace TemplateTools.ConApp
 {
     using SETemplate.Common.Extensions;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
+    using TemplateTools.Logic;
 
     /// <summary>
     /// Represents a partial internal class <see cref="Copier"/>.

@@ -30,12 +30,12 @@ namespace SETemplate.Logic.DataContext
 
         public static void InitDatabase()
         {
-            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
-            var context = CreateContext();
-
             CreateDatabase();
 
             // Hier koennen Daten importiert werden
+
+//            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
+//            var context = CreateContext();
 
 #endif
         }

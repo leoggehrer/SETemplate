@@ -11,7 +11,7 @@ namespace SETemplate.Common.Modules.PlantUML
     /// <summary>
     /// Provides methods for creating UML diagrams.
     /// </summary>
-    public static class UMLCreator
+    public static partial class UMLCreator
     {
         #region skinparam
         /// <summary>
