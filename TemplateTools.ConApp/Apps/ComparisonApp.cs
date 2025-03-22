@@ -1,8 +1,13 @@
-﻿//@BaseCode
+//@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+using TemplateTools.ConApp.Modules;
+
+namespace TemplateTools.ConApp.Apps
 {
-    public partial class PartialComparisonApp : ConsoleApplication
+    /// <summary>
+    /// Represents an application for comparing and synchronizing source code files between a source path and multiple target paths.
+    /// </summary>
+    internal partial class ComparisonApp : ConsoleApplication
     {
         #region Class-Constructors
         /// <summary>
@@ -11,7 +16,7 @@ namespace TemplateTools.ConApp
         /// <remarks>
         /// This constructor sets up the initial values for the static properties and arrays used in the ComparisonApp class.
         /// </remarks>
-        static PartialComparisonApp()
+        static ComparisonApp()
         {
             ClassConstructing();
             ClassConstructed();
@@ -35,13 +40,13 @@ namespace TemplateTools.ConApp
         /// <summary>
         /// Represents an application for performing comparisons.
         /// </summary>
-        public PartialComparisonApp(string sourceCodePath, string targetCodePath)
+        public ComparisonApp()
         {
             Constructing();
-            PageSize = 20;
-            SourceCodePath = sourceCodePath;
+            CodeSolutionPath = SolutionPath;
             SourceLabels = [CommonStaticLiterals.BaseCodeLabel, CommonStaticLiterals.BaseCodeLabel];
-            TargetCodePath = targetCodePath;
+            TargetPaths = [];
+            AddTargetPaths = [];
             TargetLabels = [CommonStaticLiterals.CodeCopyLabel, CommonStaticLiterals.BaseCodeLabel];
             Constructed();
         }
@@ -59,11 +64,21 @@ namespace TemplateTools.ConApp
         /// <summary>
         /// Gets or sets the source path.
         /// </summary>
-        private string SourceCodePath { get; set; }
+        private string CodeSolutionPath { get; set; }
         /// <summary>
-        /// Gets or sets the path of the target code.
+        /// Gets or sets the target paths.
         /// </summary>
-        private string TargetCodePath { get; set; }
+        /// <value>
+        /// An array of strings representing the target paths.
+        /// </value>
+        private string[] TargetPaths { get; set; }
+        /// <summary>
+        /// Gets or sets the target paths to be added.
+        /// </summary>
+        /// <value>
+        /// An array of strings representing the target paths to be added.
+        /// </value>
+        private string[] AddTargetPaths { get; set; }
         /// <summary>
         /// Gets an array of search patterns used for searching source files.
         /// </summary>
@@ -89,26 +104,13 @@ namespace TemplateTools.ConApp
 
         #region overrides
         /// <summary>
-        /// Executes the necessary actions before the main execution of the program.
-        /// </summary>
-        protected override void BeforeExecution()
-        {
-            PrintHeader();
-            StartProgressBar();
-        }
-        /// <summary>
-        /// Performs actions after the execution of the method.
-        /// </summary>
-        protected override void AfterExecution()
-        {
-            StopProgressBar();
-        }
-        /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>
         /// <returns>An array of MenuItem objects representing the menu items.</returns>
         protected override MenuItem[] CreateMenuItems()
         {
+            var handled = false;
+            var targetPaths = new List<string>();
             var mnuIdx = 0;
             var menuItems = new List<MenuItem>()
             {
@@ -121,9 +123,15 @@ namespace TemplateTools.ConApp
                 },
                 new()
                 {
-                    Key = $"{++mnuIdx}",
-                    Text = ToLabelText($"{MaxSubPathDepth}", "Change max sub path depth"),
-                    Action = (self) => ChangeMaxSubPathDepth(),
+                    Key = (++mnuIdx).ToString(),
+                    Text = ToLabelText("Path", "Change the source solution path"),
+                    Action = (self) => CodeSolutionPath = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath),
+                },
+                new()
+                {
+                    Key = (++mnuIdx).ToString(),
+                    Text = ToLabelText("Add path", "Add a target path"),
+                    Action = (self) => AddTargetPath(),
                 },
                 new()
                 {
@@ -133,24 +141,37 @@ namespace TemplateTools.ConApp
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
             };
-
-            var targetPaths = Directory.GetDirectories(TargetCodePath)
-                                       .Where(d => d.Contains($"{Path.DirectorySeparatorChar}.") == false)
-                                       .OrderBy(d => d)
-                                       .ToArray();
-
-            menuItems.AddRange(CreatePageMenuItems(ref mnuIdx, targetPaths, (item, menuItem) =>
+            BeforeGetTargetPaths(ReposPath, targetPaths, ref handled);
+            if (handled == false)
             {
-                menuItem.OptionalKey = "a";
-                menuItem.Text = ToLabelText("Comparison with", $"{item.Replace(TargetCodePath, string.Empty)}");
-                menuItem.Action = (self) =>
-                {
-                    var targetPath = self.Params["targetpath"]?.ToString() ?? string.Empty;
+                targetPaths.AddRange(TemplatePath.GetTemplateSolutions(ReposPath));
+                targetPaths.AddRange(AddTargetPaths);
+            }
+            else
+            {
+                targetPaths.AddRange(AddTargetPaths);
+            }
+            targetPaths.Remove(CodeSolutionPath);
+            AfterGetTargetPaths(ReposPath, targetPaths);
 
-                    BalancingPath(SourceCodePath, SourceLabels, targetPath, TargetLabels, SearchPatterns);
-                };
-                menuItem.Params = new() { { "targetpath", item } };
-            }));
+            TargetPaths = [.. targetPaths.Distinct().Order()];
+
+            foreach (var path in TargetPaths)
+            {
+                menuItems.Add(new()
+                {
+                    Key = (++mnuIdx).ToString(),
+                    OptionalKey = "a",
+                    Text = ToLabelText("Comparison with", $"{path.Replace(ReposPath, ".")}", 19, ' '),
+                    Action = (self) =>
+                    {
+                        var targetPath = self.Params["path"]?.ToString() ?? string.Empty;
+
+                        new PartialComparisonApp(CodeSolutionPath, targetPath).Run([]);
+                    },
+                    Params = new() { { "path", path } },
+                });
+            }
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
         /// <summary>
@@ -163,14 +184,28 @@ namespace TemplateTools.ConApp
             {
                 headerParams.Add(new($"  {SourceLabels[i],-15} =>", TargetLabels[i]));
             }
-            headerParams.Add(new("Source code path:", SourceCodePath));
-            headerParams.Add(new("Target code path:", TargetCodePath));
+            headerParams.Add(new("Source code path:", CodeSolutionPath));
 
-            base.PrintHeader("Template Partial Comparison", [.. headerParams]);
+            base.PrintHeader("Template Comparison", [.. headerParams]);
         }
         #endregion overrides
 
-        #region App methods
+        #region app methods
+        /// <summary>
+        /// Adds a target path to the list of target paths.
+        /// </summary>
+        private void AddTargetPath()
+        {
+            PrintLine();
+            Print("Add path: ");
+
+            var input = Console.ReadLine();
+
+            if (Directory.Exists(input))
+            {
+                AddTargetPaths = [.. AddTargetPaths.Union([input])];
+            }
+        }
         /// <summary>
         /// Balances the solutions between a source path and a target path using the specified labels and search patterns.
         /// </summary>
@@ -179,12 +214,33 @@ namespace TemplateTools.ConApp
         /// <param name="targetPath">The path of the target.</param>
         /// <param name="targetLabels">The labels of the target.</param>
         /// <param name="searchPatterns">The search patterns to use.</param>
-        private static void BalancingPath(string sourcePath, string[] sourceLabels, string targetPath, string[] targetLabels, string[] searchPatterns)
+        private static void BalancingSolution(string sourcePath, string[] sourceLabels, string targetPath, string[] targetLabels, string[] searchPatterns)
         {
-            PrintLine($"Balancing {targetPath}...");
+            StartProgressBar();
             Synchronizer.BalancingPath(sourcePath, sourceLabels, targetPath, targetLabels, searchPatterns);
+            StopProgressBar();
         }
-        #endregion App methods
+        #endregion app methods
+
+        #region partial methods
+        /// <summary>
+        /// Represents a method that is called before the GetTargetPaths method is executed.
+        /// </summary>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="targetPaths">The list of target paths.</param>
+        /// <param name="handled">A reference to a boolean value indicating whether the method has been handled.</param>
+        static partial void BeforeGetTargetPaths(string sourcePath, List<string> targetPaths, ref bool handled);
+        /// <summary>
+        /// This method is called after getting the target paths for a source path.
+        /// </summary>
+        /// <param name="sourcePath">The source path for which the target paths were retrieved.</param>
+        /// <param name="targetPaths">The list of target paths corresponding to the provided source path.</param>
+        /// <remarks>
+        /// This method allows performing additional tasks or modifications after obtaining the target paths
+        /// for a given source path. It can be overridden in derived classes to customize the behavior.
+        /// </remarks>
+        static partial void AfterGetTargetPaths(string sourcePath, List<string> targetPaths);
+        #endregion partial methods
     }
 }
 //MdEnd

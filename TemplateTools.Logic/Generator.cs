@@ -40,6 +40,21 @@ namespace TemplateTools.Logic
             var configuration = new Configuration(solutionProperties);
             var tasks = new List<Task>();
 
+            #region Common
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), "All", "All", "Generate", "True"))
+            {
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var generator = new Generation.CommonGenerator(solutionProperties);
+                    var generatedItems = new List<IGeneratedItem>();
+
+                    WriteLogging("Create Common-Components...");
+                    generatedItems.AddRange(generator.GenerateAll());
+                    result.AddRangeSafe(generatedItems);
+                }));
+            }
+            #endregion Common
+
             #region Logic
             if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), "All", "All", "Generate", "True"))
             {

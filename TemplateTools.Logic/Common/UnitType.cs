@@ -8,7 +8,7 @@ namespace TemplateTools.Logic.Common
         All,
         General,
         
-        CommonBase,
+        Common,
         Logic,
         WebApi,
         

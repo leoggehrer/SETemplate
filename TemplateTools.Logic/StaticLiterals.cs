@@ -75,14 +75,15 @@ namespace TemplateTools.Logic
         /// </summary>
         public static string ModelAlias => "TModel";
         #endregion Code-Generation
-        
+
         #region Project Extensions
+        /// <summary>
+        /// Gets or sets the common extension for the property.
+        /// </summary>
+        public static string CommonExtension => CommonStaticLiterals.CommonExtension;
         /// <summary>
         /// Gets or sets the logic extension for the property.
         /// </summary>
-        /// <remarks>
-        /// The logic extension determines the file extension used for logic files.
-        /// </remarks>
         public static string LogicExtension => CommonStaticLiterals.LogicExtension;
         /// <summary>
         /// Gets the WebApiExtension property.
@@ -275,6 +276,10 @@ namespace TemplateTools.Logic
         /// Gets the name of the Attribute property.
         /// </summary>
         public static string Attribute => nameof(Attribute);
+        /// <summary>
+        /// Gets the name of the EntitySetGenericType property.
+        /// </summary>
+        public static string EntitySetGenericType => nameof(EntitySetGenericType);
         /// <summary>
         /// Gets the name of the ControllerGenericType property.
         /// </summary>

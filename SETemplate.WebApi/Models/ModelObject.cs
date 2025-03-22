@@ -9,6 +9,6 @@ namespace SETemplate.WebApi.Models
         /// <summary>
         /// Gets or sets the unique identifier for the model object.
         /// </summary>
-        public int Id { get; set; }
+        public IdType Id { get; set; }
     }
 }

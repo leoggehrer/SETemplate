@@ -320,7 +320,7 @@ namespace SETemplate.Common.Extensions
                 }
                 else
                 {
-                    result = HashCode.Combine(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]) + CalculateHashCodeRec(values.Skip(8).Take(values.Length - 8).ToArray());
+                    result = HashCode.Combine(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]) + CalculateHashCodeRec([.. values.Skip(8).Take(values.Length - 8)]);
                 }
                 return result;
             }

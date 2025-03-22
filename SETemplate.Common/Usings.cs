@@ -10,3 +10,4 @@ global using IdType = System.Guid;
 global using IdType = System.Int32;
 #endif
 //MdEnd
+global using SETemplate.Common.Extensions;

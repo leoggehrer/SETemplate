@@ -10,7 +10,7 @@ namespace SETemplate.Common.Contracts
         /// <summary>
         /// Gets the unique identifier for the entity.
         /// </summary>
-        int Id { get; protected set; }
+        IdType Id { get; protected set; }
         #endregion Properties
     }
 }

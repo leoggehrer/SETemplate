@@ -10,40 +10,32 @@ namespace TemplateTools.Logic
     {
         #region Project-postfixes
         /// <summary>
+        /// Gets or sets the common extension.
+        /// </summary>
+        public string CommonExtension => StaticLiterals.CommonExtension;
+        /// <summary>
         /// Gets or sets the logic extension.
         /// </summary>
-        /// <value>The logic extension.</value>
         public string LogicExtension => StaticLiterals.LogicExtension;
         /// <summary>
         /// Gets or sets the Web API extension.
         /// </summary>
-        /// <value>
-        /// The Web API extension.
-        /// </value>
         public string WebApiExtension => StaticLiterals.WebApiExtension;
         /// <summary>
         /// Gets the ASP.NET MVC extension.
         /// </summary>
-        /// <value>The ASP.NET MVC extension.</value>
         public string AspMvcExtension => StaticLiterals.AspMvcExtension;
         /// <summary>
         /// The MVVMExtension property represents the MVVM extension value.
         /// </summary>
-        /// <value>The MVVM extension value.</value>
         public string MVVMExtension => StaticLiterals.MVVMExtension;
         /// <summary>
         /// Gets the Angular extension used for the property.
         /// </summary>
-        /// <value>
-        /// The Angular extension used for the property.
-        /// </value>
         public string AngularExtension => StaticLiterals.AngularExtension;
         /// <summary>
         /// Gets the client Blazor extension.
         /// </summary>
-        /// <value>
-        /// The client Blazor extension.
-        /// </value>
         public string ClientBlazorExtension => StaticLiterals.ClientBlazorExtension;
         #endregion Project-postfixes
         
@@ -55,38 +47,22 @@ namespace TemplateTools.Logic
         /// <summary>
         /// Gets the solution name.
         /// </summary>
-        /// <value>
-        /// The solution name.
-        /// </value>
         public string SolutionName { get; }
         /// <summary>
         /// Gets the file path of the solution.
         /// </summary>
-        /// <value>The file path of the solution.</value>
         public string SolutionFilePath { get; }
         /// <summary>
         /// Gets or sets the path where the code should be compiled.
         /// </summary>
-        /// <value>
-        /// The compile path is the location where the generated code will be compiled.
-        /// </value>
-        /// <remarks>
-        /// This property can be null if the code does not need to be compiled.
-        /// </remarks>
         public string? CompilePath { get; set; }
         /// <summary>
         /// Gets or sets the logic assembly types.
         /// </summary>
-        /// <value>
-        /// The logic assembly types.
-        /// </value>
         public Type[]? LogicAssemblyTypes { get; set; }
         /// <summary>
         /// Gets the file path of the compiled logic assembly.
         /// </summary>
-        /// <returns>
-        /// The file path of the compiled logic assembly, or an empty string if it does not exist.
-        /// </returns>
         public string? CompileLogicAssemblyFilePath
         {
             get
@@ -149,25 +125,22 @@ namespace TemplateTools.Logic
         /// </summary>
         /// <returns>The file path of the Logic CS project.</returns>
         public string LogicCSProjectFilePath { get; }
-        
+
         /// <summary>
         /// Gets the logic project name based on the template project names.
         /// </summary>
-        /// <value>
-        /// A string representing the logic project name.
-        /// </value>
+        public string CommonProjectName => TemplateProjectNames.First(e => e.EndsWith($"{CommonExtension}"));
+        /// <summary>
+        /// Gets the logic project name based on the template project names.
+        /// </summary>
         public string LogicProjectName => TemplateProjectNames.First(e => e.EndsWith($"{LogicExtension}"));
         /// <summary>
         /// Gets the logic sub path.
         /// </summary>
-        /// <value>The logic sub path.</value>
         public string LogicSubPath => LogicProjectName;
         /// <summary>
         /// Gets the subpath for logic controllers.
         /// </summary>
-        /// <value>
-        /// The subpath for logic controllers.
-        /// </value>
         public string LogicControllersSubPath => StaticLiterals.ControllersFolder;
         /// <summary>
         /// Gets the subpath for logic entities.

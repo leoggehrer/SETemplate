@@ -1,6 +1,6 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.ConApp.Apps
 {
     /// <summary>
     /// Represents an internal class used for cleaning up directories.

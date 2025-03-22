@@ -718,6 +718,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
             result.Add($"{visibility} void CopyProperties({copyType} other)");
             result.Add("{");
+            result.Add("other.CheckArgument(nameof(other));");
             result.Add("bool handled = false;");
             result.Add("BeforeCopyProperties(other, ref handled);");
             result.Add("if (handled == false)");
@@ -745,6 +746,56 @@ namespace TemplateTools.Logic.Generation
             result.Add($"partial void AfterCopyProperties({copyType} other);");
             return result.Where(l => string.IsNullOrEmpty(l) == false);
         }
+        /// <summary>
+        /// Creates the source code for copy properties of the specified types.
+        /// </summary>
+        /// <param name="modifiers">The modifiers of the copy properties method.</param>
+        /// <param name="entityType">The type whose properties will be copied.</param>
+        /// <param name="contractType">The type whose properties will be copied.</param>
+        /// <param name="targetName">The name of the target parameter.</param>
+        /// <param name="sourceName">The name of the source parameter.</param>
+        /// <returns>
+        /// An enumerable collection of strings representing the generated copy properties method.
+        /// </returns>
+        public virtual IEnumerable<string> CreateContractCopyProperties(string modifiers, string entityType, string contractType, string targetName, string sourceName)
+        {
+            var result = new List<string>();
+
+            result.AddRange(CreateComment($"Copies the properties from the source <see cref=\"{entityType}\"/> to the target <see cref=\"{entityType}\"/>."));
+            result.Add($"/// <param name=\"{targetName}\">The target <see cref=\"{entityType}\"/>.</param>");
+            result.Add($"/// <param name=\"{sourceName}\">The source <see cref=\"{entityType}\"/>.</param>");
+            result.Add($"{modifiers} void CopyProperties({entityType} {targetName}, {entityType} {sourceName})");
+            result.Add("{");
+            result.Add($"{targetName}.CheckArgument(nameof({targetName}));");
+            result.Add($"{sourceName}.CheckArgument(nameof({sourceName}));");
+            result.Add("bool handled = false;");
+            result.Add($"BeforeCopyProperties({targetName}, {sourceName}, ref handled);");
+            result.Add("if (handled == false)");
+            result.Add("{");
+
+            result.Add($"if ({targetName} is {contractType} itarget");
+            result.Add($"    && {sourceName} is {contractType} isource)");
+            result.Add("{");
+            result.Add("itarget.CopyProperties(isource);");
+            result.Add("}");
+
+            result.Add("}");
+            result.Add($"AfterCopyProperties({targetName}, {sourceName});");
+            result.Add("}");
+
+            result.AddRange(CreateComment("This method is called before copying the properties of another object to the current instance."));
+            result.Add($"/// <param name=\"{targetName}\">The object to copy the properties from.</param>");
+            result.Add($"/// <param name=\"{sourceName}\">The object in which the properties are to be copied.</param>");
+            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param>");
+            result.Add($"partial void BeforeCopyProperties({entityType} {targetName}, {entityType} {sourceName}, ref bool handled);");
+
+            result.AddRange(CreateComment("This method is called after copying properties from another instance of the class."));
+            result.Add($"/// <param name=\"{targetName}\">The object to copy the properties from.</param>");
+            result.Add($"/// <param name=\"{sourceName}\">The object in which the properties are to be copied.</param>");
+            result.Add($"partial void AfterCopyProperties({entityType} {targetName}, {entityType} {sourceName});");
+            return result.Where(l => string.IsNullOrEmpty(l) == false);
+        }
+
         /// <summary>
         /// Copies the value of a delegate property from one object to another.
         /// </summary>

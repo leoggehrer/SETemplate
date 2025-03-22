@@ -1,6 +1,6 @@
 //@BaseCode
 //MdStart
-namespace TemplateTools.ConApp
+namespace TemplateTools.ConApp.Modules
 {
     using SETemplate.Common.Extensions;
     using System.Text;
@@ -244,7 +244,7 @@ namespace TemplateTools.ConApp
             {
                 var subFolder = directory.Replace(sourceSolutionDirectory, string.Empty);
 
-                if ((CommonStaticLiterals.IgnoreFolders.Any(i => subFolder.EndsWith(i) || subFolder.Contains(i)) == false)
+                if (CommonStaticLiterals.IgnoreFolders.Any(i => subFolder.EndsWith(i) || subFolder.Contains(i)) == false
                 && sourceProjets.Any(i => subFolder.EndsWith(i)))
                 {
                     subFolder = subFolder.Replace(sourceFolderName, targetFolderName);
@@ -270,7 +270,7 @@ namespace TemplateTools.ConApp
         {
             var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
             var sourceSolutionFilePath = Directory.GetFiles(sourceSolutionDirectory, $"*{CommonStaticLiterals.SolutionFileExtension}", SearchOption.AllDirectories)
-                                                  .FirstOrDefault(f => f.EndsWith($"{sourceSolutionFolder}{CommonStaticLiterals.SolutionFileExtension}", StringComparison.CurrentCultureIgnoreCase)) ?? String.Empty;
+                                                  .FirstOrDefault(f => f.EndsWith($"{sourceSolutionFolder}{CommonStaticLiterals.SolutionFileExtension}", StringComparison.CurrentCultureIgnoreCase)) ?? string.Empty;
             var sourceSolutionPath = Path.GetDirectoryName(sourceSolutionFilePath);
             var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
             var targetSolutionPath = targetSolutionDirectory;
@@ -397,12 +397,12 @@ namespace TemplateTools.ConApp
         /// 6. Appends the global tags to the target text.
         /// 7. Writes the target text to the target solution file.
         /// </remarks>
-        /// <exception cref="System.IO.FileNotFoundException">Thrown when the source solution file is not found.</exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException">Thrown when the target directory is not found.</exception>
-        /// <exception cref="System.IO.IOException">Thrown when there is an error reading from or writing to the files.</exception>
-        /// <exception cref="System.UnauthorizedAccessException">Thrown when the access to the files is denied.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown when one or more parameters are null.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when one or more parameters are empty or invalid.</exception>
+        /// <exception cref="FileNotFoundException">Thrown when the source solution file is not found.</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown when the target directory is not found.</exception>
+        /// <exception cref="IOException">Thrown when there is an error reading from or writing to the files.</exception>
+        /// <exception cref="UnauthorizedAccessException">Thrown when the access to the files is denied.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when one or more parameters are null.</exception>
+        /// <exception cref="ArgumentException">Thrown when one or more parameters are empty or invalid.</exception>
         private static void CopySolutionFile(string solutionSourceFilePath, string targetSolutionFilePath, string sourceSolutionName, string targetSolutionName, IEnumerable<string> sourceProjects)
         {
             var targetText = new StringBuilder();

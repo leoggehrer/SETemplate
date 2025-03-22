@@ -3,7 +3,7 @@
 using TemplateTools.Logic;
 using TemplateTools.Logic.Git;
 
-namespace TemplateTools.ConApp
+namespace TemplateTools.ConApp.Apps
 {
     /// <summary>
     /// Represents the main application class for the ToolsApp.
@@ -94,18 +94,18 @@ namespace TemplateTools.ConApp
                     Text = ToLabelText("Copier", "Copy this solution to a domain solution"),
                     Action = (self) => new CopierApp().Run([]),
                 },
-                //new()
-                //{
-                //    Key = (++mnuIdx).ToString(),
-                //    Text = ToLabelText("Preprocessor", "Setting defines for project options"),
-                //    Action = (self) => new PreprocessorApp().Run([]),
-                //},
-                //new()
-                //{
-                //    Key = (++mnuIdx).ToString(),
-                //    Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
-                //    Action = (self) => new CodeGeneratorApp().Run([]),
-                //},
+                new()
+                {
+                    Key = (++mnuIdx).ToString(),
+                    Text = ToLabelText("Preprocessor", "Setting defines for project options"),
+                    Action = (self) => new PreprocessorApp().Run([]),
+                },
+                new()
+                {
+                    Key = (++mnuIdx).ToString(),
+                    Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
+                    Action = (self) => new CodeGeneratorApp().Run([]),
+                },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),

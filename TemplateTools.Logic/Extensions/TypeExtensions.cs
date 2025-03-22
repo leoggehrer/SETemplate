@@ -2,7 +2,10 @@
 //MdStart
 namespace TemplateTools.Logic.Extensions
 {
+    using System.Reflection;
     using System.Text;
+    using TemplateTools.Logic.Generation;
+
     /// <summary>
     /// Contains extension methods for <see cref="Type"/>.
     /// </summary>
@@ -53,6 +56,15 @@ namespace TemplateTools.Logic.Extensions
                 sb.Append('?');
             }
             return sb.ToString();
+        }
+        /// <summary>
+        /// Determine if the property a navigation property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static bool IsNavigationProperties(this PropertyInfo property)
+        {
+            return ItemProperties.IsEntityType(property.PropertyType) || ItemProperties.IsEntityListType(property.PropertyType);
         }
     }
 }

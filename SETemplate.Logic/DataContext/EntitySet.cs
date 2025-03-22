@@ -1,31 +1,36 @@
 ﻿//@BaseCode
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace SETemplate.Logic.DataContext
 {
     /// <summary>
     /// Represents a set of entities that can be queried from a database and provides methods to manipulate them.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <remarks>
-    /// Initializes a new instance of the <see cref="EntitySet{TEntity}"/> class.
-    /// </remarks>
     /// <param name="context">The database context.</param>
     /// <param name="dbSet">The set of entities.</param>
-    public abstract partial class EntitySet<TEntity>(DbContext context, DbSet<TEntity> dbSet) where TEntity : Entities.EntityObject, new()
+    public abstract class EntitySet<TEntity>(DbContext context, DbSet<TEntity> dbSet) : IDisposable
+        where TEntity : Entities.EntityObject, new()
     {
         #region fields
-        protected DbSet<TEntity> _dbSet = dbSet;
+        private DbContext? _context = context;
+        private DbSet<TEntity>? _dbSet = dbSet;
         #endregion fields
 
         #region properties
         /// <summary>
         /// Gets the database context.
         /// </summary>
-        internal DbContext Context { get; private set; } = context;
+        internal DbContext Context => _context!;
+        /// <summary>
+        /// Gets the database context.
+        /// </summary>
+        protected DbSet<TEntity> DbSet => _dbSet!;
 
         /// <summary>
         /// Gets the queryable set of entities.
         /// </summary>
-        public IQueryable<TEntity> QuerySet => _dbSet.AsQueryable();
+        public IQueryable<TEntity> QuerySet => DbSet.AsQueryable();
 
         #endregion properties
 
@@ -48,7 +53,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entity.</returns>
         public virtual TEntity Add(TEntity entity)
         {
-            return _dbSet.Add(entity).Entity;
+            return DbSet.Add(entity).Entity;
         }
 
         /// <summary>
@@ -58,7 +63,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            var result = await _dbSet.AddAsync(entity).ConfigureAwait(false);
+            var result = await DbSet.AddAsync(entity).ConfigureAwait(false);
 
             return result.Entity;
         }
@@ -71,7 +76,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public virtual TEntity? Update(int id, TEntity entity)
         {
-            var existingEntity = _dbSet.Find(id);
+            var existingEntity = DbSet.Find(id);
             if (existingEntity != null)
             {
                 CopyProperties(existingEntity, entity);
@@ -87,7 +92,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
         public virtual async Task<TEntity?> UpdateAsync(int id, TEntity entity)
         {
-            var existingEntity = await _dbSet.FindAsync(id).ConfigureAwait(false);
+            var existingEntity = await DbSet.FindAsync(id).ConfigureAwait(false);
             if (existingEntity != null)
             {
                 CopyProperties(existingEntity, entity);
@@ -102,12 +107,22 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The removed entity, or null if the entity was not found.</returns>
         public virtual TEntity? Remove(int id)
         {
-            var entity = _dbSet.Find(id);
+            var entity = DbSet.Find(id);
             if (entity != null)
             {
-                _dbSet.Remove(entity);
+                DbSet.Remove(entity);
             }
             return entity;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _dbSet = null;
+            _context = null;
+            GC.SuppressFinalize(this);
         }
         #endregion methods
     }

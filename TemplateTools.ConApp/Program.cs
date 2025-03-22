@@ -26,7 +26,7 @@
 
         static void Main(string[] args)
         {
-            var app = new ToolsApp();
+            var app = new Apps.ToolsApp();
 
             app.Run(args);
         }

@@ -14,7 +14,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>An instance of IContext.</returns>
         public static IContext CreateContext()
         {
-            var result = new ProjectContext();
+            var result = new ProjectDbContext();
 
             return result;
         }
@@ -22,7 +22,7 @@ namespace SETemplate.Logic.DataContext
 #if DEBUG
         public static void CreateDatabase()
         {
-            var context = new ProjectContext();
+            var context = new ProjectDbContext();
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
@@ -37,7 +37,7 @@ namespace SETemplate.Logic.DataContext
 //            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
 //            var context = CreateContext();
 
-#endif
         }
+#endif
     }
 }

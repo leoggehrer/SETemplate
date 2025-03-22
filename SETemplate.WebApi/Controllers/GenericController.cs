@@ -99,7 +99,7 @@ namespace SETemplate.WebApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual ActionResult<TModel?> GetById(int id)
+        public virtual ActionResult<TModel?> GetById(IdType id)
         {
             var result = QuerySet.FirstOrDefault(e => e.Id == id);
 
@@ -141,7 +141,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public virtual ActionResult<TModel> Put(int id, [FromBody] TModel model)
+        public virtual ActionResult<TModel> Put(IdType id, [FromBody] TModel model)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public virtual ActionResult<TModel> Patch(int id, [FromBody] JsonPatchDocument<TModel> patchModel)
+        public virtual ActionResult<TModel> Patch(IdType id, [FromBody] JsonPatchDocument<TModel> patchModel)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public virtual ActionResult Delete(int id)
+        public virtual ActionResult Delete(IdType id)
         {
             try
             {

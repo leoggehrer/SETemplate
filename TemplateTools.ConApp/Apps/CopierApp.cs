@@ -2,7 +2,7 @@
 //MdStart
 using TemplateTools.Logic;
 
-namespace TemplateTools.ConApp
+namespace TemplateTools.ConApp.Apps
 {
     /// <summary>
     /// Represents an application for copying template solutions to a target solution.
@@ -42,7 +42,7 @@ namespace TemplateTools.ConApp
         /// <summary>
         /// Gets or sets the target solution path.
         /// </summary>
-        private string TargetSolutionSubPath { get; set; } = Directory.GetParent(SolutionPath)?.FullName ?? String.Empty;
+        private string TargetSolutionSubPath { get; set; } = Directory.GetParent(SolutionPath)?.FullName ?? string.Empty;
         /// <summary>
         /// Gets or sets the name of the target solution.
         /// </summary>
@@ -160,7 +160,7 @@ namespace TemplateTools.ConApp
         /// </summary>
         private void CopySolution()
         {
-            var copier = new Copier();
+            var copier = new Modules.Copier();
             var targetSolutionPath = Path.Combine(TargetSolutionSubPath, TargetSolutionName);
             var solutionProperties = SolutionProperties.Create(SourceSolutionPath);
             var allSourceProjectNames = solutionProperties.AllTemplateProjectNames;

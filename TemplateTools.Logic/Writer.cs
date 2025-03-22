@@ -54,7 +54,45 @@ namespace TemplateTools.Logic
         {
             var tasks = new List<Task>();
 
+            #region WriteCommonComponents
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.CommonProjectName);
+                var projectName = solutionProperties.GetProjectNameFromPath(projectPath);
+
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Common && e.ItemType == ItemType.EntityContract));
+
+                    WriteLogging("Write Logic-DataContext...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            #endregion WriteCommonComponents
+
             #region WriteLogicComponents
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntityContract));
+
+                    WriteLogging("Write Logic-Entity-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntitySet));
+
+                    WriteLogging("Write Logic-Entity-Sets...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
             tasks.Add(Task.Factory.StartNew((Action)(() =>
             {
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
@@ -68,6 +106,8 @@ namespace TemplateTools.Logic
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
+
+
             tasks.Add(Task.Factory.StartNew((Action)(() =>
             {
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);

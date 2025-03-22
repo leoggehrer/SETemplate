@@ -20,9 +20,6 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// Gets the properties of the item.
         /// </summary>
-        /// <value>
-        /// The properties of the item.
-        /// </value>
         protected abstract ItemProperties ItemProperties { get; }
 
         #region overrides
@@ -94,14 +91,6 @@ namespace TemplateTools.Logic.Generation
         /// <param name="copyType">The type to copy.</param>
         /// <param name="propertyInfo">The PropertyInfo object representing the property to be copied.</param>
         /// <returns>A string representation of the copied property.</returns>
-        /// <remarks>
-        /// This method is called to copy a specific property of the specified copy type.
-        /// It checks if the property is not one of the version properties and if the copy type is not the same as the declaring type of the property.
-        /// If the property is an array type, it converts the array elements to the corresponding model type and returns the resulting string representation.
-        /// If the property is a list type, it returns an empty string.
-        /// If the property is an entity type, it converts the entity to the corresponding model type and returns the resulting string representation.
-        /// If none of the above conditions are met, it calls the base method to perform the default copy property behavior.
-        /// </remarks>
         protected override string CopyDelegateProperty(string copyType, PropertyInfo propertyInfo)
         {
             string? result = null;

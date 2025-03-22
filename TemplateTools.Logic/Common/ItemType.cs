@@ -9,10 +9,12 @@ namespace TemplateTools.Logic.Common
         AccessContract,         // controller access contract
         ServiceAccessContract,  // service access contract
         ServiceContract,        // service access contract
+        EntityContract,         // entity access contract
         ModelContract,          // model access contract
         #endregion contracts
         
         #region models
+        EntitySet,
         AccessModel,
         ServiceModel,
         EditModel,

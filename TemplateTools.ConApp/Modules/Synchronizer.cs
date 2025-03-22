@@ -2,7 +2,7 @@
 //MdStart
 using System.Text;
 
-namespace TemplateTools.ConApp
+namespace TemplateTools.ConApp.Modules
 {
     public partial class Synchronizer
     {

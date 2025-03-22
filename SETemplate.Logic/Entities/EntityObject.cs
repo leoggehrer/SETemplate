@@ -10,6 +10,6 @@ namespace SETemplate.Logic.Entities
         /// Gets or sets the identifier of the entity.
         /// </summary>
         [Key]
-        public int Id { get; set; }
+        public IdType Id { get; set; }
     }
 }
