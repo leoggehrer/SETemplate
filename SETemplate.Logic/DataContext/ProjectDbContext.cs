@@ -27,20 +27,40 @@ namespace SETemplate.Logic.DataContext
         {
             var appSettings = Common.Modules.Configuration.AppSettings.Instance;
 
+            ClassConstructing();
             DatabaseType = appSettings["Database:Type"] ?? DatabaseType;
             ConnectionString = appSettings[$"ConnectionStrings:{DatabaseType}ConnectionString"] ?? ConnectionString;
+            ClassConstructed();
         }
+        /// <summary>
+        /// This method is called before the construction of the class.
+        /// </summary>
+        static partial void ClassConstructing();
+        /// <summary>
+        /// This method is called when the class is constructed.
+        /// </summary>
+        static partial void ClassConstructed();
 
         #region properties
         #endregion properties
 
         #region constructors
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectDbContext"/> class.
+        /// Initializes a new instance of the <see cref="ProjectDbContext"/> class (created by the generator.)
         /// </summary>
         public ProjectDbContext()
         {
+            Constructing();
+            Constructed();
         }
+        /// <summary>
+        /// This method is called the object is being constraucted.
+        /// </summary>
+        partial void Constructing();
+        /// <summary>
+        /// This method is called when the object is constructed.
+        /// </summary>
+        partial void Constructed();
         #endregion constructors
 
         #region methods
@@ -67,7 +87,7 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <typeparam name="E">The entity type E</typeparam>
         /// <returns>The DbSet depending on the type E</returns>
-        public DbSet<E> GetDbSet<E>() where E : Entities.EntityObject
+        internal DbSet<E> GetDbSet<E>() where E : Entities.EntityObject
         {
             var handled = false;
             var result = default(DbSet<E>);

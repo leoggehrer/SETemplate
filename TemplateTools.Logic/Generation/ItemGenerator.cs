@@ -52,9 +52,8 @@ namespace TemplateTools.Logic.Generation
         {
             var typeProperties = type.GetAllPropertyInfos();
             var viewProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
-            && StaticLiterals.ExtendedProperties.Any(p => p.Equals(e.Name)) == false
-            && ItemProperties.IsListType(e.PropertyType) == false
-            && (e.PropertyType.IsEnum || e.PropertyType.IsValueType || e.PropertyType.IsPrimitive || ItemProperties.IsPrimitiveNullable(e) || e.PropertyType == typeof(string)));
+                                                        && ItemProperties.IsListType(e.PropertyType) == false
+                                                        && (e.PropertyType.IsEnum || e.PropertyType.IsValueType || e.PropertyType.IsPrimitive || ItemProperties.IsPrimitiveNullable(e) || e.PropertyType == typeof(string)));
 
             return viewProperties ?? [];
         }

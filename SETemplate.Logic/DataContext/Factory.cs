@@ -34,7 +34,7 @@ namespace SETemplate.Logic.DataContext
 
             // Hier koennen Daten importiert werden
 
-//            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
+            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
 //            var context = CreateContext();
 
         }

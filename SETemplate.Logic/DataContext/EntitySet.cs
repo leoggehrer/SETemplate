@@ -1,5 +1,6 @@
 ﻿//@BaseCode
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using SETemplate.Logic.Contracts;
 
 namespace SETemplate.Logic.DataContext
 {
@@ -9,7 +10,7 @@ namespace SETemplate.Logic.DataContext
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="context">The database context.</param>
     /// <param name="dbSet">The set of entities.</param>
-    public abstract class EntitySet<TEntity>(DbContext context, DbSet<TEntity> dbSet) : IDisposable
+    public abstract class EntitySet<TEntity>(DbContext context, DbSet<TEntity> dbSet) : IEntitySet<TEntity>, IDisposable
         where TEntity : Entities.EntityObject, new()
     {
         #region fields

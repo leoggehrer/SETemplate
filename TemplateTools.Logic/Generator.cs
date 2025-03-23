@@ -41,7 +41,7 @@ namespace TemplateTools.Logic
             var tasks = new List<Task>();
 
             #region Common
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), "All", "All", "Generate", "True"))
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), StaticLiterals.AllItems, StaticLiterals.AllItems, "Generate", "True"))
             {
                 tasks.Add(Task.Factory.StartNew(() =>
                 {
@@ -56,7 +56,7 @@ namespace TemplateTools.Logic
             #endregion Common
 
             #region Logic
-            if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), "All", "All", "Generate", "True"))
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.Logic.ToString(), StaticLiterals.AllItems, StaticLiterals.AllItems, "Generate", "True"))
             {
                 tasks.Add(Task.Factory.StartNew(() =>
                 {
@@ -78,54 +78,6 @@ namespace TemplateTools.Logic
                 }));
             }
             #endregion Logic
-
-            #region WebApiApp
-            //if (configuration.QuerySettingValue<bool>(Common.UnitType.WebApi.ToString(), "All", "All", "Generate", "True"))
-            //{
-            //    var generator = new Generation.WebApiGenerator(solutionProperties);
-
-            //    tasks.Add(Task.Factory.StartNew(() =>
-            //    {
-            //        var generatedItems = new List<IGeneratedItem>();
-
-            //        WriteLogging("Create WebApi-Components...");
-            //        generatedItems.AddRange(generator.GenerateAll());
-            //        result.AddRangeSafe(generatedItems);
-            //    }));
-            //}
-            #endregion WebApiApp
-
-            #region MVVMApp
-            //if (configuration.QuerySettingValue<bool>(Common.UnitType.MVVMApp.ToString(), "All", "All", "Generate", "True"))
-            //{
-            //    var generator = new Generation.MVVMGenerator(solutionProperties);
-
-            //    tasks.Add(Task.Factory.StartNew(() =>
-            //    {
-            //        var generatedItems = new List<IGeneratedItem>();
-
-            //        WriteLogging("Create MVVM-Components...");
-            //        generatedItems.AddRange(generator.GenerateAll());
-            //        result.AddRangeSafe(generatedItems);
-            //    }));
-            //}
-            #endregion MVVMApp
-
-            #region AngularApp
-            //if (configuration.QuerySettingValue<bool>(Common.UnitType.AngularApp.ToString(), "All", "All", "Generate", "True"))
-            //{
-            //    var generator = new Generation.AngularGenerator(solutionProperties);
-
-            //    tasks.Add(Task.Factory.StartNew(() =>
-            //    {
-            //        var generatedItems = new List<IGeneratedItem>();
-
-            //        WriteLogging("Create AspMvc-Components...");
-            //        generatedItems.AddRange(generator.GenerateAll());
-            //        result.AddRangeSafe(generatedItems);
-            //    }));
-            //}
-            #endregion AngularApp
 
             Task.WaitAll([.. tasks]);
             return result;
@@ -151,7 +103,7 @@ namespace TemplateTools.Logic
                     if (isTemplateProjectFile)
                     {
                         var projectName = solutionProperties.GetProjectNameFromFile(file); ;
-                        var defaultValue = configuration.QuerySettingValue(projectName, "All", "All", "Delete", true.ToString());
+                        var defaultValue = configuration.QuerySettingValue(projectName, StaticLiterals.AllItems, StaticLiterals.AllItems, "Delete", true.ToString());
                         var canDelete = configuration.QuerySettingValue<bool>(projectName, "File", Path.GetFileName(file), "Delete", defaultValue);
 
                         if (canDelete)

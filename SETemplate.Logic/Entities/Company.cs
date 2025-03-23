@@ -1,4 +1,6 @@
 ﻿//@Ignore
+using SETemplate.Logic.Entities.BaseData;
+
 namespace SETemplate.Logic.Entities
 {
     /// <summary>

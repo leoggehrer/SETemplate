@@ -108,37 +108,37 @@ namespace TemplateTools.Logic
         public static string ClientBlazorExtension => CommonStaticLiterals.ClientBlazorExtension;
         #endregion Project Extensions
         
-        #region Entity and service properties
-        public static readonly string IdentityProperty = "Id";
+        #region Entities
         public static readonly string EntityObjectName = "EntityObject";
-        public static readonly string VersionEntityName = "VersionEntity";
+        public static readonly string EntitySetName = "EntitySet";
+        #endregion Entities
+
+        #region Contracts
+        public static readonly string ContextContract = "IContext";
+        public static readonly string EntitySetContractName = "IEntitySet";
+        #endregion Contracts
+
+        #region Entity properties
+        public static readonly string IdentityProperty = "Id";
         public static readonly string RowVersionProperty = "RowVersion";
+
         public static readonly string[] IdentityProperties = [IdentityProperty];
         public static readonly string[] VersionProperties = [IdentityProperty, RowVersionProperty];
-        public static readonly string[] ExtendedProperties = ["Guid", "CreatedOn", "ModifiedOn", "IdentityId_CreatedBy", "IdentityId_ModifiedBy"];
-        /// <summary>
-        /// Gets an array of properties that should not go through the generation process.
-        /// </summary>
-        public static string[] NoGenerationProperties => IdentityProperties.Union(VersionProperties).ToArray();
-        #endregion Entity and service properties
+        public static string[] NoGenerationProperties => [.. IdentityProperties.Union(VersionProperties)];
+        #endregion Entity properties
         
         #region Model properties
         public static readonly string IdType = nameof(IdType);
         public static readonly string ModelObjectName = "ModelObject";
-        public static readonly string VersionModelName = "VersionModel";
-        public static readonly string ServiceModelName = "ServiceModel";
         #endregion Model properties
-        
+
         public static readonly string[] ModelBaseClasses =
         [
             ModelObjectName,
-            VersionModelName
         ];
         public static readonly Dictionary<string, string> BaseClassMapping = new()
         {
             { EntityObjectName, ModelObjectName },
-            { VersionEntityName, VersionModelName },
-            { ServiceModelName, ServiceModelName },
         };
         
         #region Folders and Files
@@ -183,41 +183,6 @@ namespace TemplateTools.Logic
         /// Gets the path to the Controllers folder.
         /// </summary>
         public static string ControllersFolder => "Controllers";
-        ///<summary>
-        /// Gets or sets the folder name where services are stored.
-        ///</summary>
-        public static string ServicesFolder => "Services";
-        /// <summary>
-        /// Gets or sets the folder name for facades.
-        /// </summary>
-        public static string FacadesFolder => "Facades";
-        /// <summary>
-        /// Gets the folder name where views are stored.
-        /// </summary>
-        public static string ViewsFolder => "Views";
-        /// <summary>
-        /// Gets the folder name where pages are stored.
-        /// </summary>
-        public static string PagesFolder => "Pages";
-        /// <summary>
-        /// Gets the path of the shared folder.
-        /// </summary>
-        /// <value>The path of the shared folder.</value>
-        public static string SharedFolder => "Shared";
-        /// <summary>
-        /// Gets the folder name for the components.
-        /// </summary>
-        /// <value>
-        /// The folder name for the components.
-        /// </value>
-        public static string ComponentsFolder => "Components";
-        /// <summary>
-        /// Gets the folder name for the view templates.
-        /// </summary>
-        /// <value>
-        /// The folder name for the view templates.
-        /// </value>
-        public static string ViewTemplatesFolder => "ViewTemplates";
         /// <summary>
         /// Gets the folder name for the diagrams.
         /// </summary>
@@ -232,10 +197,6 @@ namespace TemplateTools.Logic
         /// Gets the value "All" representing all items.
         /// </summary>
         public static string AllItems => "All";
-        /// <summary>
-        /// Gets the name of the item.
-        /// </summary>
-        public static string Names => nameof(Names);
         /// <summary>
         /// Represents the name of the TProperty property as a string.
         /// </summary>
@@ -280,6 +241,10 @@ namespace TemplateTools.Logic
         /// Gets the name of the EntitySetGenericType property.
         /// </summary>
         public static string EntitySetGenericType => nameof(EntitySetGenericType);
+        /// <summary>
+        /// Gets the name of the ContractSetGenericType property.
+        /// </summary>
+        public static string ContractSetGenericType => nameof(ContractSetGenericType);
         /// <summary>
         /// Gets the name of the ControllerGenericType property.
         /// </summary>

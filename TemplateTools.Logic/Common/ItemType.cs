@@ -6,11 +6,9 @@ namespace TemplateTools.Logic.Common
     public enum ItemType : ulong
     {
         #region contracts
-        AccessContract,         // controller access contract
-        ServiceAccessContract,  // service access contract
-        ServiceContract,        // service access contract
-        EntityContract,         // entity access contract
-        ModelContract,          // model access contract
+        ContextContract,
+        EntityContract,
+        EntitySetContract,
         #endregion contracts
         
         #region models

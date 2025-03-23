@@ -132,17 +132,16 @@ namespace TemplateTools.Logic.Generation
         /// - The type's name is not equal to the specified version entity name
         /// </remarks>
         public IEnumerable<Type> EntityTypes => AssemblyTypes.Where(t => t.IsClass
-        && t.IsAbstract == false
-        && t.IsNested == false
-        && t.Namespace != null
-        && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
+                                                                      && t.IsAbstract == false
+                                                                      && t.IsNested == false
+                                                                      && t.Namespace != null
+                                                                      && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
         
-        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.AccountFolder}.") == false
-        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
-        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
+                                                                      && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.AccountFolder}.") == false
+                                                                      && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
+                                                                      && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
         
-        && t.Name.Equals(StaticLiterals.EntityObjectName) == false
-        && t.Name.Equals(StaticLiterals.VersionEntityName) == false);
+                                                                      && t.Name.Equals(StaticLiterals.EntityObjectName) == false);
         /// <summary>
         /// Gets the collection of service types available in the assembly.
         /// </summary>
@@ -150,13 +149,10 @@ namespace TemplateTools.Logic.Generation
         /// An <see cref="IEnumerable{Type}"/> representing the service types in the assembly.
         /// </value>
         public IEnumerable<Type> ServiceTypes => AssemblyTypes.Where((Func<Type, bool>)(t => t.IsClass
-        && t.IsAbstract == false
-        && t.IsNested == false
-        && t.Namespace != null
-        && t.Namespace!.Contains($".{StaticLiterals.ServiceModelsFolder}")
-        
-        && t.Name.Equals(StaticLiterals.ServiceModelName) == false
-        && t.Name.Equals((string)StaticLiterals.VersionModelName) == false));
+                                                                                          && t.IsAbstract == false
+                                                                                          && t.IsNested == false
+                                                                                          && t.Namespace != null
+                                                                                          && t.Namespace!.Contains($".{StaticLiterals.ServiceModelsFolder}")));
         /// <summary>
         /// Determines if the specified <paramref name="type"/> is an account entity.
         /// </summary>

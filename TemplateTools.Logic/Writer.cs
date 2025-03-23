@@ -87,6 +87,17 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
                 if (Directory.Exists(projectPath))
                 {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntitySetContract));
+
+                    WriteLogging("Write Logic-Entity-Set-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
                     var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntitySet));
 
                     WriteLogging("Write Logic-Entity-Sets...");
@@ -106,85 +117,20 @@ namespace TemplateTools.Logic
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
-
-
             tasks.Add(Task.Factory.StartNew((Action)(() =>
             {
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                var projectName = solutionProperties.GetProjectNameFromPath(projectPath);
+
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.AccessModel));
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ContextContract));
 
-                    WriteLogging("Write Logic-Models...");
+                    WriteLogging("Write Logic-Context-Contracts...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ModelContract));
 
-                    WriteLogging("Write Logic-Models-Contracts...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && (e.ItemType == ItemType.AccessContract || e.ItemType == ItemType.ServiceContract)));
-
-                    WriteLogging("Write Logic-Contracts...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.Controller));
-
-                    WriteLogging("Write Logic-Controllers...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.Service));
-
-                    WriteLogging("Write Logic-Services...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.Facade));
-
-                    WriteLogging("Write Logic-Facades...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
-            tasks.Add(Task.Factory.StartNew((Action)(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.Factory));
-
-                    WriteLogging("Write Logic-Factory...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            })));
             tasks.Add(Task.Factory.StartNew((Action)(() =>
             {
                 var projectPath = Path.Combine(solutionPath, StaticLiterals.DiagramsFolder);
@@ -332,28 +278,6 @@ namespace TemplateTools.Logic
                     var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.ServiceModel);
 
                     WriteLogging("Write Client-Blazor-ServiceModels...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.ServiceContract);
-
-                    WriteLogging("Write Client-Blazor-ServiceContracts...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.ServiceAccessContract);
-
-                    WriteLogging("Write Client-Blazor-AccessContracts...");
                     WriteItems(projectPath, writeItems, false);
                 }
             }));

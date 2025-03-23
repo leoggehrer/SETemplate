@@ -58,11 +58,23 @@ namespace TemplateTools.Logic.Generation
         /// <returns>The entity name.</returns>
         public static string CreateEntityName(Type type) => type.Name;
         /// <summary>
+        /// Creates the contract name for a given type.
+        /// </summary>
+        /// <param name="type">The type for which the model contract name needs to be created.</param>
+        /// <returns>The model contract name in the format "I{type.Name}".</returns>
+        public static string CreateContractName(Type type) => $"I{type.Name}";
+        /// <summary>
         /// Creates the entity set name from the type.
         /// </summary>
         /// <param name="type">The entity type.</param>
         /// <returns>The entity set name.</returns>
         public static string CreateEntitySetName(Type type) => $"{CreateEntityName(type)}Set";
+        /// <summary>
+        /// Creates the contract set name from the type.
+        /// </summary>
+        /// <param name="type">The entity type.</param>
+        /// <returns>The contracts set name.</returns>
+        public static string CreateContractSetName(Type type) => $"I{type.Name}Set";
 
         /// <summary>
         /// Creates a model name based on the specified type.
@@ -70,15 +82,6 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The type to create the model name for.</param>
         /// <returns>The name of the model.</returns>
         public static string CreateModelName(Type type) => type.Name;
-        /// <summary>
-        /// Creates the contract name for a given type.
-        /// </summary>
-        /// <param name="type">The type for which the model contract name needs to be created.</param>
-        /// <returns>The model contract name in the format "I{type.Name}".</returns>
-        public static string CreateContractName(Type type)
-        {
-            return $"I{type.Name}";
-        }
         /// <summary>
         /// Creates the model contract name for a given type.
         /// </summary>
@@ -101,7 +104,20 @@ namespace TemplateTools.Logic.Generation
             var entityName = CreateEntityName(type);
             var namespaceItems = CreateNamespaceItems(type, StaticLiterals.EntitiesFolder).Skip(1);
 
-            return $"{string.Join('.', namespaceItems)}.{entityName}";
+            return $"{string.Join('.', namespaceItems)}{(namespaceItems.Any() ? "." : string.Empty)}{entityName}";
+        }
+        /// <summary>
+        /// Diese Methode ermittelt den Teilnamensraum von einem Entity-Type.
+        /// </summary>
+        /// <param name="type">Typ von welchem der Teilnamensraum ermittelt wird.</param>
+        /// <param name="replaceFolder">Ersetzt den entities folder.</param>
+        /// <returns>Teil-Namensraum</returns>
+        public static string CreateSubNamespaceFromEntity(Type type, string replaceFolder)
+        {
+            var namespaceItems = type.Namespace?.Split('.').Skip(2);
+            var result = string.Join('.', namespaceItems!);
+
+            return result.Replace(StaticLiterals.EntitiesFolder, replaceFolder);
         }
         #endregion entity items
 
@@ -190,12 +206,6 @@ namespace TemplateTools.Logic.Generation
             if (IsModelType(type))
             {
                 var namespaceItems = CreateModuleSubNamespaceItems(type, StaticLiterals.ModelsFolder);
-
-                result = string.Join('.', namespaceItems);
-            }
-            else if (IsServiceModelType(type))
-            {
-                var namespaceItems = CreateModuleSubNamespaceItems(type, StaticLiterals.ServiceModelsFolder);
 
                 result = string.Join('.', namespaceItems);
             }
@@ -540,10 +550,6 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>true if the specified type is a service model type; otherwise, false.</returns>
-        public static bool IsServiceModelType(Type type)
-        {
-            return type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.ServiceModelName)) != null;
-        }
         #endregion type infos
     }
 }

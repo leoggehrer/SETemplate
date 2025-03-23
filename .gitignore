@@ -363,4 +363,21 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #QuickTemplateStart
+Diagrams/Entities/BaseData/Employee.puml
+Diagrams/Entities/Customer.puml
+Diagrams/Entities/Company.puml
+SETemplate.Logic/Entities/BaseData/EmployeeGeneration.cs
+SETemplate.Logic/DataContext/BaseData/EmployeeSet.cs
+SETemplate.Logic/Contracts/BaseData/IEmployeeSetGeneration.cs
+SETemplate.Common/Contracts/BaseData/IEmployee.cs
+SETemplate.Logic/Entities/CustomerGeneration.cs
+SETemplate.Logic/Entities/CompanyGeneration.cs
+SETemplate.Logic/DataContext/ProjectDbContextGeneration.cs
+SETemplate.Logic/DataContext/CustomerSet.cs
+SETemplate.Logic/DataContext/CompanySet.cs
+SETemplate.Logic/Contracts/ICustomerSetGeneration.cs
+SETemplate.Logic/Contracts/IContextGeneration.cs
+SETemplate.Logic/Contracts/ICompanySetGeneration.cs
+SETemplate.Common/Contracts/ICustomer.cs
+SETemplate.Common/Contracts/ICompany.cs
 #QuickTemplateEnd

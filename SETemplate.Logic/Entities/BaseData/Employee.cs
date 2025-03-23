@@ -1,9 +1,11 @@
 ﻿//@Ignore
-namespace SETemplate.Logic.Entities
+namespace SETemplate.Logic.Entities.BaseData
 {
     /// <summary>
     /// Represents an employee entity.
     /// </summary>
+    [Table("Employees")]
+    [Index(nameof(Email), IsUnique = true)]
     public partial class Employee : EntityObject
     {
         #region properties
