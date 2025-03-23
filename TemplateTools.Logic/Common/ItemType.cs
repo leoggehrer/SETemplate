@@ -10,14 +10,14 @@ namespace TemplateTools.Logic.Common
         EntityContract,
         EntitySetContract,
         #endregion contracts
-        
-        #region models
+
+        #region entities
         EntitySet,
-        AccessModel,
-        ServiceModel,
-        EditModel,
-        AccessFilterModel,
-        ServiceFilterModel,
+        #endregion entities
+
+        #region models
+        WebApiModel,
+        WebApiEditModel,
         #endregion models
         
         #region properties

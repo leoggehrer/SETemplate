@@ -9,6 +9,10 @@ namespace TemplateTools.Logic
     {
         #region Code-Generation
         /// <summary>
+        /// Gets the generation file postfix.
+        /// </summary>
+        public static string GenerationPostFix => "Generation";
+        /// <summary>
         /// Gets the name of the generated code file.
         /// </summary>
         public static string GeneratedCodeFileName => "_GeneratedCode.cs";

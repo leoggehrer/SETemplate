@@ -96,7 +96,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = $"{dataContextNamespace}.ProjectDbContext",
                 FileExtension = StaticLiterals.CSharpFileExtension,
-                SubFilePath = $"DataContext{Path.DirectorySeparatorChar}ProjectDbContextGeneration{StaticLiterals.CSharpFileExtension}",
+                SubFilePath = $"DataContext{Path.DirectorySeparatorChar}ProjectDbContext{StaticLiterals.GenerationPostFix}{StaticLiterals.CSharpFileExtension}",
             };
             result.AddRange(CreateComment());
             result.Add($"partial class ProjectDbContext");
@@ -254,7 +254,7 @@ namespace TemplateTools.Logic.Generation
             var subNamespace = ItemProperties.CreateSubNamespaceFromType(type);
             var itemName = ItemProperties.CreateEntityName(type);
             var subPath = ItemProperties.CreateSubPathFromType(type);
-            var fileName = $"{itemName}Generation{StaticLiterals.CSharpFileExtension}";
+            var fileName = $"{itemName}{StaticLiterals.GenerationPostFix}{StaticLiterals.CSharpFileExtension}";
             var entityNamespace = $"{ItemProperties.ProjectNamespace}.{subNamespace}";
             var contractType = ItemProperties.CreateFullCommonModelContractType(type);
             var result = new GeneratedItem(unitType, itemType)
@@ -295,7 +295,7 @@ namespace TemplateTools.Logic.Generation
         private GeneratedItem CreateEntitySetContract(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
             var itemName = ItemProperties.CreateContractSetName(type);
-            var fileName = $"{itemName}Generation{StaticLiterals.CSharpFileExtension}";
+            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
             var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
             var subNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
             var contractNamespace = $"{ItemProperties.ProjectNamespace}.{subNamespace}";
@@ -327,7 +327,7 @@ namespace TemplateTools.Logic.Generation
             var itemName = StaticLiterals.ContextContract;
             var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
             var subPath = $"{StaticLiterals.ContractsFolder}";
-            var fileName = $"{itemName}Generation{StaticLiterals.CSharpFileExtension}";
+            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = $"{contractNamespace}.{itemName}",

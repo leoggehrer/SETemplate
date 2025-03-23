@@ -79,6 +79,22 @@ namespace TemplateTools.Logic
             }
             #endregion Logic
 
+            #region WebApiApp
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.WebApi.ToString(), StaticLiterals.AllItems, StaticLiterals.AllItems, "Generate", "True"))
+            {
+                var generator = new Generation.WebApiGenerator(solutionProperties);
+
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var generatedItems = new List<IGeneratedItem>();
+
+                    WriteLogging("Create WebApi-Components...");
+                    generatedItems.AddRange(generator.GenerateAll());
+                    result.AddRangeSafe(generatedItems);
+                }));
+            }
+            #endregion WebApiApp
+
             Task.WaitAll([.. tasks]);
             return result;
         }

@@ -5,6 +5,7 @@ namespace TemplateTools.Logic.Generation
     using System.Reflection;
     using TemplateTools.Logic.Common;
     using TemplateTools.Logic.Contracts;
+    using TemplateTools.Logic.Extensions;
 
     /// <summary>
     /// This class provides many methods for generating program parts.
@@ -950,7 +951,7 @@ namespace TemplateTools.Logic.Generation
 
                 foreach (var pi in filteredProperties)
                 {
-                    if (pi.CanRead && CanCreate(pi))
+                    if (pi.CanRead && CanCreate(pi) && pi.IsNavigationProperties() == false)
                     {
                         if (counter == 0)
                         {

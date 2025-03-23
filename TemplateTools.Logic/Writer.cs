@@ -156,7 +156,7 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && (e.ItemType == ItemType.AccessModel || e.ItemType == ItemType.EditModel));
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && (e.ItemType == ItemType.WebApiModel || e.ItemType == ItemType.WebApiEditModel));
 
                     WriteLogging("Write WebApi-Models...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
@@ -173,76 +173,7 @@ namespace TemplateTools.Logic
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.AddServices);
-
-                    WriteLogging("Write WebApi-AddServices...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
             #endregion WriteWebApiComponents
-
-            #region WriteAspMvcComponents
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && (e.ItemType == ItemType.AccessModel || e.ItemType == ItemType.AccessFilterModel));
-
-                    WriteLogging("Write AspMvc-AccessModels and FilterModels...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && (e.ItemType == ItemType.ServiceModel || e.ItemType == ItemType.ServiceFilterModel));
-
-                    WriteLogging("Write AspMvc-SercviceModels...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && e.ItemType == ItemType.Controller);
-
-                    WriteLogging("Write AspMvc-Controllers...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && e.ItemType == ItemType.AddServices);
-
-                    WriteLogging("Write AspMvc-AddServices...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && e.ItemType == ItemType.View);
-
-                    WriteLogging("Write AspMvc-Views...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            #endregion WriteAspMvcModels
 
             #region WriteMVVMComponents
             tasks.Add(Task.Factory.StartNew(() =>
@@ -250,137 +181,13 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.MVVMAppProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVMApp && e.ItemType == ItemType.AccessModel);
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVMApp && e.ItemType == ItemType.WebApiModel);
 
                     WriteLogging("Write MVVM-Models...");
                     WriteItems(projectPath, writeItems, false);
                 }
             }));
             #endregion WriteMVVMComponents
-
-            #region WriteClientBlazorComponents
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.AccessModel);
-
-                    WriteLogging("Write Client-Blazor-Models...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.ServiceModel);
-
-                    WriteLogging("Write Client-Blazor-ServiceModels...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.Service);
-
-                    WriteLogging("Write Client-Blazor-Services...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.AddServices);
-
-                    WriteLogging("Write Client-Blazor-AddServices...");
-                    WriteItems(projectPath, writeItems, WriteToGroupFile);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.PageList);
-
-                    WriteLogging("Write Client-Blazor-PageLists...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.DetailsComponent);
-
-                    WriteLogging("Write Client-Blazor-DetailsComponent...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.DetailsDialog);
-
-                    WriteLogging("Write Client-Blazor-DetailsDialog...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.DetailsPage);
-
-                    WriteLogging("Write Client-Blazor-DetailsPage...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.EditComponent);
-
-                    WriteLogging("Write Client-Blazor-EditComponent...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.EditDialog);
-
-                    WriteLogging("Write Client-Blazor-EditDialog...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
-                if (Directory.Exists(projectPath))
-                {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazorApp && e.ItemType == ItemType.EditPage);
-
-                    WriteLogging("Write Client-Blazor-EditPage...");
-                    WriteItems(projectPath, writeItems, false);
-                }
-            }));
-            #endregion WriteClientBlazorComponents
 
             #region WriteAngularComponents
             tasks.Add(Task.Factory.StartNew(() =>

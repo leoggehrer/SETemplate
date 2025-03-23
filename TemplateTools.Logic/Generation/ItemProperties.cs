@@ -83,6 +83,15 @@ namespace TemplateTools.Logic.Generation
         /// <returns>The name of the model.</returns>
         public static string CreateModelName(Type type) => type.Name;
         /// <summary>
+        /// Creates the name of the edit model based on the provided type.
+        /// </summary>
+        /// <param name="type">The type used to create the edit model name.</param>
+        /// <returns>The edit model name.</returns>
+        public static string CreateEditModelName(Type type)
+        {
+            return $"{CreateModelName(type)}Edit";
+        }
+        /// <summary>
         /// Creates the model contract name for a given type.
         /// </summary>
         /// <param name="type">The type for which the model contract name needs to be created.</param>
@@ -121,6 +130,67 @@ namespace TemplateTools.Logic.Generation
         }
         #endregion entity items
 
+        #region controller items
+        /// <summary>
+        /// Creates a controller name for the given type.
+        /// </summary>
+        /// <param name="type">The type used to create the controller name.</param>
+        /// <returns>The controller name.</returns>
+        public static string CreateControllerName(Type type)
+        {
+            return $"{type.Name.CreatePluralWord()}";
+        }
+        /// <summary>
+        /// Creates the name of the controller class based on the given type.
+        /// </summary>
+        /// <param name="type">The type for which the controller class name is to be created.</param>
+        /// <returns>The controller class name.</returns>
+        public static string CreateControllerClassName(Type type)
+        {
+            return $"{CreateControllerName(type)}Controller";
+        }
+        ///<summary>
+        /// Creates the fully qualified name of the controller type.
+        ///</summary>
+        ///<param name="type">The type of the controller.</param>
+        ///<returns>The fully qualified name of the controller type.</returns>
+        public string CreateControllerType(Type type)
+        {
+            return $"{CreateControllerNamespace(type)}.{CreateControllerClassName(type)}";
+        }
+        /// <summary>
+        /// Creates the controller namespace for a given type.
+        /// </summary>
+        /// <param name="type">The type of the controller.</param>
+        /// <returns>The fully qualified controller namespace.</returns>
+        public string CreateControllerNamespace(Type type)
+        {
+            return $"{ProjectNamespace}.{CreateControllerSubNamespace(type)}";
+        }
+        /// <summary>
+        /// Creates the sub-namespace for the controller based on the specified type.
+        /// </summary>
+        /// <param name="type">The type used to create the sub-namespace.</param>
+        /// <returns>The sub-namespace for the controller.</returns>
+        public string CreateControllerSubNamespace(Type type)
+        {
+            var namespaceItems = CreateModuleSubNamespaceItems(type, StaticLiterals.ControllersFolder);
+
+            return $"{string.Join('.', namespaceItems)}";
+        }
+        /// <summary>
+        /// Creates the subpath for controllers based on the given type, post-fix, and file extension.
+        /// </summary>
+        /// <param name="type">The type to create the subpath from.</param>
+        /// <param name="postFix">The post-fix to append to the subpath.</param>
+        /// <param name="fileExtension">The file extension to include in the subpath.</param>
+        /// <returns>The created subpath for controllers.</returns>
+        public string CreateControllersSubPathFromType(Type type, string postFix, string fileExtension)
+        {
+            return Path.Combine(CreateControllerSubNamespace(type).Replace(".", Path.DirectorySeparatorChar.ToString()), $"{CreateControllerClassName(type)}{postFix}{fileExtension}");
+        }
+        #endregion controller items
+
         #region type items
         /// <summary>
         /// Creates the model type based on the specified type.
@@ -130,6 +200,15 @@ namespace TemplateTools.Logic.Generation
         public string CreateModelType(Type type)
         {
             return $"{ProjectNamespace}.{CreateModelSubType(type)}";
+        }
+        /// <summary>
+        /// Creates the fully-qualified name of the edit model type for the specified <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type for which to create the edit model type.</param>
+        /// <returns>The fully-qualified name of the edit model type.</returns>
+        public string CreateEditModelType(Type type)
+        {
+            return $"{CreateModelNamespace(type)}.{CreateEditModelName(type)}";
         }
         /// <summary>
         /// Creates the service model type based on the specified type.
