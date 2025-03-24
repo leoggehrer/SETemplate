@@ -22,10 +22,6 @@ namespace TemplateTools.Logic
         /// </summary>
         public string WebApiExtension => StaticLiterals.WebApiExtension;
         /// <summary>
-        /// Gets the ASP.NET MVC extension.
-        /// </summary>
-        public string AspMvcExtension => StaticLiterals.AspMvcExtension;
-        /// <summary>
         /// The MVVMExtension property represents the MVVM extension value.
         /// </summary>
         public string MVVMExtension => StaticLiterals.MVVMExtension;
@@ -177,26 +173,6 @@ namespace TemplateTools.Logic
         /// The sub path for Web API controllers.
         /// </value>
         public string WebApiControllersSubPath => Path.Combine(WebApiSubPath, StaticLiterals.ControllersFolder);
-        
-        /// <summary>
-        /// Gets the name of the ASP.NET MVC application project.
-        /// </summary>
-        /// <value>
-        /// The name of the ASP.NET MVC application project.
-        /// </value>
-        public string AspMvcAppProjectName => TemplateProjectNames.First(e => e.EndsWith($"{AspMvcExtension}"));
-        /// <summary>
-        /// Gets or sets the subpath of the ASP.NET MVC application.
-        /// </summary>
-        /// <value>
-        /// The subpath of the ASP.NET MVC application.
-        /// </value>
-        public string AspMvcAppSubPath => AspMvcAppProjectName;
-        /// <summary>
-        /// Gets the sub-path to the ASP.NET MVC controllers folder.
-        /// </summary>
-        /// <value>The sub-path to the ASP.NET MVC controllers folder.</value>
-        public string AspMvcControllersSubPath => Path.Combine(AspMvcAppSubPath, StaticLiterals.ControllersFolder);
         
         /// <summary>
         /// Gets the name of the MVVM app project.

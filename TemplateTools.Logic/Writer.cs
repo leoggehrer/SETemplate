@@ -173,6 +173,17 @@ namespace TemplateTools.Logic
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.ContextAccessor);
+
+                    WriteLogging("Write WebApi-ContextAccessor...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            }));
             #endregion WriteWebApiComponents
 
             #region WriteMVVMComponents

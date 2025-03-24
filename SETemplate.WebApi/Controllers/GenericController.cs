@@ -1,6 +1,5 @@
 ﻿//@BaseCode
 using SETemplate.Logic.Contracts;
-using SETemplate.Logic.DataContext;
 using SETemplate.WebApi.Contracts;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +17,7 @@ namespace SETemplate.WebApi.Controllers
     /// <typeparam name="TContract">The type of the interface.</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public abstract partial class GenericController<TModel, TEntity, TContract>(IContextAccessor contextAccessor) : ControllerBase
-        where TContract : Common.Contracts.IIdentifiable
+    public abstract partial class GenericController<TModel, TEntity, TContract>(IContextAccessor contextAccessor) : ControllerBase, IGenericController<TModel, TContract> where TContract : Common.Contracts.IIdentifiable
         where TModel : Models.ModelObject, TContract, new()
         where TEntity : Logic.Entities.EntityObject, TContract, new()
     {
@@ -39,7 +37,7 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the DbSet.
         /// </summary>
-        protected virtual EntitySet<TEntity> EntitySet => ContextAccessor.GetEntitySet<TEntity>() ?? throw new Exception($"Invalid DbSet<{typeof(TEntity)}>");
+        protected virtual IEntitySet<TEntity> EntitySet => ContextAccessor.GetEntitySet<TEntity>() ?? throw new Exception($"Invalid DbSet<{typeof(TEntity)}>");
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>

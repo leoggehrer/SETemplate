@@ -25,20 +25,16 @@ namespace TemplateTools.Logic.Common
         ModelProperty,
         FilterProperty,
         InterfaceProperty,
-        ServiceModelProperty,
         #endregion properties
         
         #region controllers
         Controller,
-        AccessController,
-        ServiceController,
+        ContextAccessor,
         #endregion controllers
         
         #region services
         DbContext,
         Service,
-        AccessService,
-        AddServices,
         #endregion services
         
         #region facades and factories
@@ -48,29 +44,6 @@ namespace TemplateTools.Logic.Common
         FactoryControllerMethode,
         FactoryFacadeMethode,
         #endregion facades and factories
-        
-        #region views
-        View,
-        ViewProperty,
-        ViewDisplayProperty,
-        ViewEditProperty,
-        ViewFilterProperty,
-        ListView,
-        ListViewProperty,
-        PageList,
-        PageListProperty,
-        PageEditProperty,
-        PageDetailsProperty,
-
-        DetailsComponent,
-        DetailsProperty,
-        DetailsDialog,
-        DetailsPage,
-        EditComponent,
-        EditProperty,
-        EditDialog,
-        EditPage,
-        #endregion views
         
         #region angular
         TypeScriptEnum,
@@ -85,7 +58,6 @@ namespace TemplateTools.Logic.Common
         #region general
         Attribute,
         AllItems,
-        File,
         Lambda,
         #endregion general
     }

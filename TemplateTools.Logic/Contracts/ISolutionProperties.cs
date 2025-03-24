@@ -9,6 +9,10 @@ namespace TemplateTools.Logic.Contracts
     {
         #region Project extensions
         /// <summary>
+        /// Gets the common extension of the property.
+        /// </summary>
+        string CommonExtension { get; }
+        /// <summary>
         /// Gets the logic extension of the property.
         /// </summary>
         string LogicExtension { get; }
@@ -16,10 +20,6 @@ namespace TemplateTools.Logic.Contracts
         /// Gets the WebApiExtension property.
         /// </summary>
         string WebApiExtension { get; }
-        /// <summary>
-        /// Gets the ASP.NET MVC extension for the property.
-        /// </summary>
-        string AspMvcExtension { get; }
         /// <summary>
         /// Gets the Angular extension associated with the property.
         /// </summary>
@@ -118,19 +118,6 @@ namespace TemplateTools.Logic.Contracts
         /// Gets the subpath of the web API controllers.
         /// </summary>
         string WebApiControllersSubPath { get; }
-        
-        /// <summary>
-        /// Gets the name of the ASP.NET MVC application project.
-        /// </summary>
-        string AspMvcAppProjectName { get; }
-        /// <summary>
-        /// Gets the subpath of the ASP.NET MVC application.
-        /// </summary>
-        string AspMvcAppSubPath { get; }
-        /// <summary>
-        /// Gets the subpath of ASP.NET MVC controllers.
-        /// </summary>
-        string AspMvcControllersSubPath { get; }
         
         /// <summary>
         /// Gets the name of the MVVM application project.

@@ -1,5 +1,6 @@
 //@BaseCode
 //MdStart
+using System.Formats.Tar;
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Extensions;
@@ -15,16 +16,14 @@ namespace TemplateTools.Logic.Generation
     /// </remarks>
     internal sealed partial class WebApiGenerator : ModelGenerator
     {
+        #region fields
         private ItemProperties? _itemProperties;
+        #endregion fields
+
+        #region properties
         /// <summary>
         /// Gets the item properties from the base class. If not yet instantiated, it will create a new instance using the solution name and web API extension as parameters.
         /// </summary>
-        /// <remarks>
-        /// This property overrides the base class implementation.
-        /// </remarks>
-        /// <value>
-        /// The item properties object.
-        /// </value>
         protected override ItemProperties ItemProperties => _itemProperties ??= new ItemProperties(SolutionProperties.SolutionName, StaticLiterals.WebApiExtension);
         /// <summary>
         /// Gets or sets a value indicating whether to generate models.
@@ -33,18 +32,13 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// Gets or sets a value indicating whether controllers should be generated.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if controllers should be generated; otherwise, <c>false</c>.
-        /// </value>
         public bool GenerateControllers { get; set; }
         /// <summary>
-        /// Gets or sets a value indicating whether the add services should be generated.
+        /// Gets or sets a value indicating whether context accesssor should be generated.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if add services should be generated; otherwise, <c>false</c>.
-        /// </value>
-        public bool GenerateAddServices { get; set; }
-        
+        public bool GenerateContextAccessor { get; set; }
+        #endregion properties
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebApiGenerator"/> class.
         /// </summary>
@@ -54,11 +48,23 @@ namespace TemplateTools.Logic.Generation
         /// </remarks>
         public WebApiGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
         {
-            GenerateModels = QuerySetting<bool>(ItemType.WebApiModel, "All", StaticLiterals.Generate, "True");
-            GenerateControllers = QuerySetting<bool>(ItemType.Controller, "All", StaticLiterals.Generate, "True");
-            GenerateAddServices = QuerySetting<bool>(ItemType.AddServices, "All", StaticLiterals.Generate, "True");
+            GenerateModels = QuerySetting<bool>(ItemType.WebApiModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateControllers = QuerySetting<bool>(ItemType.Controller, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateContextAccessor = QuerySetting<bool>(ItemType.ContextAccessor, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
         }
-        
+
+        #region generation
+        /// <summary>
+        ///   Determines whether the specified type should generate default values.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified type is not a generation entity; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool GetGenerateDefault(Type type)
+        {
+            return !EntityProject.IsNotAGenerationEntity(type);
+        }
         /// <summary>
         /// Generates all the required items such as models, controllers, and services.
         /// </summary>
@@ -69,6 +75,7 @@ namespace TemplateTools.Logic.Generation
             
             result.AddRange(CreateModels());
             result.AddRange(CreateControllers());
+            result.Add(CreateContextAccessor(UnitType.WebApi, ItemType.ContextAccessor));
             return result;
         }
         /// <summary>
@@ -220,6 +227,55 @@ namespace TemplateTools.Logic.Generation
             result.FormatCSharpCode();
             return result;
         }
+
+        /// <summary>
+        /// Creates a context accessor for the specified unit type and item type.
+        /// </summary>
+        /// <param name="unitType">The unit type for the context accessor.</param>
+        /// <param name="itemType">The item type for the context accessor.</param>
+        /// <returns>A generated item representing the context accessor.</returns>
+        private GeneratedItem CreateContextAccessor(UnitType unitType, ItemType itemType)
+        {
+            var entityProject = EntityProject.Create(SolutionProperties);
+            var itemName = StaticLiterals.ContextAccessor;
+            var controllerNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ControllersFolder}";
+            var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
+            var subPath = $"{StaticLiterals.ControllersFolder}";
+            var fileName = $"{itemName}{StaticLiterals.GenerationPostFix}{StaticLiterals.CSharpFileExtension}";
+            var result = new GeneratedItem(unitType, itemType)
+            {
+                FullName = $"{contractNamespace}.{itemName}",
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = Path.Combine(subPath, fileName),
+            };
+            result.AddRange(CreateComment());
+            result.Add($"partial class {itemName}");
+            result.Add("{");
+
+            result.AddRange(CreateComment());
+            result.Add("partial void GetEntitySetHandler<TEntity>(ref Logic.Contracts.IEntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new()");
+            result.Add("{");
+
+            if (GenerateContextAccessor)
+            {
+                foreach (var type in entityProject.EntityTypes)
+                {
+                    result.Add($"if (typeof(TEntity) == typeof({type.FullName}))");
+                    result.Add("{");
+                    result.Add($"entitySet = GetContext().{ItemProperties.CreateEntitySetName(type)} as Logic.Contracts.IEntitySet<TEntity>;");
+                    result.Add("handled = true;");
+                    result.Add("}");
+                }
+            }
+
+            result.Add("}");
+
+            result.Add("}");
+            result.EnvelopeWithANamespace(controllerNamespace);
+            result.FormatCSharpCode();
+            return result;
+        }
+        #endregion generation
 
         #region query configuration
         /// <summary>

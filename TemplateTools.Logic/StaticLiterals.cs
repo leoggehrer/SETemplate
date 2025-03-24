@@ -95,10 +95,6 @@ namespace TemplateTools.Logic
         /// </summary>
         public static string WebApiExtension => CommonStaticLiterals.WebApiExtension;
         /// <summary>
-        /// Gets the ASP.NET MVC extension.
-        /// </summary>
-        public static string AspMvcExtension => CommonStaticLiterals.AspMvcExtension;
-        /// <summary>
         /// Gets the MVVM extension.
         /// </summary>
         public static string MVVMExtension => CommonStaticLiterals.MVVMExtension;
@@ -111,16 +107,15 @@ namespace TemplateTools.Logic
         /// </summary>
         public static string ClientBlazorExtension => CommonStaticLiterals.ClientBlazorExtension;
         #endregion Project Extensions
-        
-        #region Entities
+
+        #region items
         public static readonly string EntityObjectName = "EntityObject";
         public static readonly string EntitySetName = "EntitySet";
-        #endregion Entities
+        public static readonly string ContextAccessor = "ContextAccessor";
 
-        #region Contracts
         public static readonly string ContextContract = "IContext";
         public static readonly string EntitySetContractName = "IEntitySet";
-        #endregion Contracts
+        #endregion items
 
         #region Entity properties
         public static readonly string IdentityProperty = "Id";
@@ -155,13 +150,9 @@ namespace TemplateTools.Logic
         /// </summary>
         public static string ModelsFolder => "Models";
         /// <summary>
-        /// Gets the path of the service models folder.
-        /// </summary>
-        public static string ServiceModelsFolder => "ServiceModels";
-        /// <summary>
         /// Gets or sets an array of module folders.
         /// </summary>
-        public static string[] ModuleFolders => [EntitiesFolder, ModelsFolder, ServiceModelsFolder];
+        public static string[] ModuleFolders => [EntitiesFolder, ModelsFolder];
         
         /// <summary>
         /// Gets the folder name for the account.

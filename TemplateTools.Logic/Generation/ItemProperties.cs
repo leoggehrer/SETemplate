@@ -202,26 +202,6 @@ namespace TemplateTools.Logic.Generation
             return $"{ProjectNamespace}.{CreateModelSubType(type)}";
         }
         /// <summary>
-        /// Creates the fully-qualified name of the edit model type for the specified <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type for which to create the edit model type.</param>
-        /// <returns>The fully-qualified name of the edit model type.</returns>
-        public string CreateEditModelType(Type type)
-        {
-            return $"{CreateModelNamespace(type)}.{CreateEditModelName(type)}";
-        }
-        /// <summary>
-        /// Creates the service model type based on the specified type.
-        /// </summary>
-        /// <param name="type">The type used to create the service model type.</param>
-        /// <returns>The fully qualified model type in the format 'ProjectNamespace.ServiceModels.Base.Type'.</returns>
-        public string CreateServiceModelType(Type type)
-        {
-            var namespaceItems = CreateModuleSubNamespaceItems(type, StaticLiterals.ServiceModelsFolder);
-
-            return $"{ProjectNamespace}.{string.Join('.', namespaceItems)}.{CreateModelName(type)}";
-        }
-        /// <summary>
         /// Creates the model subtype for the specified type.
         /// </summary>
         /// <param name="type">The type to create the subtype for.</param>

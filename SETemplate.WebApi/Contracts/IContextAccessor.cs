@@ -1,7 +1,4 @@
 ﻿//@BaseCode
-using SETemplate.Logic.Contracts;
-using SETemplate.Logic.DataContext;
-
 namespace SETemplate.WebApi.Contracts
 {
     /// <summary>
@@ -13,13 +10,13 @@ namespace SETemplate.WebApi.Contracts
         /// Gets the current context.
         /// </summary>
         /// <returns>The current context.</returns>
-        IContext GetContext();
+        Logic.Contracts.IContext GetContext();
 
         /// <summary>
         /// Gets the entity set for the specified entity type.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>The entity set for the specified entity type, or null if not found.</returns>
-        EntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new();
+        Logic.Contracts.IEntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new();
     }
 }

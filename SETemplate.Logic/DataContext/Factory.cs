@@ -24,20 +24,29 @@ namespace SETemplate.Logic.DataContext
         {
             var context = new ProjectDbContext();
 
+            BevoreCreateDatabase(context);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            AfterCreateDatabase(context);
         }
+
 
         public static void InitDatabase()
         {
+            BeforeInitDatabase();
             CreateDatabase();
 
             // Hier koennen Daten importiert werden
 
-            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
-//            var context = CreateContext();
-
+            AfterInitDatabase();
         }
 #endif
+
+        #region partial methods
+        static partial void BeforeInitDatabase();
+        static partial void AfterInitDatabase();
+        static partial void BevoreCreateDatabase(ProjectDbContext context);
+        static partial void AfterCreateDatabase(ProjectDbContext context);
+        #endregion partial methods
     }
 }

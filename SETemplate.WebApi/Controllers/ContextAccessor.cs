@@ -10,24 +10,24 @@ namespace SETemplate.WebApi.Controllers
     public sealed partial class ContextAccessor : IContextAccessor
     {
         #region fields
-        private Logic.Contracts.IContext? context = null;
+        private Logic.Contracts.IContext? _context = null;
         #endregion fields
 
         /// <summary>
         /// Gets the current context or creates a new one if it doesn't exist.
         /// </summary>
         /// <returns>The current context.</returns>
-        public Logic.Contracts.IContext GetContext() => context ??= Factory.CreateContext();
+        public Logic.Contracts.IContext GetContext() => _context ??= Factory.CreateContext();
 
         /// <summary>
         /// Gets the DbSet for the specified entity type.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>The DbSet for the specified entity type, or null if the entity type is not recognized.</returns>
-        public EntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new()
+        public Logic.Contracts.IEntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new()
         {
             bool handled = false;
-            EntitySet<TEntity>? result = default;
+            Logic.Contracts.IEntitySet<TEntity>? result = default;
 
             GetEntitySetHandler<TEntity>(ref result, ref handled);
 
@@ -39,14 +39,14 @@ namespace SETemplate.WebApi.Controllers
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entitySet"></param>
-        partial void GetEntitySetHandler<TEntity>(ref EntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new();
+        partial void GetEntitySetHandler<TEntity>(ref Logic.Contracts.IEntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new();
         /// <summary>
         /// Disposes the current context.
         /// </summary>
         public void Dispose()
         {
-            context?.Dispose();
-            context = null;
+            _context?.Dispose();
+            _context = null;
         }
     }
 }

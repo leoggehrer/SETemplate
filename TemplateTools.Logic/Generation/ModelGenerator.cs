@@ -54,10 +54,6 @@ namespace TemplateTools.Logic.Generation
             {
                 modelFolder = $"{StaticLiterals.ModelsFolder}.";
             }
-            else if (copyType.Contains($".{StaticLiterals.ServiceModelsFolder}."))
-            {
-                modelFolder = $"{StaticLiterals.ServiceModelsFolder}.";
-            }
 
             if (StaticLiterals.VersionProperties.Any(vp => vp.Equals(propertyInfo.Name)) == false
                 && copyType.Equals(propertyInfo.DeclaringType!.FullName, StringComparison.CurrentCultureIgnoreCase) == false)

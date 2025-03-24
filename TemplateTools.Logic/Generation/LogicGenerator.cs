@@ -327,7 +327,7 @@ namespace TemplateTools.Logic.Generation
             var itemName = StaticLiterals.ContextContract;
             var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
             var subPath = $"{StaticLiterals.ContractsFolder}";
-            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
+            var fileName = $"{itemName}{StaticLiterals.GenerationPostFix}{StaticLiterals.CSharpFileExtension}";
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = $"{contractNamespace}.{itemName}",
