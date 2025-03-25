@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>ACCOUNT_OFF;ACCESSRULES_ON;LOGGING_OFF;REVISION_OFF;DBOPERATION_OFF;ROWVERSION_ON;GUID_OFF;CREATED_OFF;MODIFIED_OFF;CREATEDBY_OFF;MODIFIEDBY_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;SQLSERVER_ON;SQLITE_OFF;DOCKER_OFF;DEVELOP_OFF;GENERATEDCODE_ON</DefineConstants>
+    <DefineConstants>ACCOUNT_OFF;ACCESSRULES_ON;LOGGING_OFF;REVISION_OFF;DBOPERATION_OFF;ROWVERSION_ON;GUID_OFF;CREATED_OFF;MODIFIED_OFF;CREATEDBY_OFF;MODIFIEDBY_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;SQLSERVER_ON;SQLITE_OFF;DOCKER_OFF;DEVELOP_OFF;GENERATEDCODE_OFF</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +31,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SETemplate.Common\SETemplate.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Templates\ItemsUserControl.axaml.cs">
+      <DependentUpon>ItemsUserControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Templates\ItemUserControl.axaml.cs">
+      <DependentUpon>ItemUserControl.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

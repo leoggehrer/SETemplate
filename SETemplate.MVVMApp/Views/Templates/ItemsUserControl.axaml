@@ -1,14 +1,15 @@
+<!--@BaseCode-->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:SETemplate.MVVMApp.ViewModels"
+             xmlns:vm="using:SETemplate.MVVMApp.ViewModels.Templates"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SETemplate.MVVMApp.Views.CompaniesUserControl"
-	 		 x:DataType="vm:CompaniesViewModel">
+             x:Class="SETemplate.MVVMApp.Views.Templates.ItemsUserControl"
+	 		 x:DataType="vm:ItemsViewModel">
 
 	<UserControl.DataContext>
-		<vm:CompaniesViewModel />
+		<vm:ItemsViewModel />
 	</UserControl.DataContext>
 
 	<Grid Margin="10">
@@ -61,15 +62,13 @@
 			AutoGenerateColumns="False">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-				<DataGridTextColumn Header="Adresse" Binding="{Binding Address}" />
-				<DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" />
 				<DataGridTemplateColumn Width="Auto" Header="Actions">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<StackPanel Orientation="Horizontal">
 								<Button
 									Background="Transparent"
-									Command="{Binding #dataGrid.((vm:CompaniesViewModel)DataContext).EditItemCommand}"
+									Command="{Binding #dataGrid.((vm:ItemsViewModel)DataContext).EditItemCommand}"
 									CommandParameter="{Binding}">
 									<StackPanel Orientation="Horizontal" Width="20" Height="20">
 										<Image Stretch="" Source="/Assets/edit.png"></Image>
@@ -77,7 +76,7 @@
 								</Button>
 								<Button
 									Background="Transparent"
-									Command="{Binding #dataGrid.((vm:CompaniesViewModel)DataContext).DeleteItemCommand}"
+									Command="{Binding #dataGrid.((vm:ItemsViewModel)DataContext).DeleteItemCommand}"
 									CommandParameter="{Binding}">
 									<StackPanel Orientation="Horizontal" Width="20" Height="20">
 										<Image Stretch="" Source="/Assets/delete.png"></Image>

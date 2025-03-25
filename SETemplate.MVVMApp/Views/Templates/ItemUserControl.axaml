@@ -1,14 +1,15 @@
+<!--@BaseCode-->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:SETemplate.MVVMApp.ViewModels"
+			 xmlns:vm="using:SETemplate.MVVMApp.ViewModels.Templates"
              mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="320"
-             x:Class="SETemplate.MVVMApp.Views.CompanyUserControl"
-	 		 x:DataType="vm:CompanyViewModel">
+             x:Class="SETemplate.MVVMApp.Views.Templates.ItemUserControl"
+	 		 x:DataType="vm:ItemViewModel">
 
 	<UserControl.DataContext>
-		<vm:CompanyViewModel />
+		<vm:ItemViewModel />
 	</UserControl.DataContext>
 
 	<Grid Margin="20 10 20 10">
@@ -25,12 +26,6 @@
 
 		<Label Grid.Row="0" Grid.Column="0" Content="Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10 10 10 0"/>
 		<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Margin="0 10 10 0"/>
-
-		<Label Grid.Row="1" Grid.Column="0" Content="Adresse:" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 10 10 0"/>
-		<TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="60" Text="{Binding Address}" Margin="0 10 10 0"/>
-
-		<Label Grid.Row="2" Grid.Column="0" Content="Beschreibung:" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 10 10 0"/>
-		<TextBox Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="100" Text="{Binding Description}" Margin="0 10 10 0"/>
 
 		<StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
 			<Button Content="Abbrechen" Command="{Binding CancelCommand}" Width="120" HorizontalContentAlignment="Center" Margin="0 10 10 0"/>

@@ -508,6 +508,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             result.Add($"{fieldName} = value;");
             result.Add("}");
+            result.Add($"OnPropertyChanged();");
             result.Add($"On{propName}Changed();");
             result.Add("}");
             return [.. result];

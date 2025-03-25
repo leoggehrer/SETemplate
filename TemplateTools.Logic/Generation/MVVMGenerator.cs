@@ -2,6 +2,7 @@
 //MdStart
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
+using TemplateTools.Logic.Extensions;
 using TemplateTools.Logic.Models;
 
 namespace TemplateTools.Logic.Generation
@@ -31,10 +32,6 @@ namespace TemplateTools.Logic.Generation
         /// Gets or sets a value indicating whether controllers should be generated.
         /// </summary>
         public bool GenerateViewModels { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether context accesssor should be generated.
-        /// </summary>
-        public bool GenerateContextAccessor { get; set; }
         #endregion properties
 
         /// <summary>
@@ -48,7 +45,6 @@ namespace TemplateTools.Logic.Generation
         {
             GenerateModels = QuerySetting<bool>(ItemType.MVVMAppModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
             GenerateViewModels = QuerySetting<bool>(ItemType.MVVVMAppViewModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
-            GenerateContextAccessor = QuerySetting<bool>(ItemType.ContextAccessor, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
         }
 
         #region generation
@@ -165,13 +161,12 @@ namespace TemplateTools.Logic.Generation
         {
             var modelType = ItemProperties.CreateModelSubType(type);
             var viewModelName = ItemProperties.CreateViewModelName(type);
-            var typeProperties = type.GetAllPropertyInfos();
             var genericItemViewModel = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.ItemViewModelGenericType, StaticLiterals.GenericItemViewModel);
             var viewModelsSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ViewModelsFolder);
             var viewModelsNamespace = $"{ItemProperties.ProjectNamespace}.{viewModelsSubNamespace}";
             var subFilepath = Path.Combine(StaticLiterals.ViewModelsFolder, ItemProperties.CreateSubFilePath(type, $"{viewModelName}{StaticLiterals.CSharpFileExtension}"));
-            var filteredProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
-                                                            && ItemProperties.IsListType(e.PropertyType) == false);
+            var typeProperties = type.GetAllPropertyInfos();
+            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = CreateModelFullName(type),
@@ -187,62 +182,19 @@ namespace TemplateTools.Logic.Generation
             result.AddRange(CreatePartialStaticConstrutor(viewModelName));
             result.AddRange(CreatePartialConstrutor("public", viewModelName));
 
-            //foreach (var propertyInfo in filteredProperties.Where(pi => pi.CanWrite))
-            //{
-            //    result.AddRange(CreateComment(propertyInfo));
-            //    CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
-            //    result.AddRange(CreateProperty(type, propertyInfo));
-            //}
-            result.Add("}");
-            result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
-            result.FormatCSharpCode();
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a context accessor for the specified unit type and item type.
-        /// </summary>
-        /// <param name="unitType">The unit type for the context accessor.</param>
-        /// <param name="itemType">The item type for the context accessor.</param>
-        /// <returns>A generated item representing the context accessor.</returns>
-        private GeneratedItem CreateContextAccessor(UnitType unitType, ItemType itemType)
-        {
-            var entityProject = EntityProject.Create(SolutionProperties);
-            var itemName = StaticLiterals.ContextAccessor;
-            var controllerNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ControllersFolder}";
-            var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
-            var subPath = $"{StaticLiterals.ControllersFolder}";
-            var fileName = $"{itemName}{StaticLiterals.GenerationPostFix}{StaticLiterals.CSharpFileExtension}";
-            var result = new GeneratedItem(unitType, itemType)
+            foreach (var propertyInfo in generateProperties)
             {
-                FullName = $"{contractNamespace}.{itemName}",
-                FileExtension = StaticLiterals.CSharpFileExtension,
-                SubFilePath = Path.Combine(subPath, fileName),
-            };
-            result.AddRange(CreateComment());
-            result.Add($"partial class {itemName}");
-            result.Add("{");
-
-            result.AddRange(CreateComment());
-            result.Add("partial void GetEntitySetHandler<TEntity>(ref Logic.Contracts.IEntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new()");
-            result.Add("{");
-
-            if (GenerateContextAccessor)
-            {
-                foreach (var type in entityProject.EntityTypes)
+                if (CanCreate(propertyInfo)
+                    && propertyInfo.IsNavigationProperties() == false
+                    && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True"))
                 {
-                    result.Add($"if (typeof(TEntity) == typeof({type.FullName}))");
-                    result.Add("{");
-                    result.Add($"entitySet = GetContext().{ItemProperties.CreateEntitySetName(type)} as Logic.Contracts.IEntitySet<TEntity>;");
-                    result.Add("handled = true;");
-                    result.Add("}");
+                    CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
+                    result.AddRange(CreatePartialProperty(propertyInfo));
                 }
             }
 
             result.Add("}");
-
-            result.Add("}");
-            result.EnvelopeWithANamespace(controllerNamespace);
+            result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
             result.FormatCSharpCode();
             return result;
         }
