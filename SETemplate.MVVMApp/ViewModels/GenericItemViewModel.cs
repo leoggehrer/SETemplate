@@ -19,6 +19,7 @@ namespace SETemplate.MVVMApp.ViewModels
         #endregion fields
 
         #region properties
+        public virtual string RequestUri => $"{typeof(TModel).Name.CreatePluralWord()}";
         public Action? CloseAction { get; set; }
         public TModel Model
         {
@@ -49,7 +50,7 @@ namespace SETemplate.MVVMApp.ViewModels
             {
                 if (Model.Id == 0)
                 {
-                    var response = httpClient.PostAsync($"Companies", new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
+                    var response = httpClient.PostAsync(RequestUri, new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -61,12 +62,12 @@ namespace SETemplate.MVVMApp.ViewModels
                         var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
                         await messageDialog.ShowDialog(mainWindow!);
-                        Console.WriteLine($"Fehler beim Abrufen der Companies. Status: {response.StatusCode}");
+                        Console.WriteLine($"Fehler beim Abrufen von {RequestUri}. Status: {response.StatusCode}");
                     }
                 }
                 else
                 {
-                    var response = httpClient.PutAsync($"Companies/{Model.Id}", new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
+                    var response = httpClient.PutAsync($"{RequestUri}/{Model.Id}", new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -74,7 +75,7 @@ namespace SETemplate.MVVMApp.ViewModels
                     }
                     else
                     {
-                        Console.WriteLine($"Fehler beim Abrufen der Companies. Status: {response.StatusCode}");
+                        Console.WriteLine($"Fehler beim Abrufen von {RequestUri}. Status: {response.StatusCode}");
                     }
                 }
             }

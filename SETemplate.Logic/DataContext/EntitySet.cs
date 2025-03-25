@@ -38,6 +38,10 @@ namespace SETemplate.Logic.DataContext
         #region methods
         protected abstract void CopyProperties(TEntity target, TEntity source);
 
+        protected virtual void BeforeAdding(TEntity entity) { }
+        protected virtual void BeforeUpdating(TEntity entity) { }
+        protected virtual void BeforeRemoving(TEntity entity) { }
+
         /// <summary>
         /// Creates a new instance of the entity.
         /// </summary>
@@ -54,6 +58,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entity.</returns>
         public virtual TEntity Add(TEntity entity)
         {
+            BeforeAdding(entity);
             return DbSet.Add(entity).Entity;
         }
 
@@ -64,6 +69,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
+            BeforeAdding(entity);
             var result = await DbSet.AddAsync(entity).ConfigureAwait(false);
 
             return result.Entity;
@@ -77,6 +83,8 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public virtual TEntity? Update(int id, TEntity entity)
         {
+            BeforeUpdating(entity);
+
             var existingEntity = DbSet.Find(id);
             if (existingEntity != null)
             {
@@ -93,6 +101,8 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
         public virtual async Task<TEntity?> UpdateAsync(int id, TEntity entity)
         {
+            BeforeUpdating(entity);
+
             var existingEntity = await DbSet.FindAsync(id).ConfigureAwait(false);
             if (existingEntity != null)
             {
@@ -109,8 +119,10 @@ namespace SETemplate.Logic.DataContext
         public virtual TEntity? Remove(int id)
         {
             var entity = DbSet.Find(id);
+
             if (entity != null)
             {
+                BeforeRemoving(entity);
                 DbSet.Remove(entity);
             }
             return entity;
