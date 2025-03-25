@@ -1,5 +1,6 @@
 //@BaseCode
 //MdStart
+using System.Reflection;
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Extensions;
@@ -49,27 +50,15 @@ namespace TemplateTools.Logic.Generation
 
         #region generation
         /// <summary>
-        ///   Determines whether the specified type should generate default values.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified type is not a generation entity; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool GetGenerateDefault(Type type)
-        {
-            return !EntityProject.IsNotAGenerationEntity(type);
-        }
-        /// <summary>
         /// Generates all the required items such as models, controllers, and services.
         /// </summary>
         /// <returns>A collection of generated items.</returns>
         public IEnumerable<IGeneratedItem> GenerateAll()
         {
             var result = new List<IGeneratedItem>();
-            
+
             result.AddRange(CreateModels());
             result.AddRange(CreateMVVMViewModels());
-            //result.Add(CreateContextAccessor(UnitType.MVVMApp, ItemType.ContextAccessor));
             return result;
         }
         /// <summary>
@@ -80,7 +69,7 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
-            
+
             foreach (var type in entityProject.EntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
@@ -112,14 +101,14 @@ namespace TemplateTools.Logic.Generation
                 FileExtension = StaticLiterals.CSharpFileExtension,
                 SubFilePath = ItemProperties.CreateModelSubPath(type, "Edit", StaticLiterals.CSharpFileExtension),
             };
-            
+
             result.AddRange(CreateComment(type));
             CreateModelAttributes(type, unitType, itemType, result.Source);
             result.Add($"public partial class {modelName}");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(modelName));
             result.AddRange(CreatePartialConstrutor("public", modelName));
-            
+
             foreach (var propertyInfo in filteredProperties.Where(pi => pi.CanWrite))
             {
                 result.AddRange(CreateComment(propertyInfo));
@@ -131,7 +120,7 @@ namespace TemplateTools.Logic.Generation
             result.FormatCSharpCode();
             return result;
         }
-        
+
         /// <summary>
         /// Creates view models for entity types.
         /// </summary>
@@ -140,7 +129,7 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
-            
+
             foreach (var type in entityProject.EntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
@@ -189,13 +178,70 @@ namespace TemplateTools.Logic.Generation
                     && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True"))
                 {
                     CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
-                    result.AddRange(CreatePartialProperty(propertyInfo));
+                    result.AddRange(CreateViewModelProperty(propertyInfo));
                 }
             }
 
             result.Add("}");
             result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
             result.FormatCSharpCode();
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a ViewModel property based on the provided PropertyInfo.
+        /// </summary>
+        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
+        /// <returns>An enumerable collection of strings representing the generated ViewModel property.</returns>
+        public IEnumerable<string> CreateViewModelProperty(PropertyInfo propertyInfo)
+        {
+            var result = new List<string>();
+            var fieldType = GetPropertyType(propertyInfo);
+
+            result.Add(string.Empty);
+            result.AddRange(CreateComment(propertyInfo));
+            CreatePropertyAttributes(propertyInfo, result);
+            result.Add($"public {fieldType} {propertyInfo.Name}");
+            result.Add("{");
+            result.AddRange(CreateViewModelGetProperty(propertyInfo));
+            result.AddRange(CreateViewModelSetProperty(propertyInfo));
+            result.Add("}");
+
+            return result;
+        }
+        /// <summary>  
+        /// Creates the getter property for a ViewModel based on the provided PropertyInfo.  
+        /// </summary>  
+        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>  
+        /// <returns>An enumerable collection of strings representing the generated getter property.</returns>  
+        public IEnumerable<string> CreateViewModelGetProperty(PropertyInfo propertyInfo)
+        {
+            var result = new List<string>();
+            var propName = propertyInfo.Name;
+
+            CreateGetPropertyAttributes(propertyInfo, result);
+            result.Add("get");
+            result.Add("{");
+            result.Add($"return Model.{propName};");
+            result.Add("}");
+            return result;
+        }
+        /// <summary>
+        /// Creates the setter property for a ViewModel based on the provided PropertyInfo.
+        /// </summary>
+        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
+        /// <returns>An enumerable collection of strings representing the generated setter property.</returns>
+        public IEnumerable<string> CreateViewModelSetProperty(PropertyInfo propertyInfo)
+        {
+            var result = new List<string>();
+            var propName = propertyInfo.Name;
+
+            CreateSetPropertyAttributes(propertyInfo, result);
+            result.Add("set");
+            result.Add("{");
+            result.Add($"Model.{propName} = value;");
+            result.Add($"OnPropertyChanged();");
+            result.Add("}");
             return result;
         }
         #endregion generation
@@ -213,7 +259,7 @@ namespace TemplateTools.Logic.Generation
         private T QuerySetting<T>(ItemType itemType, Type type, string valueName, string defaultValue)
         {
             T result;
-            
+
             try
             {
                 result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.MVVMApp, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
@@ -237,7 +283,7 @@ namespace TemplateTools.Logic.Generation
         private T QuerySetting<T>(ItemType itemType, string itemName, string valueName, string defaultValue)
         {
             T result;
-            
+
             try
             {
                 result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.MVVMApp, itemType, itemName, valueName, defaultValue), typeof(T));
@@ -260,14 +306,6 @@ namespace TemplateTools.Logic.Generation
         /// <param name="itemType">The item type.</param>
         /// <param name="source">The source list for the model attributes.</param>
         partial void CreateModelAttributes(Type type, UnitType unitType, ItemType itemType, List<string> source);
-        /// <summary>
-        /// Creates the attributes for the controller based on the specified type, unit type, and code lines.
-        /// </summary>
-        /// <param name="type">The type of the controller.</param>
-        /// <param name="unitType">The unit type for the controller.</param>
-        /// <param name="itemType">The item type.</param>
-        /// <param name="codeLines">The list of code lines for the controller.</param>
-        partial void CreateControllerAttributes(Type type, UnitType unitType, ItemType itemType, List<string> codeLines);
         #endregion Partial methods
     }
 }
