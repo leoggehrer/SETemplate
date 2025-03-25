@@ -28,10 +28,6 @@ namespace TemplateTools.Logic.Contracts
         /// Gets the MVVMExtension property value.
         /// </summary>
         string MVVMExtension { get; }
-        /// <summary>
-        /// Gets the client Blazor extension.
-        /// </summary>
-        string ClientBlazorExtension { get; }
         #endregion Project extensions
         
         #region properties
@@ -127,18 +123,6 @@ namespace TemplateTools.Logic.Contracts
         /// Gets the subpath of the MVVM application.
         /// </summary>
         string MVVMAppSubPath { get; }
-        
-        /// <summary>
-        /// Gets the name of the client Blazor project.
-        /// </summary>
-        string ClientBlazorProjectName { get; }
-        /// <summary>
-        /// Gets the subpath of the Blazor client.
-        /// </summary>
-        /// <remarks>
-        /// The subpath is a part of the URL path that is used to access the Blazor client.
-        /// </remarks>
-        string ClientBlazorSubPath { get; }
         
         /// <summary>
         /// Gets the name of the Angular app project.

@@ -92,6 +92,15 @@ namespace TemplateTools.Logic.Generation
             return $"{CreateModelName(type)}Edit";
         }
         /// <summary>
+        /// Creates the name of the view model based on the provided type.
+        /// </summary>
+        /// <param name="type">The type used to create the view model name.</param>
+        /// <returns>The view model name.</returns>
+        public static string CreateViewModelName(Type type)
+        {
+            return $"{CreateModelName(type)}ViewModel";
+        }
+        /// <summary>
         /// Creates the model contract name for a given type.
         /// </summary>
         /// <param name="type">The type for which the model contract name needs to be created.</param>

@@ -97,21 +97,18 @@ namespace TemplateTools.Logic
         /// <summary>
         /// Gets the MVVM extension.
         /// </summary>
-        public static string MVVMExtension => CommonStaticLiterals.MVVMExtension;
+        public static string MVVMAppExtension => CommonStaticLiterals.MVVMAppExtension;
         /// <summary>
         /// Gets the angular extension used by the application.
         /// </summary>
         public static string AngularExtension => CommonStaticLiterals.AngularExtension;
-        /// <summary>
-        /// Gets the extension for the Client Blazor.
-        /// </summary>
-        public static string ClientBlazorExtension => CommonStaticLiterals.ClientBlazorExtension;
         #endregion Project Extensions
 
         #region items
         public static readonly string EntityObjectName = "EntityObject";
         public static readonly string EntitySetName = "EntitySet";
         public static readonly string ContextAccessor = "ContextAccessor";
+        public static readonly string GenericItemViewModel = "GenericItemViewModel";
 
         public static readonly string ContextContract = "IContext";
         public static readonly string EntitySetContractName = "IEntitySet";
@@ -149,6 +146,10 @@ namespace TemplateTools.Logic
         /// Gets the name of the folder where the models are stored.
         /// </summary>
         public static string ModelsFolder => "Models";
+        /// <summary>
+        /// Gets the name of the folder where the view models are stored.
+        /// </summary>
+        public static string ViewModelsFolder => "ViewModels";
         /// <summary>
         /// Gets or sets an array of module folders.
         /// </summary>
@@ -236,6 +237,10 @@ namespace TemplateTools.Logic
         /// Gets the name of the EntitySetGenericType property.
         /// </summary>
         public static string EntitySetGenericType => nameof(EntitySetGenericType);
+        /// <summary>
+        /// Gets the name of the EntitySetGenericType property.
+        /// </summary>
+        public static string ItemViewModelGenericType => nameof(ItemViewModelGenericType);
         /// <summary>
         /// Gets the name of the ContractSetGenericType property.
         /// </summary>

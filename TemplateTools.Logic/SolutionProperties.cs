@@ -24,15 +24,11 @@ namespace TemplateTools.Logic
         /// <summary>
         /// The MVVMExtension property represents the MVVM extension value.
         /// </summary>
-        public string MVVMExtension => StaticLiterals.MVVMExtension;
+        public string MVVMExtension => StaticLiterals.MVVMAppExtension;
         /// <summary>
         /// Gets the Angular extension used for the property.
         /// </summary>
         public string AngularExtension => StaticLiterals.AngularExtension;
-        /// <summary>
-        /// Gets the client Blazor extension.
-        /// </summary>
-        public string ClientBlazorExtension => StaticLiterals.ClientBlazorExtension;
         #endregion Project-postfixes
         
         /// <summary>
@@ -188,21 +184,6 @@ namespace TemplateTools.Logic
         /// The subpath of the MVVM app.
         /// </value>
         public string MVVMAppSubPath => MVVMAppProjectName;
-        
-        /// <summary>
-        /// Gets the name of the Blazor project for the client.
-        /// </summary>
-        /// <value>
-        /// The name of the Blazor project for the client.
-        /// </value>
-        public string ClientBlazorProjectName => TemplateProjectNames.First(e => e.EndsWith($"{ClientBlazorExtension}"));
-        /// <summary>
-        /// Gets the sub path of the Blazor project for the client.
-        /// </summary>
-        /// <value>
-        /// The sub path of the Blazor project for the client.
-        /// </value>
-        public string ClientBlazorSubPath => ClientBlazorProjectName;
         
         /// <summary>
         /// Gets the name of the Angular app project.

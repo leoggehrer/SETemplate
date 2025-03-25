@@ -12,7 +12,7 @@ namespace TemplateTools.Logic.Generation
     /// <remarks>
     /// This generator is responsible for generating models, controllers, and adding services for Web API.
     /// </remarks>
-    internal sealed partial class WebApiGenerator : ModelGenerator
+    internal sealed partial class MVVMGenerator : ModelGenerator
     {
         #region fields
         private ItemProperties? _itemProperties;
@@ -22,7 +22,7 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// Gets the item properties from the base class. If not yet instantiated, it will create a new instance using the solution name and web API extension as parameters.
         /// </summary>
-        protected override ItemProperties ItemProperties => _itemProperties ??= new ItemProperties(SolutionProperties.SolutionName, StaticLiterals.WebApiExtension);
+        protected override ItemProperties ItemProperties => _itemProperties ??= new ItemProperties(SolutionProperties.SolutionName, StaticLiterals.MVVMAppExtension);
         /// <summary>
         /// Gets or sets a value indicating whether to generate models.
         /// </summary>
@@ -30,7 +30,7 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// Gets or sets a value indicating whether controllers should be generated.
         /// </summary>
-        public bool GenerateControllers { get; set; }
+        public bool GenerateViewModels { get; set; }
         /// <summary>
         /// Gets or sets a value indicating whether context accesssor should be generated.
         /// </summary>
@@ -38,16 +38,16 @@ namespace TemplateTools.Logic.Generation
         #endregion properties
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebApiGenerator"/> class.
+        /// Initializes a new instance of the <see cref="MVVMAppGenerator"/> class.
         /// </summary>
         /// <param name="solutionProperties">The solution properties.</param>
         /// <remarks>
-        /// This constructor is used to create a new instance of the <see cref="WebApiGenerator"/> class with the specified solution properties.
+        /// This constructor is used to create a new instance of the <see cref="MVVMAppGenerator"/> class with the specified solution properties.
         /// </remarks>
-        public WebApiGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
+        public MVVMGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
         {
-            GenerateModels = QuerySetting<bool>(ItemType.WebApiModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
-            GenerateControllers = QuerySetting<bool>(ItemType.Controller, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateModels = QuerySetting<bool>(ItemType.MVVMAppModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateViewModels = QuerySetting<bool>(ItemType.MVVVMAppViewModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
             GenerateContextAccessor = QuerySetting<bool>(ItemType.ContextAccessor, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
         }
 
@@ -72,8 +72,8 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             
             result.AddRange(CreateModels());
-            result.AddRange(CreateControllers());
-            result.Add(CreateContextAccessor(UnitType.WebApi, ItemType.ContextAccessor));
+            result.AddRange(CreateMVVMViewModels());
+            //result.Add(CreateContextAccessor(UnitType.MVVMApp, ItemType.ContextAccessor));
             return result;
         }
         /// <summary>
@@ -87,11 +87,11 @@ namespace TemplateTools.Logic.Generation
             
             foreach (var type in entityProject.EntityTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(ItemType.WebApiModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
                 {
-                    result.Add(CreateModelFromType(type, UnitType.WebApi, ItemType.WebApiModel));
-                    result.Add(CreateModelInheritance(type, UnitType.WebApi, ItemType.WebApiModel));
-                    result.Add(CreateEditModelFromType(type, UnitType.WebApi, ItemType.WebApiEditModel));
+                    result.Add(CreateModelFromType(type, UnitType.MVVMApp, ItemType.MVVMAppModel));
+                    result.Add(CreateModelInheritance(type, UnitType.MVVMApp, ItemType.MVVMAppModel));
+                    result.Add(CreateEditModelFromType(type, UnitType.MVVMApp, ItemType.MVVMAppEditModel));
                 }
             }
             return result;
@@ -137,91 +137,64 @@ namespace TemplateTools.Logic.Generation
         }
         
         /// <summary>
-        /// Creates controllers for entity types.
+        /// Creates view models for entity types.
         /// </summary>
         /// <returns>An enumerable collection of generated items.</returns>
-        private List<IGeneratedItem> CreateControllers()
+        private List<IGeneratedItem> CreateMVVMViewModels()
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
             
             foreach (var type in entityProject.EntityTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateControllers.ToString()))
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
                 {
-                    result.Add(CreateControllerFromType(type, UnitType.WebApi, ItemType.Controller));
+                    result.Add(CreateMVVMViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppViewModel));
                 }
             }
             return result;
         }
         /// <summary>
-        /// Creates a controller from the specified type.
+        /// Creates a view model from the specified type.
         /// </summary>
         /// <param name="type">The type of the controller.</param>
         /// <param name="unitType">The unit type.</param>
         /// <param name="itemType">The item type.</param>
         /// <returns>An instance of the IGeneratedItem interface representing the created controller.</returns>
-        private GeneratedItem CreateControllerFromType(Type type, UnitType unitType, ItemType itemType)
+        private GeneratedItem CreateMVVMViewModelFromType(Type type, UnitType unitType, ItemType itemType)
         {
-            var visibility = "public";
-            var logicProject = $"{ItemProperties.SolutionName}{StaticLiterals.LogicExtension}";
-            var genericType = $"Controllers.GenericController";
-            var modelType = ItemProperties.CreateModelType(type);
-            var entityType = $"{logicProject}.{ItemProperties.GetModuleSubType(type)}";
-            var controllerName = ItemProperties.CreateControllerClassName(type);
-            var contractType = ItemProperties.CreateFullCommonModelContractType(type);
+            var modelType = ItemProperties.CreateModelSubType(type);
+            var viewModelName = ItemProperties.CreateViewModelName(type);
+            var typeProperties = type.GetAllPropertyInfos();
+            var genericItemViewModel = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.ItemViewModelGenericType, StaticLiterals.GenericItemViewModel);
+            var viewModelsSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ViewModelsFolder);
+            var viewModelsNamespace = $"{ItemProperties.ProjectNamespace}.{viewModelsSubNamespace}";
+            var subFilepath = Path.Combine(StaticLiterals.ViewModelsFolder, ItemProperties.CreateSubFilePath(type, $"{viewModelName}{StaticLiterals.CSharpFileExtension}"));
+            var filteredProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
+                                                            && ItemProperties.IsListType(e.PropertyType) == false);
             var result = new GeneratedItem(unitType, itemType)
             {
-                FullName = $"{ItemProperties.CreateControllerType(type)}",
+                FullName = CreateModelFullName(type),
                 FileExtension = StaticLiterals.CSharpFileExtension,
-                SubFilePath = ItemProperties.CreateControllersSubPathFromType(type, string.Empty, StaticLiterals.CSharpFileExtension),
+                SubFilePath = subFilepath,
             };
-            result.Add($"using TModel = {modelType};");
-            result.Add($"using TEntity = {entityType};");
-            result.Add($"using TContract = {contractType};");
-            result.AddRange(CreateComment(type));
-            CreateControllerAttributes(type, unitType, itemType, result.Source);
-            result.Add($"{visibility} sealed partial class {controllerName}(Contracts.IContextAccessor contextAccessor) : {genericType}<TModel, TEntity, TContract>(contextAccessor)");
-            result.Add("{");
-            result.AddRange(CreatePartialStaticConstrutor(controllerName));
-//            result.AddRange(CreatePartialConstrutor("public", controllerName, $"{contractType} other", "base(other)", null, true));
-            
-            result.AddRange(CreateComment(type));
-            result.Add($"protected override TModel ToModel(TEntity entity)");
-            result.Add("{");
-            result.Add($"var handled = false;");
-            result.Add($"var result = new TModel();");
-            result.Add("BeforeToModel(entity, ref result, ref handled);");
-            result.Add("if (handled == false)");
-            result.Add("{");
-            result.Add($"(result as TContract).CopyProperties(entity);");
-            result.Add("}");
-            result.Add("AfterToModel(result);");
-            result.Add($"return result;");
-            result.Add("}");
 
-            result.Add($"partial void BeforeToModel(TEntity entity, ref TModel outModel, ref bool handled);");
-            result.Add($"partial void AfterToModel(TModel model);");
-
+            genericItemViewModel = QuerySetting<string>(itemType, type, StaticLiterals.ItemViewModelGenericType, genericItemViewModel);
             result.AddRange(CreateComment(type));
-            result.Add($"protected override TEntity ToEntity(TModel model, TEntity? entity)");
+            CreateModelAttributes(type, unitType, itemType, result.Source);
+            result.Add($"public partial class {viewModelName} : {genericItemViewModel}<{modelType}>");
             result.Add("{");
-            result.Add($"var handled = false;");
-            result.Add($"var result = entity ?? new TEntity();");
-            result.Add("BeforeToEntity(model, ref result, ref handled);");
-            result.Add("if (handled == false)");
-            result.Add("{");
-            result.Add($"(result as TContract).CopyProperties(model);");
-            result.Add("}");
-            result.Add("AfterToEntity(result);");
-            result.Add($"return result;");
-            result.Add("}");
+            result.AddRange(CreatePartialStaticConstrutor(viewModelName));
+            result.AddRange(CreatePartialConstrutor("public", viewModelName));
 
-            result.Add($"partial void BeforeToEntity(TModel model, ref TEntity outEntity, ref bool handled);");
-            result.Add($"partial void AfterToEntity(TEntity entity);");
-            
+            //foreach (var propertyInfo in filteredProperties.Where(pi => pi.CanWrite))
+            //{
+            //    result.AddRange(CreateComment(propertyInfo));
+            //    CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
+            //    result.AddRange(CreateProperty(type, propertyInfo));
+            //}
             result.Add("}");
-            result.EnvelopeWithANamespace(ItemProperties.CreateControllerNamespace(type));
+            result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
             result.FormatCSharpCode();
             return result;
         }
@@ -291,7 +264,7 @@ namespace TemplateTools.Logic.Generation
             
             try
             {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.WebApi, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.MVVMApp, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
             }
             catch (Exception ex)
             {
@@ -315,7 +288,7 @@ namespace TemplateTools.Logic.Generation
             
             try
             {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.WebApi, itemType, itemName, valueName, defaultValue), typeof(T));
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.MVVMApp, itemType, itemName, valueName, defaultValue), typeof(T));
             }
             catch (Exception ex)
             {

@@ -18,6 +18,9 @@ namespace TemplateTools.Logic.Common
         #region models
         WebApiModel,
         WebApiEditModel,
+        MVVMAppModel,
+        MVVMAppEditModel,
+        MVVVMAppViewModel,
         #endregion models
         
         #region properties

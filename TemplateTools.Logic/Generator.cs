@@ -95,6 +95,22 @@ namespace TemplateTools.Logic
             }
             #endregion WebApiApp
 
+            #region MVVMApp
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.MVVMApp.ToString(), StaticLiterals.AllItems, StaticLiterals.AllItems, "Generate", "True"))
+            {
+                var generator = new Generation.MVVMGenerator(solutionProperties);
+
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var generatedItems = new List<IGeneratedItem>();
+
+                    WriteLogging("Create WebApi-Components...");
+                    generatedItems.AddRange(generator.GenerateAll());
+                    result.AddRangeSafe(generatedItems);
+                }));
+            }
+            #endregion MVVMApp
+
             Task.WaitAll([.. tasks]);
             return result;
         }

@@ -28,10 +28,8 @@ namespace SETemplate.Common
                 LogicExtension,
                 LogicUnitTestExtension,
                 WebApiExtension,
-                MVVMExtension,
-                AspMvcExtension,
+                MVVMAppExtension,
                 AngularExtension,
-                ClientBlazorExtension,
             ];
             GenerationIgnoreFolders = ["node_module"];
             AfterClassInitialize();
@@ -85,21 +83,12 @@ namespace SETemplate.Common
         /// <summary>
         /// Gets the MVVM extension for a WPF application.
         /// </summary>
-        public static string MVVMExtension => ".MvvMApp";
-        /// <summary>
-        /// Represents the file extension for ASP.NET MVC files.
-        /// </summary>
-        public static string AspMvcExtension => ".AspMvc";
+        public static string MVVMAppExtension => ".MVVMApp";
         /// <summary>
         /// Gets the extension for Angular app files.
         /// </summary>
         /// <returns>The extension for Angular app files.</returns>
         public static string AngularExtension => ".AngularApp";
-        /// <summary>
-        /// Gets the file extension for a client Blazor application.
-        /// </summary>
-        /// <returns>The file extension.</returns>
-        public static string ClientBlazorExtension => ".ClientBlazorApp";
         #endregion Template project extensions
         
         /// <summary>

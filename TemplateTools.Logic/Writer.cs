@@ -192,9 +192,20 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.MVVMAppProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVMApp && e.ItemType == ItemType.WebApiModel);
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVMApp && e.ItemType == ItemType.MVVMAppModel);
 
                     WriteLogging("Write MVVM-Models...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.MVVMAppProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVMApp && e.ItemType == ItemType.MVVVMAppViewModel);
+
+                    WriteLogging("Write MVVM-ViewModels...");
                     WriteItems(projectPath, writeItems, false);
                 }
             }));
