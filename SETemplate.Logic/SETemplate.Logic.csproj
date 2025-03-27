@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>ACCOUNT_OFF;ACCESSRULES_ON;LOGGING_OFF;REVISION_OFF;DBOPERATION_OFF;ROWVERSION_ON;GUID_OFF;CREATED_OFF;MODIFIED_OFF;CREATEDBY_OFF;MODIFIEDBY_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;SQLSERVER_ON;SQLITE_OFF;DOCKER_OFF;DEVELOP_OFF;GENERATEDCODE_OFF</DefineConstants>
+    <DefineConstants>ACCOUNT_ON;ACCESSRULES_ON;LOGGING_OFF;REVISION_OFF;DBOPERATION_OFF;ROWVERSION_ON;GUID_OFF;CREATED_OFF;MODIFIED_OFF;CREATEDBY_OFF;MODIFIEDBY_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;SQLSERVER_ON;SQLITE_OFF;DOCKER_OFF;DEVELOP_OFF;GENERATEDCODE_OFF</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.13" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
+	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>

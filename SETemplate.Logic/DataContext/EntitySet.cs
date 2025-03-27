@@ -26,12 +26,6 @@ namespace SETemplate.Logic.DataContext
         /// Gets the database context.
         /// </summary>
         protected DbSet<TEntity> DbSet => _dbSet!;
-
-        /// <summary>
-        /// Gets the queryable set of entities.
-        /// </summary>
-        public IQueryable<TEntity> QuerySet => DbSet.AsQueryable();
-
         #endregion properties
 
         #region overridables
@@ -70,6 +64,12 @@ namespace SETemplate.Logic.DataContext
         {
             return new TEntity();
         }
+
+        /// <summary>
+        /// Gets the queryable set of entities.
+        /// </summary>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
+        public IQueryable<TEntity> AsQuerySet() => DbSet.AsQueryable();
 
         /// <summary>
         /// Adds the specified entity to the set.

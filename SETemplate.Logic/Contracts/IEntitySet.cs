@@ -16,9 +16,10 @@ namespace SETemplate.Logic.Contracts
         TEntity Create();
 
         /// <summary>
-        /// Gets the queryable set of entities.
+        /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.
         /// </summary>
-        IQueryable<TEntity> QuerySet { get; }
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
+        IQueryable<TEntity> AsQuerySet();
 
         /// <summary>
         /// Adds a new entity to the set.
@@ -33,6 +34,7 @@ namespace SETemplate.Logic.Contracts
         /// <param name="entity">The entity to add.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         Task<TEntity> AddAsync(TEntity entity);
+
         /// <summary>
         /// Updates an entity in the set by its identifier.
         /// </summary>

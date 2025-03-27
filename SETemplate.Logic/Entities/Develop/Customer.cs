@@ -1,5 +1,5 @@
 ﻿//@Ignore
-namespace SETemplate.Logic.Entities
+namespace SETemplate.Logic.Entities.Develop
 {
     /// <summary>
     /// Represents a customer entity.

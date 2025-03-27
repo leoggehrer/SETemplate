@@ -263,7 +263,7 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// This method creates the model sub namespace from a project type.
         /// For example:
-        ///     FullName QuickTemplate.Logic.Entities.Base.Artist becomes SubName Models.Base.Artist.
+        ///     FullName SETemplate.Logic.Entities.Base.Artist becomes SubName Models.Base.Artist.
         /// </summary>
         /// <param name="type">The Type from which the subnamespace is created.</param>
         /// <returns>The subnamespace as a string.</returns>

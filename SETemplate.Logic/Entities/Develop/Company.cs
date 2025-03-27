@@ -1,7 +1,9 @@
 ﻿//@Ignore
-using SETemplate.Logic.Entities.BaseData;
 
-namespace SETemplate.Logic.Entities
+//@Ignore
+using SETemplate.Logic.Entities.Develop.BaseData;
+
+namespace SETemplate.Logic.Entities.Develop
 {
     /// <summary>
     /// Represents a company entity.

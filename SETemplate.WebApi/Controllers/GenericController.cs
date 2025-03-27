@@ -41,7 +41,7 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>
-        protected virtual IQueryable<TEntity> QuerySet => EntitySet.QuerySet;
+        protected virtual IQueryable<TEntity> QuerySet => EntitySet.AsQuerySet();
 
         #endregion properties
 

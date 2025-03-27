@@ -1,4 +1,8 @@
 ﻿//@Ignore
+using Azure.Identity;
+using SETemplate.Logic.Entities.Develop;
+using SETemplate.Logic.Entities.Develop.BaseData;
+
 namespace SETemplate.Logic.DataContext
 {
     /// <summary>
@@ -13,14 +17,14 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="path">The path to the CSV file.</param>
         /// <returns>A list of companies.</returns>
-        public static List<Entities.Company> LoadCompaniesFromCsv(string path)
+        public static List<Company> LoadCompaniesFromCsv(string path)
         {
-            var result = new List<Entities.Company>();
+            var result = new List<Company>();
 
             result.AddRange(File.ReadAllLines(path)
                        .Skip(1)
                        .Select(l => l.Split(';'))
-                       .Select(d => new Entities.Company
+                       .Select(d => new Company
                        {
                            Name = d[0],
                            Address = d[1],
@@ -33,14 +37,14 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="path">The path to the CSV file.</param>
         /// <returns>A list of customers.</returns>
-        public static List<Entities.Customer> LoadCustomersFromCsv(string path)
+        public static List<Customer> LoadCustomersFromCsv(string path)
         {
-            var result = new List<Entities.Customer>();
+            var result = new List<Customer>();
 
             result.AddRange(File.ReadAllLines(path)
                        .Skip(1)
                        .Select(l => l.Split(';'))
-                       .Select(d => new Entities.Customer
+                       .Select(d => new Customer
                        {
                            CompanyId = Convert.ToInt32(d[0]),
                            Name = d[1],
@@ -54,14 +58,14 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="path">The path to the CSV file.</param>
         /// <returns>A list of employees.</returns>
-        public static List<Entities.BaseData.Employee> LoadEmployeesFromCsv(string path)
+        public static List<Employee> LoadEmployeesFromCsv(string path)
         {
-            var result = new List<Entities.BaseData.Employee>();
+            var result = new List<Employee>();
 
             result.AddRange(File.ReadAllLines(path)
                        .Skip(1)
                        .Select(l => l.Split(';'))
-                       .Select(d => new Entities.BaseData.Employee
+                       .Select(d => new Employee
                        {
                            CompanyId = Convert.ToInt32(d[0]),
                            FirstName = d[1],

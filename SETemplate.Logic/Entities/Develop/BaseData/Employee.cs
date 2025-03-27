@@ -1,5 +1,9 @@
 ﻿//@Ignore
-namespace SETemplate.Logic.Entities.BaseData
+
+//@Ignore
+using SETemplate.Logic.Entities.Develop;
+
+namespace SETemplate.Logic.Entities.Develop.BaseData
 {
     /// <summary>
     /// Represents an employee entity.

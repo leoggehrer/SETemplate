@@ -64,14 +64,14 @@ namespace SETemplate.Common.Modules.Template
         /// </remarks>
         public static string[] GetTemplatePaths(string startPath)
         {
-            return QueryDirectoryStructure(startPath, n => n.StartsWith("QT") || n.Equals("QuickTemplate"), "bin", "obj", "node_modules");
+            return QueryDirectoryStructure(startPath, n => n.StartsWith("QT") || n.Equals("SETemplate"), "bin", "obj", "node_modules");
         }
         /// <summary>
-        /// Retrieves an array of string values representing the paths to QuickTemplate solutions within a specified directory.
+        /// Retrieves an array of string values representing the paths to SETemplate solutions within a specified directory.
         /// </summary>
-        /// <param name="startPath">The starting directory path in which to search for QuickTemplate solutions.</param>
+        /// <param name="startPath">The starting directory path in which to search for SETemplate solutions.</param>
         /// <returns>
-        /// An array of string value representing the paths to QuickTemplate solutions found in the specified directory.
+        /// An array of string value representing the paths to SETemplate solutions found in the specified directory.
         /// </returns>
         public static string[] GetTemplateSolutions(string startPath)
         {
@@ -152,7 +152,7 @@ namespace SETemplate.Common.Modules.Template
         /// <param name="includePaths">The additional paths to include in the search.</param>
         /// <returns>An array of parent paths for quick template projects.</returns>
         /// <remarks>
-        /// The method retrieves quick template projects using the GetQuickTemplateProjects method with the specified start path and includes the additional paths provided in the includePaths parameter.
+        /// The method retrieves quick template projects using the GetSETemplateProjects method with the specified start path and includes the additional paths provided in the includePaths parameter.
         /// The method then determines the parent directory for each quick template project path and ensures that there are no duplicate or nested paths in the result.
         /// The resulting parent paths are ordered alphabetically and returned as an array.
         /// </remarks>

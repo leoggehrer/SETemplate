@@ -24,16 +24,16 @@ namespace TemplateTools.Logic.Git
         private static string[] SearchPatterns => StaticLiterals.SourceFileExtensions.Split('|');
         
         /// <summary>
-        /// Gets or sets the beginning of a gitignore block in a QuickTemplate.
+        /// Gets or sets the beginning of a gitignore block in a SETemplate.
         /// </summary>
-        private static string BeginGitIgnoreBlock => "#QuickTemplateStart";
+        private static string BeginGitIgnoreBlock => "#SETemplateStart";
         /// <summary>
         /// Gets the string value representing the end of a Git ignore block.
         /// </summary>
         /// <value>
-        /// The string value "#QuickTemplateEnd" representing the end of a Git ignore block.
+        /// The string value "#SETemplateEnd" representing the end of a Git ignore block.
         /// </value>
-        private static string EndGitIgnoreBlock => "#QuickTemplateEnd";
+        private static string EndGitIgnoreBlock => "#SETemplateEnd";
         #endregion Properties
         
         /// <summary>
