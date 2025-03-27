@@ -11,5 +11,7 @@ namespace SETemplate.Logic.Contracts
         /// </summary>
         /// <returns>The number of state entries written to the underlying database.</returns>
         int SaveChanges();
+
+        Task<int> SaveChangesAsync();
     }
 }

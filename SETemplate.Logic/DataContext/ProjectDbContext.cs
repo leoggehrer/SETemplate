@@ -64,6 +64,37 @@ namespace SETemplate.Logic.DataContext
         #endregion constructors
 
         #region methods
+        public override int SaveChanges()
+        {
+            // Vor dem Speichern alle Entitäten validieren
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is IValidatable && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var validatableEntity = (IValidatable)entry.Entity;
+                
+                validatableEntity.Validate(this);
+            }
+
+            return base.SaveChanges();
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            // Vor dem Speichern alle Entitäten validieren
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is IValidatable && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var validatableEntity = (IValidatable)entry.Entity;
+
+                validatableEntity.Validate(this);
+            }
+
+            return base.SaveChangesAsync();
+        }
         /// <summary>
         /// Configures the database context options.
         /// </summary>
