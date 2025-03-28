@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-//MdStart
+
 namespace SETemplate.Common.Extensions
 {
     /// <summary>
@@ -18,4 +18,3 @@ namespace SETemplate.Common.Extensions
         public int EndPosition { get; set; }
     }
 }
-//MdEnd

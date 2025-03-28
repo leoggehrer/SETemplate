@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Models;
@@ -61,7 +61,7 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static bool GetGenerateDefault(Type type)
         {
-            return !EntityProject.IsNotAGenerationEntity(type);
+            return EntityProject.IsCustomEntity(type);
         }
         /// <summary>
         /// Generates all the required items such as models, controllers, and services.
@@ -169,7 +169,7 @@ namespace TemplateTools.Logic.Generation
             var modelType = ItemProperties.CreateModelType(type);
             var entityType = $"{logicProject}.{ItemProperties.GetModuleSubType(type)}";
             var controllerName = ItemProperties.CreateControllerClassName(type);
-            var contractType = ItemProperties.CreateFullCommonModelContractType(type);
+            var contractType = ItemProperties.CreateFullCommonContractType(type);
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = $"{ItemProperties.CreateControllerType(type)}",
@@ -346,4 +346,4 @@ namespace TemplateTools.Logic.Generation
         #endregion Partial methods
     }
 }
-//MdEnd
+

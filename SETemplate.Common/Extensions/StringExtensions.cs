@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Security.Cryptography;
 using System.Text;
 
@@ -1168,4 +1168,4 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd
+

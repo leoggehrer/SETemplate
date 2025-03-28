@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic.Extensions
 {
     using System.Reflection;
@@ -68,4 +68,4 @@ namespace TemplateTools.Logic.Extensions
         }
     }
 }
-//MdEnd
+

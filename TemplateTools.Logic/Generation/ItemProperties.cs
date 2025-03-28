@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Reflection;
 
 namespace TemplateTools.Logic.Generation
@@ -39,6 +39,10 @@ namespace TemplateTools.Logic.Generation
         /// Gets the common project name.
         ///</summary>
         public string CommonProject => $"{SolutionName}{StaticLiterals.CommonExtension}";
+        /// <summary>
+        /// Gets the logic project name.
+        ///</summary>
+        public string LogicProject => $"{SolutionName}{StaticLiterals.LogicExtension}";
 
         #region solution properties
         /// <summary>
@@ -99,15 +103,6 @@ namespace TemplateTools.Logic.Generation
         public static string CreateViewModelName(Type type)
         {
             return $"{CreateModelName(type)}ViewModel";
-        }
-        /// <summary>
-        /// Creates the model contract name for a given type.
-        /// </summary>
-        /// <param name="type">The type for which the model contract name needs to be created.</param>
-        /// <returns>The model contract name in the format "I{type.Name}".</returns>
-        public static string CreateModelContractName(Type type)
-        {
-            return $"I{type.Name}";
         }
         #endregion item names
 
@@ -288,14 +283,36 @@ namespace TemplateTools.Logic.Generation
         #endregion type items
 
         #region logic items
+        /// <summary>
+        /// Creates the full contract type for the given type.
+        /// </summary>
+        /// <param name="type">The type for which the full contract type needs to be created.</param>
+        /// <returns>The full contract type as a string.</returns>
+        public string CreateFullContractType(Type type)
+        {
+            return EntityProject.IsSystemEntity(type) ? CreateFullLogicContractType(type)
+                                                      : CreateFullCommonContractType(type);
+        }
+        /// <summary>
+        /// Creates the full namespace for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which the namespace is created.</param>
+        /// <param name="preItems">Optional array of pre-defined namespace items.</param>
+        /// <returns>The full namespace.</returns>
+        public string CreateFullNamespace(Type type, params string[] preItems)
+        {
+            return EntityProject.IsSystemEntity(type) ? CreateFullLogicNamespace(type, preItems)
+                                                      : CreateFullCommonNamespace(type, preItems);
+        }
+
         ///<summary>
-        /// Creates the full common model contract type for the given type.
+        /// Creates the full common contract type for the given type.
         ///</summary>
         ///<param name="type">The type for which the full common model contract type needs to be created.</param>
         ///<returns>The full logic model contract type.</returns>
-        public string CreateFullCommonModelContractType(Type type)
+        public string CreateFullCommonContractType(Type type)
         {
-            return CreateFullCommonType(type, CreateModelContractName(type), StaticLiterals.ContractsFolder);
+            return CreateFullCommonType(type, CreateContractName(type), StaticLiterals.ContractsFolder);
         }
         /// <summary>
         /// Creates the full common type by combining the common namespace, type name, and any optional pre-items.
@@ -308,7 +325,6 @@ namespace TemplateTools.Logic.Generation
         {
             return $"{CreateFullCommonNamespace(type, preItems)}.{typeName}";
         }
-
         /// <summary>
         /// Creates the full common namespace for the specified type.
         /// </summary>
@@ -320,6 +336,39 @@ namespace TemplateTools.Logic.Generation
             var namespaceItems = CreateModuleSubNamespaceItems(type, preItems);
 
             return $"{CommonProject}.{string.Join('.', namespaceItems)}";
+        }
+
+        ///<summary>
+        /// Creates the full common contract type for the given type.
+        ///</summary>
+        ///<param name="type">The type for which the full common model contract type needs to be created.</param>
+        ///<returns>The full logic model contract type.</returns>
+        public string CreateFullLogicContractType(Type type)
+        {
+            return CreateFullLogicType(type, CreateContractName(type), StaticLiterals.ContractsFolder);
+        }
+        /// <summary>
+        /// Creates the full common type by combining the common namespace, type name, and any optional pre-items.
+        /// </summary>
+        /// <param name="type">The type of the logic.</param>
+        /// <param name="typeName">The name of the type.</param>
+        /// <param name="preItems">Optional pre-items to be included in the full logic type.</param>
+        /// <returns>The full logic type as a string.</returns>
+        public string CreateFullLogicType(Type type, string typeName, params string[] preItems)
+        {
+            return $"{CreateFullLogicNamespace(type, preItems)}.{typeName}";
+        }
+        /// <summary>
+        /// Creates the full common namespace for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which the logic namespace is created.</param>
+        /// <param name="preItems">Optional array of pre-defined namespace items.</param>
+        /// <returns>The full logic namespace.</returns>
+        public string CreateFullLogicNamespace(Type type, params string[] preItems)
+        {
+            var namespaceItems = CreateModuleSubNamespaceItems(type, preItems);
+
+            return $"{LogicProject}.{string.Join('.', namespaceItems)}";
         }
         #endregion logic items
 
@@ -413,7 +462,7 @@ namespace TemplateTools.Logic.Generation
         }
         #endregion subType items
 
-        #region contract properties
+        #region path
         /// <summary>
         /// Creates a sub file path.
         /// </summary>
@@ -427,7 +476,18 @@ namespace TemplateTools.Logic.Generation
 
             return $"{string.Join(Path.DirectorySeparatorChar, namespaceItems!.Union([fileName]))}";
         }
-        #endregion contract properties
+        /// <summary>
+        /// Gets the default visibility for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which to get the default visibility.</param>
+        /// <returns>
+        /// A string representing the default visibility of the type.
+        /// Returns "internal" if the type is a system entity; otherwise, returns "public".
+        /// </returns>
+        public static string GetDefaultVisibility(Type type)
+        {
+            return EntityProject.IsSystemEntity(type) ? "internal" : "public";
+        }
 
         /// <summary>
         /// Diese Methode ermittelt den Teilnamensraum von einem Typ.
@@ -527,6 +587,7 @@ namespace TemplateTools.Logic.Generation
             }
             return preItems.Union(result);
         }
+        #endregion paths
 
         #region type infos
         /// <summary>
@@ -596,6 +657,23 @@ namespace TemplateTools.Logic.Generation
             return result;
         }
         /// <summary>
+        /// Checks if the specified type is a Array type containing entities.
+        /// </summary>
+        /// <param name="type">The type to be checked.</param>
+        /// <returns>True if the type is a Array type containing entities, otherwise false.</returns>
+        public static bool IsEntityArrayType(Type type)
+        {
+            var result = false;
+
+            if (IsArrayType(type))
+            {
+                var arrayType = type.GetElementType();
+
+                result = arrayType != default && IsEntityType(arrayType);
+            }
+            return result;
+        }
+        /// <summary>
         /// Determines whether the specified Type is a model type.
         /// </summary>
         /// <param name="type">The Type to be checked.</param>
@@ -621,4 +699,4 @@ namespace TemplateTools.Logic.Generation
         #endregion type infos
     }
 }
-//MdEnd
+

@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-//MdStart
+
 namespace TemplateTools.ConApp
 {
     public abstract partial class ConsoleApplication : CommonTool.ConsoleApplication
@@ -18,6 +18,10 @@ namespace TemplateTools.ConApp
             if (Directory.Exists(reposPath))
             {
                 ReposPath = reposPath;
+            }
+            if (string.IsNullOrEmpty(SolutionPath))
+            {
+                SolutionPath = TemplatePath.GetSolutionPathByExecution();
             }
             ClassConstructed();
         }
@@ -72,4 +76,3 @@ namespace TemplateTools.ConApp
         #endregion Helpers
     }
 }
-//MdEnd

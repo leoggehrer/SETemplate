@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using TemplateTools.Logic.Common;
 
 namespace TemplateTools.Logic.Models
@@ -143,4 +143,4 @@ namespace TemplateTools.Logic.Models
         }
     }
 }
-//MdEnd
+

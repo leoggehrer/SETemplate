@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 #if ACCOUNT_ON
 
 namespace SETemplate.Common.Modules.Security

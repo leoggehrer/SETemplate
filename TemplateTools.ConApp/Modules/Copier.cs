@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.ConApp.Modules
 {
     using SETemplate.Common.Extensions;
@@ -224,32 +224,32 @@ namespace TemplateTools.ConApp.Modules
         /// <summary>
         /// Creates a template in the target directory based on the source solution directory and a list of source projects.
         /// </summary>
-        /// <param name="sourceSolutionDirectory">The directory of the source solution.</param>
-        /// <param name="targetSolutionDirectory">The directory where the template will be created.</param>
+        /// <param name="sourceSolutionPath">The directory of the source solution.</param>
+        /// <param name="targetSolutionPath">The directory where the template will be created.</param>
         /// <param name="sourceProjets">The list of source projects.</param>
         /// <returns>True if the template creation is successful, otherwise false.</returns>
-        private bool CreateTemplate(string sourceSolutionDirectory, string targetSolutionDirectory, IEnumerable<string> sourceProjets)
+        private bool CreateTemplate(string sourceSolutionPath, string targetSolutionPath, IEnumerable<string> sourceProjets)
         {
-            if (Directory.Exists(targetSolutionDirectory) == false)
+            if (Directory.Exists(targetSolutionPath) == false)
             {
-                Directory.CreateDirectory(targetSolutionDirectory);
+                Directory.CreateDirectory(targetSolutionPath);
             }
 
-            var sourceFolderName = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var targetFolderName = new DirectoryInfo(targetSolutionDirectory).Name;
+            var sourceFolderName = new DirectoryInfo(sourceSolutionPath).Name;
+            var targetFolderName = new DirectoryInfo(targetSolutionPath).Name;
 
-            CopySolutionStructure(sourceSolutionDirectory, targetSolutionDirectory, sourceProjets);
+            CopySolutionStructure(sourceSolutionPath, targetSolutionPath, sourceProjets);
 
-            foreach (var directory in Directory.GetDirectories(sourceSolutionDirectory, "*", SearchOption.AllDirectories))
+            foreach (var directory in Directory.GetDirectories(sourceSolutionPath, "*", SearchOption.AllDirectories))
             {
-                var subFolder = directory.Replace(sourceSolutionDirectory, string.Empty);
+                var subFolder = directory.Replace(sourceSolutionPath, string.Empty);
 
                 if (CommonStaticLiterals.IgnoreFolders.Any(i => subFolder.EndsWith(i) || subFolder.Contains(i)) == false
                 && sourceProjets.Any(i => subFolder.EndsWith(i)))
                 {
                     subFolder = subFolder.Replace(sourceFolderName, targetFolderName);
 
-                    CopyProjectDirectoryWorkFiles(directory, sourceSolutionDirectory, targetSolutionDirectory);
+                    CopyProjectDirectoryWorkFiles(directory, sourceSolutionPath, targetSolutionPath);
                 }
             }
             return true;
@@ -258,27 +258,28 @@ namespace TemplateTools.ConApp.Modules
         /// Copies the structure of a solution from the source solution directory to the target solution directory,
         /// including the solution file, solution files, and project files.
         /// </summary>
-        /// <param name="sourceSolutionDirectory">The directory of the source solution</param>
-        /// <param name="targetSolutionDirectory">The directory of the target solution</param>
+        /// <param name="sourceSolutionPath">The directory of the source solution</param>
+        /// <param name="targetSolutionPath">The directory of the target solution</param>
         /// <param name="sourceProjects">The collection of source project files</param>
         /// <remarks>
         /// This method copies the solution file from the source solution directory to the target solution directory
         /// and adjusts the necessary paths and filenames. It also copies all solution files and project files
         /// from the source solution directory to the target solution directory.
         /// </remarks>
-        private void CopySolutionStructure(string sourceSolutionDirectory, string targetSolutionDirectory, IEnumerable<string> sourceProjects)
+        private void CopySolutionStructure(string sourceSolutionPath, string targetSolutionPath, IEnumerable<string> sourceProjects)
         {
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var sourceSolutionFilePath = Directory.GetFiles(sourceSolutionDirectory, $"*{CommonStaticLiterals.SolutionFileExtension}", SearchOption.AllDirectories)
-                                                  .FirstOrDefault(f => f.EndsWith($"{sourceSolutionFolder}{CommonStaticLiterals.SolutionFileExtension}", StringComparison.CurrentCultureIgnoreCase)) ?? string.Empty;
-            var sourceSolutionPath = Path.GetDirectoryName(sourceSolutionFilePath);
-            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
-            var targetSolutionPath = targetSolutionDirectory;
-            var targetSolutionFilePath = CreateTargetFilePath(sourceSolutionFilePath, sourceSolutionDirectory, targetSolutionDirectory);
+            var sourceSolutionFilePath = TemplatePath.GetSolutionFilePath(sourceSolutionPath);
 
-            CopySolutionFile(sourceSolutionFilePath, targetSolutionFilePath, sourceSolutionFolder, targetSolutionFolder, sourceProjects);
-            CopySolutionFiles(sourceSolutionDirectory, targetSolutionDirectory);
-            CopySolutionProjectFiles(sourceSolutionDirectory, targetSolutionDirectory, sourceProjects);
+            if (string.IsNullOrEmpty(sourceSolutionFilePath) == false)
+            {
+                var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
+                var targetSolutionFolder = new DirectoryInfo(targetSolutionPath).Name;
+                var targetSolutionFilePath = Path.Combine((string)targetSolutionPath, $"{targetSolutionFolder}{CommonStaticLiterals.SolutionFileExtension}");
+
+                CopySolutionFile(sourceSolutionFilePath, targetSolutionFilePath, sourceSolutionName, targetSolutionFolder, sourceProjects);
+                CopySolutionFiles(sourceSolutionPath, targetSolutionPath);
+                CopySolutionProjectFiles(sourceSolutionPath, targetSolutionPath, sourceProjects);
+            }
         }
         /// <summary>
         /// Splits the full text of a TagInfo object into an array of strings.
@@ -467,27 +468,28 @@ namespace TemplateTools.ConApp.Modules
         /// <summary>
         /// Copies solution files from source solution directory to target solution directory.
         /// </summary>
-        /// <param name="sourceSolutionDirectory">The directory of the source solution.</param>
-        /// <param name="targetSolutionDirectory">The directory of the target solution.</param>
-        private void CopySolutionFiles(string sourceSolutionDirectory, string targetSolutionDirectory)
+        /// <param name="sourceSolutionPath">The directory of the source solution.</param>
+        /// <param name="targetSolutionPath">The directory of the target solution.</param>
+        private void CopySolutionFiles(string sourceSolutionPath, string targetSolutionPath)
         {
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
+            var sourceSolutionFilePath = TemplatePath.GetSolutionFilePath(sourceSolutionPath);
+            var targetSolutionFolder = new DirectoryInfo(targetSolutionPath).Name;
+            var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
 
-            foreach (var sourceFile in new DirectoryInfo(sourceSolutionDirectory).GetFiles("*", SearchOption.TopDirectoryOnly)
+            foreach (var sourceFile in new DirectoryInfo(sourceSolutionPath).GetFiles("*", SearchOption.TopDirectoryOnly)
                                                                                  .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase))))
             {
-                var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionDirectory, targetSolutionDirectory);
+                var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionPath, targetSolutionPath);
 
-                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionFolder, targetSolutionFolder);
+                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
             }
         }
 
         /// <summary>
         /// Copies the project files from the source solution directory to the target solution directory.
         /// </summary>
-        /// <param name="sourceSolutionDirectory">The source solution directory path.</param>
-        /// <param name="targetSolutionDirectory">The target solution directory path.</param>
+        /// <param name="sourceSolutionPath">The source solution directory path.</param>
+        /// <param name="targetSolutionPath">The target solution directory path.</param>
         /// <param name="sourceProjects">An enumerable collection of source project names.</param>
         /// <remarks>
         /// This method iterates through the source solution directory and its subdirectories to find project files.
@@ -495,21 +497,22 @@ namespace TemplateTools.ConApp.Modules
         /// If it does, the method creates a target file path using the original source file path and the target solution directory.
         /// The file is then copied from the source file path to the target file path, and the project GUIDs are replaced.
         /// </remarks>
-        private void CopySolutionProjectFiles(string sourceSolutionDirectory, string targetSolutionDirectory, IEnumerable<string> sourceProjects)
+        private void CopySolutionProjectFiles(string sourceSolutionPath, string targetSolutionPath, IEnumerable<string> sourceProjects)
         {
             var projectFilePath = string.Empty;
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
+            var targetSolutionFolder = new DirectoryInfo(targetSolutionPath).Name;
+            var sourceSolutionFilePath = TemplatePath.GetSolutionFilePath(sourceSolutionPath);
+            var sourceSolutionName = TemplatePath.GetSolutionName(sourceSolutionPath);
 
-            foreach (var sourceFile in new DirectoryInfo(sourceSolutionDirectory).GetFiles($"*{CommonStaticLiterals.ProjectFileExtension}", SearchOption.AllDirectories))
+            foreach (var sourceFile in new DirectoryInfo(sourceSolutionPath).GetFiles($"*{CommonStaticLiterals.ProjectFileExtension}", SearchOption.AllDirectories))
             {
                 var directoryName = sourceFile.DirectoryName?.ToLower();
 
                 if (sourceProjects.Any(e => directoryName != null && directoryName.EndsWith(e.ToLower())))
                 {
-                    var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionDirectory, targetSolutionDirectory);
+                    var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionPath, targetSolutionPath);
 
-                    CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionFolder, targetSolutionFolder);
+                    CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
                 }
             }
             if (string.IsNullOrEmpty(projectFilePath) == false)
@@ -526,7 +529,8 @@ namespace TemplateTools.ConApp.Modules
         private void CopyProjectDirectoryWorkFiles(string sourceDirectory, string sourceSolutionDirectory, string targetSolutionDirectory)
         {
             var projectFilePath = string.Empty;
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
+            var sourceSolutionFilePath = TemplatePath.GetSolutionFilePath(sourceSolutionDirectory);
+            var sourceSolutionName = TemplatePath.GetSolutionName(sourceSolutionDirectory);
             var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
             var sourceFiles = new DirectoryInfo(sourceDirectory).GetFiles("*", SearchOption.AllDirectories)
                                                                 .Where(f => CommonStaticLiterals.IgnoreFolderFiles.Any(i => f.FullName.Contains(i, StringComparison.CurrentCultureIgnoreCase)) == false
@@ -536,7 +540,7 @@ namespace TemplateTools.ConApp.Modules
             {
                 var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionDirectory, targetSolutionDirectory);
 
-                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionFolder, targetSolutionFolder);
+                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
             }
         }
         /// <summary>
@@ -650,21 +654,22 @@ namespace TemplateTools.ConApp.Modules
         /// Creates the target file path based on the source file path and solution directories.
         /// </summary>
         /// <param name="sourceFilePath">The source file path.</param>
-        /// <param name="sourceSolutionDirectory">The source solution directory.</param>
-        /// <param name="targetSolutionDirectory">The target solution directory.</param>
+        /// <param name="sourceSolutionPath">The source solution directory.</param>
+        /// <param name="targetSolutionPath">The target solution directory.</param>
         /// <returns>The target file path.</returns>
-        private static string CreateTargetFilePath(string sourceFilePath, string sourceSolutionDirectory, string targetSolutionDirectory)
+        private static string CreateTargetFilePath(string sourceFilePath, string sourceSolutionPath, string targetSolutionPath)
         {
-            var result = targetSolutionDirectory;
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
-            var subSourceFilePath = sourceFilePath.Replace(sourceSolutionDirectory, string.Empty);
+            var result = targetSolutionPath;
+            var sourceSolutionFilePath = TemplatePath.GetSolutionFilePath(sourceSolutionPath);
+            var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
+            var targetSolutionFolder = new DirectoryInfo(targetSolutionPath).Name;
+            var subSourceFilePath = sourceFilePath.Replace(sourceSolutionPath, string.Empty);
 
             foreach (var item in subSourceFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (string.IsNullOrEmpty(item) == false)
                 {
-                    result = Path.Combine(result, item.Replace(sourceSolutionFolder, targetSolutionFolder));
+                    result = Path.Combine(result, item.Replace(sourceSolutionName, targetSolutionFolder));
                 }
             }
             return result;
@@ -720,4 +725,4 @@ namespace TemplateTools.ConApp.Modules
         }
     }
 }
-//MdEnd
+

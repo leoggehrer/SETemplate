@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 //MdStart
 #if ACCOUNT_ON
 namespace SETemplate.Logic.Entities.Account
@@ -7,11 +7,11 @@ namespace SETemplate.Logic.Entities.Account
     /// Represents a secure identity in the account system.
     /// </summary>
 #if SQLITE_ON
-    [System.ComponentModel.DataAnnotations.Schema.Table("SecureIdentities")]
+    [Table("SecureIdentities")]
 #else
-    [System.ComponentModel.DataAnnotations.Schema.Table("SecureIdentities", Schema = "account")]
+    [Table("SecureIdentities", Schema = "account")]
 #endif
-    [Microsoft.EntityFrameworkCore.Index(nameof(Email), IsUnique = true)]
+    [Index(nameof(Email), IsUnique = true)]
     internal partial class SecureIdentity : Identity
     {
         /// <summary>

@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Reflection;
 
 namespace SETemplate.Common.Extensions
@@ -388,4 +388,4 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd
+

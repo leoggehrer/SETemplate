@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-//MdStart
+
 using System.Text;
 
 namespace TemplateTools.ConApp.Modules
@@ -36,11 +36,11 @@ namespace TemplateTools.ConApp.Modules
             {
                 var targetPathsExists = new List<string>();
 
-                foreach (var item in targetPaths)
+                foreach (var path in targetPaths)
                 {
-                    if (Directory.Exists(item))
+                    if (Directory.Exists(path))
                     {
-                        targetPathsExists.Add(item);
+                        targetPathsExists.Add(path);
                     }
                 }
                 for (int i = 0; i < sourceLabels.Length; i++)
@@ -94,10 +94,11 @@ namespace TemplateTools.ConApp.Modules
             var isProjectTargetPath = targetPath == TemplatePath.GetDirectoryFromPath(targetPath, ".csproj");
             var isSolutionTargetPath = isProjectTargetPath == false && targetPath == TemplatePath.GetDirectoryFromPath(targetPath, ".sln");
             var isSolutionTargetSubPath = isSolutionTargetPath == false && TemplatePath.IsSolutionPath(targetPath);
-            var sourceSolutionPath = TemplatePath.GetDirectoryFromPath(sourceFilePath, ".sln");
-            var sourceSolutionName = TemplatePath.GetSolutionNameFromPath(sourceSolutionPath);
-            var targetSolutionName = TemplatePath.GetSolutionNameFromPath(targetPath);
-            var targetSolutionPath = TemplatePath.GetDirectoryFromPath(targetPath, ".sln");
+            var sourcePath = Path.GetDirectoryName(sourceFilePath) ?? string.Empty;
+            var sourceSolutionFilePath = TemplatePath.FindSolutionFilePath(sourcePath);
+            var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
+            var targetSolutionFilePath = TemplatePath.FindSolutionFilePath(targetPath);
+            var targetSolutionName = Path.GetFileNameWithoutExtension(targetSolutionFilePath);
             var targetFilePath = default(string);
 
             if (TemplatePath.IsProjectFilePath(sourceFilePath))
@@ -151,7 +152,7 @@ namespace TemplateTools.ConApp.Modules
                 {
                     var sourceSubFilePath = TemplatePath.GetSolutionSubFilePath(sourceFilePath);
 
-                    targetFilePath = Path.Combine(targetSolutionPath, sourceSubFilePath);
+                    targetFilePath = Path.Combine(targetPath, sourceSubFilePath);
                 }
                 else
                 {
@@ -238,4 +239,3 @@ namespace TemplateTools.ConApp.Modules
         }
     }
 }
-//MdEnd

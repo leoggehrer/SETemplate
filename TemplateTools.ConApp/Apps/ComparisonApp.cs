@@ -1,5 +1,4 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
 using TemplateTools.ConApp.Modules;
 
 namespace TemplateTools.ConApp.Apps
@@ -243,4 +242,3 @@ namespace TemplateTools.ConApp.Apps
         #endregion partial methods
     }
 }
-//MdEnd

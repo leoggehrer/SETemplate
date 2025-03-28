@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using Microsoft.CodeAnalysis;
 using CodeGenPreprocessor = TemplateTools.Logic.Preprocessor;
 
@@ -254,4 +254,4 @@ namespace TemplateTools.ConApp.Apps
         #endregion app methods
     }
 }
-//MdEnd
+

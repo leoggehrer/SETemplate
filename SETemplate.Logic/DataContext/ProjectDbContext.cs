@@ -109,6 +109,10 @@ namespace SETemplate.Logic.DataContext
             {
                 optionsBuilder.UseSqlServer(ConnectionString);
             }
+            else if (DatabaseType == "Postgres")
+            {
+                optionsBuilder.UseNpgsql(ConnectionString);
+            }
 
             base.OnConfiguring(optionsBuilder);
         }

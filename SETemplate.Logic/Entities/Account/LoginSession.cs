@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 #if ACCOUNT_ON
 namespace SETemplate.Logic.Entities.Account
 {
@@ -8,9 +8,9 @@ namespace SETemplate.Logic.Entities.Account
     /// </summary>
     
 #if SQLITE_ON
-    [System.ComponentModel.DataAnnotations.Schema.Table("LoginSessions")]
+    [Table("LoginSessions")]
 #else
-    [System.ComponentModel.DataAnnotations.Schema.Table("LoginSessions", Schema = "account")]
+    [Table("LoginSessions", Schema = "account")]
 #endif
     internal partial class LoginSession : EntityObject
     {
@@ -20,25 +20,25 @@ namespace SETemplate.Logic.Entities.Account
         /// <summary>
         /// Gets or sets the identity ID.
         /// </summary>
-        public IdType IdentityId { get; internal set; }
+        public IdType IdentityId { get; set; }
         /// <summary>
         /// Gets or sets the timeout value in minutes.
         /// </summary>
-        public int TimeOutInMinutes { get; internal set; }
+        public int TimeOutInMinutes { get; set; }
         /// <summary>
         /// Gets or sets the session token.
         /// </summary>
         [Required]
         [MaxLength(128)]
-        public string SessionToken { get; internal set; } = string.Empty;
+        public string SessionToken { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the time when the user logs in, in Coordinated Universal Time (UTC).
         /// </summary>
-        public DateTime LoginTime { get; internal set; } = DateTime.UtcNow;
+        public DateTime LoginTime { get; set; } = DateTime.UtcNow;
         /// <summary>
         /// Gets or sets the last access time for the property.
         /// </summary>
-        public DateTime LastAccess { get; internal set; } = DateTime.UtcNow;
+        public DateTime LastAccess { get; set; } = DateTime.UtcNow;
         /// <summary>
         /// Gets or sets the logout time.
         /// </summary>
@@ -58,7 +58,7 @@ namespace SETemplate.Logic.Entities.Account
                 OnLogoutTimeReading();
                 return _logoutTime;
             }
-            internal set
+            set
             {
                 bool handled = false;
                 OnLogoutTimeChanging(ref handled, value, ref _logoutTime);
@@ -103,7 +103,7 @@ namespace SETemplate.Logic.Entities.Account
         /// The maximum length of the optional information is 4096 characters.
         /// </remarks>
         [MaxLength(4096)]
-        public string? OptionalInfo { get; internal set; }
+        public string? OptionalInfo { get; set; }
         
         #region Transient properties
         /// <summary>
@@ -135,7 +135,7 @@ namespace SETemplate.Logic.Entities.Account
         ///   <c>true</c> if the authentication is remote; otherwise, <c>false</c>.
         /// </value>
         [NotMapped]
-        public bool IsRemoteAuth { get; internal set; }
+        public bool IsRemoteAuth { get; set; }
         /// <summary>
         /// Gets or sets the origin of the property.
         /// </summary>
@@ -146,7 +146,7 @@ namespace SETemplate.Logic.Entities.Account
         /// The origin of the property.
         /// </value>
         [NotMapped]
-        public string Origin { get; internal set; } = string.Empty;
+        public string Origin { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the name of the object.
         /// </summary>
@@ -157,7 +157,7 @@ namespace SETemplate.Logic.Entities.Account
         /// The name of the object.
         /// </value>
         [NotMapped]
-        public string Name { get; internal set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the email address associated with the object.
         /// </summary>
@@ -169,7 +169,7 @@ namespace SETemplate.Logic.Entities.Account
         /// </value>
         /// <seealso cref="NotMappedAttribute"/>
         [NotMapped]
-        public string Email { get; internal set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the JSON Web Token.
         /// </summary>
@@ -178,7 +178,7 @@ namespace SETemplate.Logic.Entities.Account
         /// </remarks>
         /// <value>The JSON Web Token.</value>
         [NotMapped]
-        public string JsonWebToken { get; internal set; } = string.Empty;
+        public string JsonWebToken { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets a value indicating whether the object is active or not.
@@ -250,4 +250,4 @@ namespace SETemplate.Logic.Entities.Account
     }
 }
 #endif
-//MdEnd
+

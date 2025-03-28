@@ -1,7 +1,5 @@
 ﻿//@BaseCode
-//MdStart
-using SETemplate.Common.Extensions;
-using System.Diagnostics;
+
 using System.Reflection;
 
 namespace SETemplate.Common.Modules.Template
@@ -64,7 +62,7 @@ namespace SETemplate.Common.Modules.Template
         /// </remarks>
         public static string[] GetTemplatePaths(string startPath)
         {
-            return QueryDirectoryStructure(startPath, n => n.StartsWith("QT") || n.Equals("SETemplate"), "bin", "obj", "node_modules");
+            return QueryDirectoryStructure(startPath, n => n.StartsWith("SE"), "bin", "obj", "node_modules");
         }
         /// <summary>
         /// Retrieves an array of string values representing the paths to SETemplate solutions within a specified directory.
@@ -76,9 +74,9 @@ namespace SETemplate.Common.Modules.Template
         public static string[] GetTemplateSolutions(string startPath)
         {
             var result = new List<string>();
-            var qtPaths = GetTemplatePaths(startPath);
+            var paths = GetTemplatePaths(startPath);
 
-            foreach (var qtPath in qtPaths)
+            foreach (var qtPath in paths)
             {
                 var di = new DirectoryInfo(qtPath);
 
@@ -135,7 +133,7 @@ namespace SETemplate.Common.Modules.Template
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error in {MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Error in {MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
                 }
             }
             var result = new List<string>();
@@ -192,6 +190,25 @@ namespace SETemplate.Common.Modules.Template
         }
 
         /// <summary>
+        /// Retrieves the solution path by examining the execution path.
+        /// </summary>
+        /// <returns>The directory path of the solution file if found; otherwise, an empty string.</returns>
+        public static string GetSolutionPathByExecution()
+        {
+            var result = string.Empty;
+            var executionPath = AppDomain.CurrentDomain.BaseDirectory;
+
+            // Search for the solution file in the current directory and parent directories
+            var solutionFile = FindSolutionFilePath(executionPath);
+
+            if (solutionFile != null)
+            {
+                result = Path.GetDirectoryName(solutionFile) ?? string.Empty;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Determines whether the specified path is a solution path.
         /// </summary>
         /// <param name="path">The path to check.</param>
@@ -212,6 +229,32 @@ namespace SETemplate.Common.Modules.Template
             return IsSolutionPath(path ?? string.Empty);
         }
         /// <summary>
+        /// Finds the solution file path by traversing up the directory tree from the specified directory.
+        /// </summary>
+        /// <param name="directory">The starting directory to search for the solution file.</param>
+        /// <returns>The full path of the solution file if found; otherwise, an empty string.</returns>
+        public static string FindSolutionFilePath(string directory)
+        {
+            // Traverse through all directories upwards until the root folder is reached
+            while (directory.HasContent())
+            {
+                // Search for a .sln file in the current directory
+                string[] slnFiles = Directory.GetFiles(directory, "*.sln");
+
+                if (slnFiles.Length > 0)
+                {
+                    // If a .sln file is found, return the path
+                    return slnFiles[0];
+                }
+
+                // Move to the parent directory
+                directory = Directory.GetParent(directory)?.FullName!;
+            }
+
+            // No .sln file found
+            return string.Empty;
+        }
+        /// <summary>
         /// Retrieves the solution name from the given file path.
         /// </summary>
         /// <param name="path">The path of the solution file.</param>
@@ -219,6 +262,34 @@ namespace SETemplate.Common.Modules.Template
         public static string GetSolutionNameFromPath(string path)
         {
             return GetSolutionItemDataFromPath(path, ".sln").Name;
+        }
+        /// <summary>
+        /// Gets the solution file path from the specified source solution path.
+        /// </summary>
+        /// <param name="sourcePath">The directory of the source solution.</param>
+        /// <returns>The file path of the solution file if found; otherwise, an empty string.</returns>
+        public static string GetSolutionFilePath(string sourcePath)
+        {
+            return Directory.GetFiles(sourcePath, $"*{StaticLiterals.SolutionFileExtension}", SearchOption.TopDirectoryOnly)
+                            .FirstOrDefault() ?? string.Empty;
+        }
+        /// <summary>
+        /// Gets the name of the solution file from the specified source solution path.
+        /// </summary>
+        /// <param name="sourcePath">The directory of the source solution.</param>
+        /// <returns>The name of the solution file if found; otherwise, an empty string.</returns>
+        public static string GetSolutionFileName(string sourcePath)
+        {
+            return Path.GetFileName(GetSolutionFilePath(sourcePath));
+        }
+        /// <summary>
+        /// Gets the name of the solution from the specified source solution path.
+        /// </summary>
+        /// <param name="sourcePath">The directory of the source solution.</param>
+        /// <returns>The name of the solution file if found; otherwise, an empty string.</returns>
+        public static string GetSolutionName(string sourcePath)
+        {
+            return Path.GetFileNameWithoutExtension(GetSolutionFileName(sourcePath));
         }
         /// <summary>
         /// Determines whether the specified path is a project path.
@@ -426,7 +497,7 @@ namespace SETemplate.Common.Modules.Template
         {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                Process.Start(new ProcessStartInfo()
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
                 {
                     WorkingDirectory = solutionPath,
                     FileName = "explorer",
@@ -438,4 +509,3 @@ namespace SETemplate.Common.Modules.Template
         #endregion CLI argument methods
     }
 }
-//MdEnd

@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic
 {
     using System.Collections.Concurrent;
@@ -253,4 +253,4 @@ namespace TemplateTools.Logic
         }
     }
 }
-//MdEnd
+

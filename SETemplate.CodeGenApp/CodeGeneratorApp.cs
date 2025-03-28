@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-//MdStart
 using TemplateTools.Logic;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Git;
@@ -21,7 +20,7 @@ namespace SETemplate.CodeGenApp
             ToGroupFile = false;
             IncludeCleanDirectory = true;
             ExcludeGeneratedFilesFromGIT = true;
-            SourcePath = GetCurrentSolutionPath();
+            SourcePath = SolutionPath = TemplatePath.GetSolutionPathByExecution();
             ClassConstructed();
         }
         /// <summary>
@@ -238,4 +237,3 @@ namespace SETemplate.CodeGenApp
         #endregion app methods
     }
 }
-//MdEnd

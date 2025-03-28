@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-//MdStart
+
 using System.Text;
 
 namespace SETemplate.Common.Extensions
@@ -380,4 +380,3 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd

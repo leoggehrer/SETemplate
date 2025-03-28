@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 
 namespace SETemplate.Common.Modules.PlantUML
 {
@@ -694,4 +694,4 @@ namespace SETemplate.Common.Modules.PlantUML
         #endregion helpers
     }
 }
-//MdEnd
+

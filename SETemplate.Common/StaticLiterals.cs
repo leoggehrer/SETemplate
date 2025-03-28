@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace SETemplate.Common
 {
     /// <summary>
@@ -13,7 +13,6 @@ namespace SETemplate.Common
             BeforeClassInitialize();
             TemplateProjects =
             [
-                "CommonBase",
             ];
             TemplateToolProjects =
             [
@@ -212,4 +211,4 @@ namespace SETemplate.Common
         #endregion Folders and Files
     }
 }
-//MdEnd
+

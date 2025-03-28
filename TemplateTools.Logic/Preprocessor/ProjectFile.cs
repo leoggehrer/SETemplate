@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Text;
 
 namespace TemplateTools.Logic.Preprocessor
@@ -303,4 +303,4 @@ namespace TemplateTools.Logic.Preprocessor
         }
     }
 }
-//MdEnd
+

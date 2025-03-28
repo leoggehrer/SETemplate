@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Diagnostics;
 using TemplateTools.Logic;
 using TemplateTools.Logic.Git;
@@ -362,4 +362,4 @@ namespace TemplateTools.ConApp.Apps
         }
     }
 }
-//MdEnd
+

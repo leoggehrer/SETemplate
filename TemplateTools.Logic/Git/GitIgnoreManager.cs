@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic.Git
 {
     using System.Collections.Concurrent;
@@ -191,4 +191,4 @@ namespace TemplateTools.Logic.Git
         }
     }
 }
-//MdEnd
+

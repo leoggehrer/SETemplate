@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Collections.Concurrent;
 
 namespace SETemplate.Common.Extensions
@@ -43,4 +43,4 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd
+

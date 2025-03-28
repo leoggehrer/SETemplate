@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 
 namespace TemplateTools.Logic
 {
@@ -420,4 +420,4 @@ namespace TemplateTools.Logic
         }
     }
 }
-//MdEnd
+

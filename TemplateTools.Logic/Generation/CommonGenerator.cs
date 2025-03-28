@@ -1,10 +1,9 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
     using TemplateTools.Logic.Contracts;
-    using TemplateTools.Logic.Extensions;
     using TemplateTools.Logic.Models;
 
     /// <summary>
@@ -26,12 +25,12 @@ namespace TemplateTools.Logic.Generation
         protected override ItemProperties ItemProperties => _itemProperties ??= new ItemProperties(SolutionProperties.SolutionName, StaticLiterals.CommonExtension);
 
         /// <summary>
-        /// Gets or sets a value indicating whether all model contracts should be generated.
+        /// Gets or sets a value indicating whether all entity contracts should be generated.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if all model contracts should be generated; otherwise, <c>false</c>.
+        ///   <c>true</c> if all entity contracts should be generated; otherwise, <c>false</c>.
         /// </value>
-        public bool GenerateAllModelContracts { get; set; }
+        public bool GenerateEntityContracts { get; set; }
         #endregion properties
 
         #region constructors
@@ -43,7 +42,7 @@ namespace TemplateTools.Logic.Generation
         {
             var generateAll = QuerySetting<string>(Common.ItemType.AllItems, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
 
-            GenerateAllModelContracts = QuerySetting<bool>(Common.ItemType.EntityContract, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
+            GenerateEntityContracts = QuerySetting<bool>(Common.ItemType.EntityContract, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
         }
         #endregion constructors
 
@@ -69,7 +68,7 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static bool GetGenerateDefault(Type type)
         {
-            return !EntityProject.IsNotAGenerationEntity(type);
+            return EntityProject.IsCustomEntity(type);
         }
 
         /// <summary>
@@ -81,68 +80,15 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.AllEntityTypes)
             {
-                var defaultValue = (GenerateAllModelContracts && GetGenerateDefault(type)).ToString();
+                var defaultValue = (GenerateEntityContracts && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.EntityContract, type, StaticLiterals.Generate, defaultValue))
                 {
                     result.Add(CreateEntityContract(type, Common.UnitType.Common, Common.ItemType.EntityContract));
                 }
             }
-            return result;
-        }
-        /// <summary>
-        /// Creates a model contract for the specified type, unit type, and item type.
-        /// </summary>
-        /// <param name="type">The type for which to create the model contract.</param>
-        /// <param name="unitType">The unit type used for the generated item.</param>
-        /// <param name="itemType">The item type used for the generated item.</param>
-        /// <returns>The generated model contract as an <see cref="IGeneratedItem"/>.</returns>
-        private GeneratedItem CreateEntityContract(Type type, Common.UnitType unitType, Common.ItemType itemType)
-        {
-            var baseType = type.BaseType;
-            var inherit = baseType != null ? (baseType.Name.Equals("EntityObject") ? $" : IIdentifiable" : $" : {ItemProperties.CreateModelContractName(baseType)}") : string.Empty;
-            var itemName = ItemProperties.CreateContractName(type);
-            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
-            var typeProperties = type.GetAllPropertyInfos();
-            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
-            var result = new GeneratedItem(unitType, itemType)
-            {
-                FullName = ItemProperties.CreateFullCommonModelContractType(type),
-                FileExtension = StaticLiterals.CSharpFileExtension,
-                SubFilePath = ItemProperties.CreateSubFilePath(type, fileName, StaticLiterals.ContractsFolder),
-            };
-
-            result.AddRange(CreateComment(type));
-            result.Add($"public partial interface {itemName}{inherit}");
-            result.Add("{");
-            foreach (var propertyItem in generateProperties.Where(pi => ItemProperties.IsEntityType(pi.PropertyType) == false
-            && ItemProperties.IsEntityListType(pi.PropertyType) == false))
-            {
-                if (QuerySetting<bool>(unitType, Common.ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.Generate, "True"))
-                {
-                    var getAccessor = string.Empty;
-                    var setAccessor = string.Empty;
-                    var propertyType = GetPropertyType(propertyItem);
-
-                    if (QuerySetting<bool>(unitType, Common.ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.GetAccessor, "True"))
-                    {
-                        getAccessor = "get;";
-                    }
-                    if (QuerySetting<bool>(unitType, Common.ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.SetAccessor, "True"))
-                    {
-                        setAccessor = "set;";
-                    }
-                    result.Add($"{propertyType} {propertyItem.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
-                }
-            }
-            // Added copy properties method
-            result.AddRange(CreateCopyProperties(string.Empty, type, itemName, pi => pi.IsNavigationProperties() == false));
-
-            result.Add("}");
-            result.EnvelopeWithANamespace(ItemProperties.CreateFullCommonNamespace(type, StaticLiterals.ContractsFolder));
-            result.FormatCSharpCode();
             return result;
         }
         #endregion generations
@@ -206,4 +152,4 @@ namespace TemplateTools.Logic.Generation
         #endregion query settings
     }
 }
-//MdEnd
+

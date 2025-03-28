@@ -1,25 +1,23 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
 #if ACCOUNT_ON
 namespace SETemplate.Logic.Entities.Account
 {
-    using SETemplate.Logic.Contracts.Account;
     /// <summary>
     /// Represents an identity in the account system.
     /// </summary>
 #if SQLITE_ON
-    [System.ComponentModel.DataAnnotations.Schema.Table("Identities")]
+    [Table("Identities")]
 #else
-    [System.ComponentModel.DataAnnotations.Schema.Table("Identities", Schema = "account")]
+    [Table("Identities", Schema = "account")]
 #endif
-    [Microsoft.EntityFrameworkCore.Index(nameof(Email), IsUnique = true)]
-    public abstract partial class Identity : EntityObject, IIdentity
+    [Index(nameof(Email), IsUnique = true)]
+    internal partial class Identity : EntityObject
     {
 #if GUID_OFF
         /// <summary>
         /// Gets or sets the unique identifier.
         /// </summary>
-        public Guid Guid { get; internal set; }
+        public Guid Guid { get; set; }
 #endif
         /// <summary>
         /// Gets or sets the name.
@@ -55,14 +53,12 @@ namespace SETemplate.Logic.Entities.Account
         /// <summary>
         /// Gets an array of roles associated with the user.
         /// </summary>
-        public IRole[] Roles => IdentityXRoles.Where(iXr => iXr.Role != null)
-                                              .Select(iXr => iXr.Role!)
-                                              .ToArray();
+        public Role[] Roles => [.. IdentityXRoles.Where(iXr => iXr.Role != null).Select(iXr => iXr.Role!)];
         #region Navigation properties
         /// <summary>
         /// Gets or sets the list of IdentityXRole objects associated with this entity.
         /// </summary>
-        public List<IdentityXRole> IdentityXRoles { get; internal set; } = new();
+        public List<IdentityXRole> IdentityXRoles { get; internal set; } = [];
         #endregion Navigation properties
 
         /// <summary>
@@ -77,4 +73,3 @@ namespace SETemplate.Logic.Entities.Account
     }
 }
 #endif
-//MdEnd

@@ -1,5 +1,4 @@
-﻿//@BaseCode
-
+﻿//@CodeCopy
 #if IDINT_ON
 global using IdType = System.Int32;
 #elif IDLONG_ON

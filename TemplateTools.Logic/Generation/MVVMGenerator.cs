@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Reflection;
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
@@ -309,4 +309,4 @@ namespace TemplateTools.Logic.Generation
         #endregion Partial methods
     }
 }
-//MdEnd
+

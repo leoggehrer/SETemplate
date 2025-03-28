@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using TemplateTools.Logic;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Git;
@@ -220,4 +220,4 @@ namespace SETemplate.CodeGenApp
         #endregion Partial methods
     }
 }
-//MdEnd
+

@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic
 {
     /// <summary>
@@ -110,8 +110,11 @@ namespace TemplateTools.Logic
         public static readonly string ContextAccessor = "ContextAccessor";
         public static readonly string GenericItemViewModel = "GenericItemViewModel";
 
-        public static readonly string ContextContract = "IContext";
+        public static readonly string IdentifiableName = "IIdentifiable";
+        public static readonly string ContextContractName = "IContext";
         public static readonly string EntitySetContractName = "IEntitySet";
+
+        public static readonly string GlobalUsingIdentifiableName = "CommonContracts.IIdentifiable";
         #endregion items
 
         #region Entity properties
@@ -303,4 +306,4 @@ namespace TemplateTools.Logic
         #endregion Modules
     }
 }
-//MdEnd
+

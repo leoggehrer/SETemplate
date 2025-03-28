@@ -1,8 +1,9 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using TemplateTools.Logic.Common;
     using TemplateTools.Logic.Contracts;
     using TemplateTools.Logic.Extensions;
@@ -22,7 +23,6 @@ namespace TemplateTools.Logic.Generation
         /// Gets the properties of the item.
         /// </summary>
         protected abstract ItemProperties ItemProperties { get; }
-
         #region overrides
         /// <summary>
         /// Returns the type of the property.
@@ -58,7 +58,9 @@ namespace TemplateTools.Logic.Generation
             if (StaticLiterals.VersionProperties.Any(vp => vp.Equals(propertyInfo.Name)) == false
                 && copyType.Equals(propertyInfo.DeclaringType!.FullName, StringComparison.CurrentCultureIgnoreCase) == false)
             {
-                if (ItemProperties.IsArrayType(propertyInfo.PropertyType))
+                if (ItemProperties.IsArrayType(propertyInfo.PropertyType)
+                    && propertyInfo.PropertyType.GetElementType() != typeof(string)
+                    && propertyInfo.PropertyType.GetElementType()!.IsPrimitive == false)
                 {
                     var modelType = ItemProperties.GetSubType(propertyInfo.PropertyType.GetElementType()!);
 
@@ -205,6 +207,115 @@ namespace TemplateTools.Logic.Generation
         #endregion converters
 
         /// <summary>
+        /// Creates an entity contract for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which the entity contract is created.</param>
+        /// <param name="unitType">The unit type.</param>
+        /// <param name="itemType">The item type.</param>
+        /// <returns>A <see cref="GeneratedItem"/> representing the created entity contract.</returns>
+        protected virtual GeneratedItem CreateEntityContract(Type type, UnitType unitType, ItemType itemType)
+        {
+            var baseType = type.BaseType;
+            var inherit = baseType != null ? (baseType.Name.Equals(StaticLiterals.EntityObjectName) ? $" : {StaticLiterals.GlobalUsingIdentifiableName}" : $" : {ItemProperties.CreateContractName(baseType)}") : string.Empty;
+            var itemName = ItemProperties.CreateContractName(type);
+            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
+            var visibility = ItemProperties.GetDefaultVisibility(type);
+            var itemFullName = ItemProperties.CreateFullContractType(type);
+            var itemNamespace = ItemProperties.CreateFullNamespace(type, StaticLiterals.ContractsFolder);
+            var typeProperties = type.GetAllPropertyInfos().Where(pi => pi.DeclaringType == type) ?? [];
+            var generateProperties = typeProperties.Where(pi => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(pi.Name)) == false
+                                                             && ItemProperties.IsEntityType(pi.PropertyType) == false
+                                                             && ItemProperties.IsEntityListType(pi.PropertyType) == false
+                                                             && ItemProperties.IsEntityArrayType(pi.PropertyType) == false) ?? [];
+            var result = new GeneratedItem(unitType, itemType)
+            {
+                FullName = itemFullName,
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateSubFilePath(type, fileName, StaticLiterals.ContractsFolder),
+            };
+
+            visibility = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Visibility, visibility);
+
+            result.AddRange(CreateComment(type));
+            result.Add($"{visibility} partial interface {itemName}{inherit}");
+            result.Add("{");
+            foreach (var propertyInfo in generateProperties)
+            {
+                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.Generate, "True"))
+                {
+                    var getAccessor = string.Empty;
+                    var setAccessor = string.Empty;
+                    var propertyType = GetPropertyType(propertyInfo);
+
+                    if (propertyInfo.CanRead 
+                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.GetAccessor, "True"))
+                    {
+                        getAccessor = "get;";
+                    }
+                    if (propertyInfo.CanWrite 
+                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.SetAccessor, "True"))
+                    {
+                        setAccessor = "set;";
+                    }
+                    result.Add($"{propertyType} {propertyInfo.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
+                }
+            }
+            // Added copy properties method
+            result.AddRange(CreateContractCopyProperties(type, itemName, pi => generateProperties.Contains(pi)));
+
+            result.Add("}");
+            result.EnvelopeWithANamespace(itemNamespace);
+            result.FormatCSharpCode();
+            return result;
+        }
+        /// <summary>
+        /// Creates a copy of the properties of the specified <paramref name="type"/>.
+        /// </summary>
+        /// <param name="visibility">The visibility of the copy properties method.</param>
+        /// <param name="type">The type whose properties will be copied.</param>
+        /// <param name="copyType">The type to which the properties will be copied.</param>
+        /// <param name="filter">An optional filter function to determine which properties to copy.</param>
+        /// <returns>
+        /// An enumerable collection of strings representing the generated copy properties method.
+        /// </returns>
+        public virtual IEnumerable<string> CreateContractCopyProperties(Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
+        {
+            var result = new List<string>();
+
+            result.AddRange(CreateComment("Copies the properties of another object to this instance."));
+            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
+            result.Add($"void CopyProperties({copyType} other)");
+            result.Add("{");
+            result.Add("other.CheckArgument(nameof(other));");
+            result.Add("bool handled = false;");
+            result.Add("BeforeCopyProperties(other, ref handled);");
+            result.Add("if (handled == false)");
+            result.Add("{");
+
+            foreach (var item in type.GetAllPropertyInfos().Where(filter ?? (p => true)))
+            {
+                if (item.CanWrite && item.CanRead && CanCreate(item) && CanCopyProperty(item))
+                {
+                    result.Add(CopyProperty(copyType, item));
+                }
+            }
+
+            result.Add("}");
+            result.Add("AfterCopyProperties(other);");
+            result.Add("}");
+
+            result.AddRange(CreateComment("This method is called before copying the properties of another object to the current instance."));
+            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
+            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param>");
+            result.Add($"partial void BeforeCopyProperties({copyType} other, ref bool handled);");
+
+            result.AddRange(CreateComment("This method is called after copying properties from another instance of the class."));
+            result.Add("/// <param name=\"other\">The other instance of the class from which properties were copied.</param>");
+            result.Add($"partial void AfterCopyProperties({copyType} other);");
+            return result.Where(l => string.IsNullOrEmpty(l) == false);
+        }
+
+        /// <summary>
         /// Creates a model from a given type, unit type, and item type.
         /// </summary>
         /// <param name="type">The type of the model.</param>
@@ -220,7 +331,7 @@ namespace TemplateTools.Logic.Generation
             var modelSubFilePath = ConvertModelSubPath(ItemProperties.CreateModelSubPath(type, string.Empty, StaticLiterals.CSharpFileExtension));
             var visibility = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Visibility, "public");
             var attributes = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Attribute, string.Empty);
-            var contractType = ItemProperties.CreateFullCommonModelContractType(type);
+            var contractType = ItemProperties.CreateFullCommonContractType(type);
             var typeProperties = type.GetAllPropertyInfos();
             var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             GeneratedItem result = new(unitType, itemType)
@@ -334,4 +445,4 @@ namespace TemplateTools.Logic.Generation
         #endregion Partial methods
     }
 }
-//MdEnd
+

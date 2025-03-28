@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace SETemplate.Common.Extensions
 {
     /// <summary>
@@ -41,4 +41,3 @@ namespace SETemplate.Common.Extensions
         public string Text { get; internal set; } = String.Empty;
     }
 }
-//MdEnd

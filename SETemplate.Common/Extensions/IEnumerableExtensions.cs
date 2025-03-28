@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace SETemplate.Common.Extensions
 {
     /// <summary>
@@ -173,4 +173,4 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd
+

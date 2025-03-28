@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
@@ -25,7 +25,7 @@ namespace SETemplate.Common.Extensions
 
             if (type.IsGenericType)
             {
-                name = name.Remove(name.IndexOf(GenericSpecialChar));
+                name = name[..name.IndexOf(GenericSpecialChar)];
             }
             return name;
         }
@@ -44,11 +44,11 @@ namespace SETemplate.Common.Extensions
                 var names = from genericArg in type.GetGenericArguments()
                             select GetCodeDefinition(genericArg);
                 sb.Append('<');
-                sb.Append(string.Join(GenericSeparator, names.ToArray()));
+                sb.Append(string.Join(GenericSeparator, [.. names]));
                 sb.Append('>');
             }
             if (sb.ToString().StartsWith("System.Nullable<")
-            && sb.ToString().EndsWith(">"))
+            && sb.ToString().EndsWith('>'))
             {
                 sb.Replace("System.Nullable<", string.Empty);
                 sb.Replace(">", string.Empty);
@@ -259,9 +259,7 @@ namespace SETemplate.Common.Extensions
             
             static void GetInterfaceHierarchyRec(Extend root)
             {
-                root.Extends = root.Type!.GetAllInterfaces()
-                .Select(e => new Extend { Type = e })
-                .ToList();
+                root.Extends = [.. root.Type!.GetAllInterfaces().Select(e => new Extend { Type = e })];
                 foreach (var item in root.Extends)
                 {
                     GetInterfaceHierarchyRec(item);
@@ -492,8 +490,7 @@ namespace SETemplate.Common.Extensions
         {
             type.CheckArgument(nameof(type));
             
-            return type?.GetAllInterfacePropertyInfos()
-                        .SingleOrDefault(p => p.Name.Equals(name));
+            return type?.GetAllInterfacePropertyInfos().SingleOrDefault(p => p.Name.Equals(name));
         }
         
         /// <summary>
@@ -624,8 +621,7 @@ namespace SETemplate.Common.Extensions
             
             while (instanceType != null)
             {
-                if (instanceType.IsGenericType &&
-                instanceType.GetGenericTypeDefinition() == genericType)
+                if (instanceType.IsGenericType && instanceType.GetGenericTypeDefinition() == genericType)
                 {
                     return true;
                 }
@@ -707,4 +703,4 @@ namespace SETemplate.Common.Extensions
         }
     }
 }
-//MdEnd
+

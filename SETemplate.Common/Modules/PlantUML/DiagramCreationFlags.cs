@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 namespace SETemplate.Common.Modules.PlantUML
 {
     public enum DiagramCreationFlags
@@ -20,4 +20,4 @@ namespace SETemplate.Common.Modules.PlantUML
         All = EnumMembers | ClassMembers | InterfaceMembers | TypeExtends | InterfaceExtends | ImplementedInterfaces | ClassRelations | InterfaceRelations,
     }
 }
-//MdEnd
+

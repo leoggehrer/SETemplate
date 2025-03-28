@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using TemplateTools.Logic;
 
 namespace TemplateTools.ConApp.Apps
@@ -176,4 +176,4 @@ namespace TemplateTools.ConApp.Apps
         #endregion app methods
     }
 }
-//MdEnd
+

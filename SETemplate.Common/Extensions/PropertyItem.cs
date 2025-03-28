@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Reflection;
 
 namespace SETemplate.Common.Extensions
@@ -84,4 +84,4 @@ namespace SETemplate.Common.Extensions
         public Dictionary<string, PropertyItem> PropertyItems { get; private set; } = [];
     }
 }
-//MdEnd
+

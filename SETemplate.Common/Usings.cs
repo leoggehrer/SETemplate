@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 #if IDINT_ON
 global using IdType = System.Int32;
 #elif IDLONG_ON
@@ -9,5 +9,6 @@ global using IdType = System.Guid;
 #else
 global using IdType = System.Int32;
 #endif
-//MdEnd
+
+global using CommonContracts = SETemplate.Common.Contracts;
 global using SETemplate.Common.Extensions;

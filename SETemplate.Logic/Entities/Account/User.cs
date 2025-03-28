@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 //MdStart
 #if ACCOUNT_ON
 namespace SETemplate.Logic.Entities.Account
@@ -7,9 +7,9 @@ namespace SETemplate.Logic.Entities.Account
     /// Represents an user in the account system.
     /// </summary>
 #if SQLITE_ON
-    [System.ComponentModel.DataAnnotations.Schema.Table("Users")]
+    [Table("Users")]
 #else
-    [System.ComponentModel.DataAnnotations.Schema.Table("Users", Schema = "account")]
+    [Table("Users", Schema = "account")]
 #endif
     public partial class User : EntityObject
     {

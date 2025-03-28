@@ -1,20 +1,17 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
 #if ACCOUNT_ON
 namespace SETemplate.Logic.Entities.Account
 {
-    using SETemplate.Logic.Contracts.Account;
-    
     /// <summary>
     /// Represents a identity to role in the account system.
     /// </summary>
 #if SQLITE_ON
-    [System.ComponentModel.DataAnnotations.Schema.Table("IdentityXRoles")]
+    [Table("IdentityXRoles")]
 #else
-    [System.ComponentModel.DataAnnotations.Schema.Table("IdentityXRoles", Schema = "account")]
+    [Table("IdentityXRoles", Schema = "account")]
 #endif
-    [Microsoft.EntityFrameworkCore.Index(nameof(IdentityId), nameof(RoleId), IsUnique = true)]
-    public partial class IdentityXRole : EntityObject, IIdentityXRole
+    [Index(nameof(IdentityId), nameof(RoleId), IsUnique = true)]
+    internal partial class IdentityXRole : EntityObject
     {
         /// <summary>
         /// Gets or sets the identity ID.
@@ -37,4 +34,3 @@ namespace SETemplate.Logic.Entities.Account
     }
 }
 #endif
-//MdEnd

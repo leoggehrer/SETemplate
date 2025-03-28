@@ -1,5 +1,5 @@
-//@BaseCode
-//MdStart
+﻿//@BaseCode
+
 using System.Reflection;
 
 namespace SETemplate.Logic.Modules.CodeGenerator
@@ -36,4 +36,4 @@ namespace SETemplate.Logic.Modules.CodeGenerator
         public static Type[] EntityTypes => [.. AllTypes.Where(t => string.IsNullOrEmpty(t.FullName) == false && t.FullName.Contains(".Entities."))];
     }
 }
-//MdEnd
+
