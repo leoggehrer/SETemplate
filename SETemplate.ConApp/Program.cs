@@ -20,6 +20,8 @@ namespace SETemplate.ConApp
 
                 Console.WriteLine($"{nameof(InitDatabase),-25}....{index++}");
 
+                CreateMenu(ref index);
+
                 Console.WriteLine();
                 Console.WriteLine($"Exit...............x");
                 Console.WriteLine();
@@ -38,6 +40,7 @@ namespace SETemplate.ConApp
                             break;
 
                         default:
+                            ExecuteMenuItem(choice, context);
                             break;
                     }
                 }
@@ -47,9 +50,17 @@ namespace SETemplate.ConApp
         public static void InitDatabase()
         {
 #if DEBUG
+            BeforeInitDatabase();
             Logic.DataContext.Factory.InitDatabase();
+            AfterInitDatabase();
 #endif
         }
 
+        #region partial methods
+        static partial void BeforeInitDatabase();
+        static partial void AfterInitDatabase();
+        static partial void CreateMenu(ref int index);
+        static partial void ExecuteMenuItem(int choice, Logic.Contracts.IContext context);
+        #endregion partial methods
     }
 }

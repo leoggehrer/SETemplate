@@ -153,6 +153,34 @@ namespace TemplateTools.Logic.Generation
                 }
             }
             result.Add("}");
+            result.AddRange(CreateComment());
+            result.Add($"partial void GetGeneratorEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.{StaticLiterals.EntityObjectName}, new()");
+            result.Add("{");
+
+            first = false;
+
+            foreach (var type in entityProject.EntityTypes)
+            {
+                var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
+
+                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                {
+                    var entityType = ItemProperties.GetModuleSubType(type);
+                    var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
+                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
+                    var entitySetName = ItemProperties.CreateEntitySetName(type);
+                    var entitySetType = $"{subNamespace}.{entitySetName}";
+                    var dbSetName = $"Db{type.Name}Set";
+
+                    result.Add($"{(first ? "else " : string.Empty)}if (typeof(E) == typeof({entityType}))");
+                    result.Add("{");
+                    result.Add($"entitySet = new {entitySetType}(this,{dbSetName}) as EntitySet<E>;");
+                    result.Add("handled = true;");
+                    result.Add("}");
+                    first = true;
+                }
+            }
+            result.Add("}");
             result.Add("#endregion partial methods");
 
             result.Add("}");

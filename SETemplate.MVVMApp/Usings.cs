@@ -9,7 +9,9 @@ global using IdType = System.Guid;
 #else
 global using IdType = System.Int32;
 #endif
+
 global using Common = SETemplate.Common;
 global using CommonContracts = SETemplate.Common.Contracts;
+global using CommonModules = SETemplate.Common.Modules;
 global using SETemplate.Common.Extensions;
 

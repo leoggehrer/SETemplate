@@ -79,7 +79,6 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
-
             };
 
             Defines = CodeGenPreprocessor.ProjectFile.ReadDefinesInProjectFiles(PreprocessorSolutionPath);
@@ -101,6 +100,18 @@ namespace TemplateTools.ConApp.Apps
                     description = $" ==> {define.Replace("_OFF", "_ON")}";
                     foreColor = ConsoleColor.Yellow;
                 }
+
+                if (mnuIdx == 5 || mnuIdx == 11 || mnuIdx == 14 || mnuIdx == 17)
+                {
+                    menuItems.Add(new()
+                    {
+                        Key = "---",
+                        Text = new string('-', 65),
+                        Action = (self) => { },
+                        ForegroundColor = ConsoleColor.DarkGray,
+                    });
+                }
+
                 menuItems.Add(new()
                 {
                     Key = $"{++mnuIdx}",
@@ -194,10 +205,11 @@ namespace TemplateTools.ConApp.Apps
                 if (defines[idx].EndsWith("_ON"))
                 {
                     if (defines[idx].StartsWith("IDINT_") == false
-                    && defines[idx].StartsWith("IDLONG_") == false
-                    && defines[idx].StartsWith("IDGUID_") == false
-                    && defines[idx].StartsWith("SQLSERVER_") == false
-                    && defines[idx].StartsWith("SQLITE_") == false)
+                        && defines[idx].StartsWith("IDLONG_") == false
+                        && defines[idx].StartsWith("IDGUID_") == false
+                        && defines[idx].StartsWith("POSTGRES_") == false
+                        && defines[idx].StartsWith("SQLSERVER_") == false
+                        && defines[idx].StartsWith("SQLITE_") == false)
                     {
                         defines[idx] = defines[idx].Replace("_ON", "_OFF");
                     }
@@ -222,13 +234,21 @@ namespace TemplateTools.ConApp.Apps
                         SwitchDefine(defines, "IDLONG_", "OFF");
                         SwitchDefine(defines, "IDGUID_", "ON");
                     }
+                    else if (defines[idx].StartsWith("POSTGRES_") == true)
+                    {
+                        SwitchDefine(defines, "POSTGRES_", "ON");
+                        SwitchDefine(defines, "SQLSERVER_", "OFF");
+                        SwitchDefine(defines, "SQLITE_", "OFF");
+                    }
                     else if (defines[idx].StartsWith("SQLSERVER_") == true)
                     {
-                        SwitchDefine(defines, "SQLITE_", "OFF");
+                        SwitchDefine(defines, "POSTGRES_", "OFF");
                         SwitchDefine(defines, "SQLSERVER_", "ON");
+                        SwitchDefine(defines, "SQLITE_", "OFF");
                     }
                     else if (defines[idx].StartsWith("SQLITE_") == true)
                     {
+                        SwitchDefine(defines, "POSTGRES_", "OFF");
                         SwitchDefine(defines, "SQLSERVER_", "OFF");
                         SwitchDefine(defines, "SQLITE_", "ON");
                     }

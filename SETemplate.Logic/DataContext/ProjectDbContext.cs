@@ -28,7 +28,19 @@ namespace SETemplate.Logic.DataContext
             var appSettings = Common.Modules.Configuration.AppSettings.Instance;
 
             ClassConstructing();
-            DatabaseType = appSettings["Database:Type"] ?? DatabaseType;
+
+#if POSTGRES_ON
+            DatabaseType = "Postgres";
+#endif
+
+#if SQLSERVER_ON
+            DatabaseType = "SqlServer";
+#endif
+
+#if SQLITE_ON
+            DatabaseType = "Sqlite";
+#endif
+
             ConnectionString = appSettings[$"ConnectionStrings:{DatabaseType}ConnectionString"] ?? ConnectionString;
             ClassConstructed();
         }
@@ -61,39 +73,22 @@ namespace SETemplate.Logic.DataContext
         /// This method is called when the object is constructed.
         /// </summary>
         partial void Constructed();
-        #endregion constructors
-
-        #region methods
+        /// <summary>
+        /// Saves all changes made in this context to the underlying database.
+        /// </summary>
+        /// <returns>The number of state entries written to the underlying database.</returns>
         public override int SaveChanges()
         {
-            // Vor dem Speichern alle Entitäten validieren
-            var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is IValidatable && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-            foreach (var entry in entries)
-            {
-                var validatableEntity = (IValidatable)entry.Entity;
-                
-                validatableEntity.Validate(this);
-            }
-
-            return base.SaveChanges();
+            return ExecuteSaveChanges();
         }
 
+        /// <summary>
+        /// Asynchronously saves all changes made in this context to the underlying database.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries written to the underlying database.</returns>
         public Task<int> SaveChangesAsync()
         {
-            // Vor dem Speichern alle Entitäten validieren
-            var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is IValidatable && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-            foreach (var entry in entries)
-            {
-                var validatableEntity = (IValidatable)entry.Entity;
-
-                validatableEntity.Validate(this);
-            }
-
-            return base.SaveChangesAsync();
+            return ExecuteSaveChangesAsync();
         }
         /// <summary>
         /// Configures the database context options.
@@ -101,18 +96,17 @@ namespace SETemplate.Logic.DataContext
         /// <param name="optionsBuilder">The options builder to be used for configuration.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (DatabaseType == "Sqlite")
-            {
-                optionsBuilder.UseSqlite(ConnectionString);
-            }
-            else if (DatabaseType == "SqlServer")
-            {
-                optionsBuilder.UseSqlServer(ConnectionString);
-            }
-            else if (DatabaseType == "Postgres")
-            {
-                optionsBuilder.UseNpgsql(ConnectionString);
-            }
+#if POSTGRES_ON
+            optionsBuilder.UseNpgsql(ConnectionString);
+#endif
+
+#if SQLSERVER_ON
+            optionsBuilder.UseSqlServer(ConnectionString);
+#endif
+
+#if SQLITE_ON
+            optionsBuilder.UseSqlite(ConnectionString);
+#endif
 
             base.OnConfiguring(optionsBuilder);
         }
@@ -134,6 +128,19 @@ namespace SETemplate.Logic.DataContext
             }
             return result ?? Set<E>();
         }
+
+        internal EntitySet<E>? GetEntitySet<E>() where E : Entities.EntityObject, new()
+        {
+            var handled = false;
+            var result = default(EntitySet<E>);
+
+            GetEntitySet(ref result, ref handled);
+            if (handled == false || result == null)
+            {
+                GetGeneratorEntitySet(ref result, ref handled);
+            }
+            return result;
+        }
         #endregion methods
 
         #region partial methods
@@ -151,6 +158,21 @@ namespace SETemplate.Logic.DataContext
         /// <param name="dbSet">The DbSet depending on the type E</param>
         /// <param name="handled">Indicates whether the method found the DbSet</param>
         partial void GetGeneratorDbSet<E>(ref DbSet<E>? dbSet, ref bool handled) where E : Entities.EntityObject;
+
+        /// <summary>
+        /// Determines the domain project EntitySet depending on the type E
+        /// </summary>
+        /// <typeparam name="E">The entity type E</typeparam>
+        /// <param name="entitySet">The EntitySet depending on the type E</param>
+        /// <param name="handled">Indicates whether the method found the EntitySet</param>
+        partial void GetEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.EntityObject, new();
+        /// <summary>
+        /// Determines the domain project DbSet depending on the type E
+        /// </summary>
+        /// <typeparam name="E">The entity type E</typeparam>
+        /// <param name="entitySet">The EntitySet depending on the type E</param>
+        /// <param name="handled">Indicates whether the method found the EntitySet</param>
+        partial void GetGeneratorEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.EntityObject, new();
         #endregion partial methods
     }
 }

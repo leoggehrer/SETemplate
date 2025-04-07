@@ -6,7 +6,7 @@ namespace SETemplate.Logic.Entities.Account
     /// Represents an identity in the account system.
     /// </summary>
 #if SQLITE_ON
-    [Table("Identities")]
+        [Table("Identities")]
 #else
     [Table("Identities", Schema = "account")]
 #endif
@@ -30,26 +30,29 @@ namespace SETemplate.Logic.Entities.Account
         [MaxLength(128)]
         public string Email { get; set; } = string.Empty;
         /// <summary>
+        /// Gets or sets the confirmation code.
+        /// </summary>
+        public string? ConfirmationCode { get; set; } = null;
+        /// <summary>
+        /// Gets or sets the date and time until the confirmation code is valid.
+        /// </summary>
+        public DateTime? ConfirmationCodeValidUntil { get; set; }
+        /// <summary>
+        /// Gets or sets the date and time when the account was activated.
+        /// </summary>
+        public DateTime? ActivatedOn { get; set; }
+        /// <summary>
         /// Gets or sets the time-out value in minutes.
         /// </summary>
-
-        public string? ConfirmationCode { get; set; } = null;
-        public DateTime? ConfirmationCodeValidUntil { get; set; }
-        public DateTime? ActivatedOn { get; set; }
-
         public int TimeOutInMinutes { get; set; } = 30;
-        /// <summary>
-        /// Gets or sets a value indicating whether JWT authentication is enabled.
-        /// </summary>
-        public bool EnableJwtAuth { get; set; }
         /// <summary>
         /// Gets or sets the number of failed access attempts for the user.
         /// </summary>
         public int AccessFailedCount { get; set; }
-        ///<summary>
-        ///Gets or sets the State of the object.
-        ///</summary>    
-        public Common.Enums.State State { get; set; } = Common.Enums.State.Active;
+        /// <summary>
+        /// Gets or sets the state of the object.
+        /// </summary>
+        public CommonEnums.State State { get; set; } = Common.Enums.State.Active;
         /// <summary>
         /// Gets an array of roles associated with the user.
         /// </summary>

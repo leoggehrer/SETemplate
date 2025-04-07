@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 using System.Text;
 
 namespace TemplateTools.Logic.Preprocessor
@@ -45,10 +44,10 @@ namespace TemplateTools.Logic.Preprocessor
             var replaceIfEnd_1 = "@*#endif*@";
             
             var searchIfStart_2 = define.EndsWith("_ON") ? $"@*#if {define.Replace("_ON", "_OFF")}*@{Environment.NewLine}"
-            : $"@*#if {define.Replace("_OFF", "_ON")}*@{Environment.NewLine}";
+                                                         : $"@*#if {define.Replace("_OFF", "_ON")}*@{Environment.NewLine}";
             var searchIfEnd_2 = "@*#endif*@";
             var replaceIfStart_2 = define.EndsWith("_ON") ? $"@*#if {define.Replace("_ON", "_OFF")}*@@*{Environment.NewLine}"
-            : $"@*#if {define.Replace("_OFF", "_ON")}*@@*{Environment.NewLine}";
+                                                          : $"@*#if {define.Replace("_OFF", "_ON")}*@@*{Environment.NewLine}";
             var replaceIfEnd_2 = "*@@*#endif*@";
             var searchTags = new[] { searchIfStart_1, searchIfEnd_1, searchIfStart_2, searchIfEnd_2 };
             var replaceTags = new[] { replaceIfStart_1, replaceIfEnd_1, replaceIfStart_2, replaceIfEnd_2 };
@@ -107,10 +106,10 @@ namespace TemplateTools.Logic.Preprocessor
             var replaceIfEnd_1 = "/*#endif*/";
             
             var searchIfStart_2 = define.EndsWith("_ON") ? $"/*#if {define.Replace("_ON", "_OFF")}*/{Environment.NewLine}"
-            : $"/*#if {define.Replace("_OFF", "_ON")}*/{Environment.NewLine}";
+                                                         : $"/*#if {define.Replace("_OFF", "_ON")}*/{Environment.NewLine}";
             var searchIfEnd_2 = "/*#endif*/";
             var replaceIfStart_2 = define.EndsWith("_ON") ? $"/*#if {define.Replace("_ON", "_OFF")}*//*{Environment.NewLine}"
-            : $"/*#if {define.Replace("_OFF", "_ON")}*//*{Environment.NewLine}";
+                                                          : $"/*#if {define.Replace("_OFF", "_ON")}*//*{Environment.NewLine}";
             var replaceIfEnd_2 = "*//*#endif*/";
             var searchTags = new[] { searchIfStart_1, searchIfEnd_1, searchIfStart_2, searchIfEnd_2 };
             var replaceTags = new[] { replaceIfStart_1, replaceIfEnd_1, replaceIfStart_2, replaceIfEnd_2 };

@@ -62,14 +62,54 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A new instance of the entity.</returns>
         public virtual TEntity Create()
         {
-            return new TEntity();
+            return ExecuteCreate();
+        }
+
+        /// <summary>
+        /// Returns the count of entities in the set.
+        /// </summary>
+        /// <returns>The count of entities.</returns>
+        public virtual int Count()
+        {
+            return ExecuteCount();
+        }
+
+        /// <summary>
+        /// Returns the count of entities in the set asynchronously.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the count of entities.</returns>
+        public virtual Task<int> CountAsync()
+        {
+            return ExecuteCountAsync();
         }
 
         /// <summary>
         /// Gets the queryable set of entities.
         /// </summary>
         /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
-        public IQueryable<TEntity> AsQuerySet() => DbSet.AsQueryable();
+        public virtual IQueryable<TEntity> AsQuerySet()
+        {
+            return ExecuteAsQuerySet();
+        }
+
+        /// <summary>
+        /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.
+        /// </summary>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.</returns>
+        public virtual IQueryable<TEntity> AsNoTrackingSet()
+        {
+            return ExecuteAsNoTrackingSet();
+        }
+
+        /// <summary>
+        /// Returns the element of type T with the identification of id.
+        /// </summary>
+        /// <param name="id">The identification.</param>
+        /// <returns>The element of the type T with the corresponding identification.</returns>
+        public virtual ValueTask<TEntity?> GetByIdAsync(IdType id)
+        {
+            return ExecuteGetByIdAsync(id);
+        }
 
         /// <summary>
         /// Adds the specified entity to the set.
@@ -78,8 +118,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entity.</returns>
         public virtual TEntity Add(TEntity entity)
         {
-            BeforeAdding(entity);
-            return DbSet.Add(entity).Entity;
+            return ExecuteAdd(entity);
         }
 
         /// <summary>
@@ -87,12 +126,9 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        public virtual Task<TEntity> AddAsync(TEntity entity)
         {
-            BeforeAdding(entity);
-            var result = await DbSet.AddAsync(entity).ConfigureAwait(false);
-
-            return result.Entity;
+            return ExecuteAddAsync(entity);
         }
 
         /// <summary>
@@ -101,16 +137,9 @@ namespace SETemplate.Logic.DataContext
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The entity with updated values.</param>
         /// <returns>The updated entity, or null if the entity was not found.</returns>
-        public virtual TEntity? Update(int id, TEntity entity)
+        public virtual TEntity? Update(IdType id, TEntity entity)
         {
-            BeforeUpdating(entity);
-
-            var existingEntity = DbSet.Find(id);
-            if (existingEntity != null)
-            {
-                CopyProperties(existingEntity, entity);
-            }
-            return existingEntity;
+            return ExecuteUpdate(id, entity);
         }
 
         /// <summary>
@@ -119,16 +148,9 @@ namespace SETemplate.Logic.DataContext
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The entity with updated values.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
-        public virtual async Task<TEntity?> UpdateAsync(int id, TEntity entity)
+        public virtual Task<TEntity?> UpdateAsync(IdType id, TEntity entity)
         {
-            BeforeUpdating(entity);
-
-            var existingEntity = await DbSet.FindAsync(id).ConfigureAwait(false);
-            if (existingEntity != null)
-            {
-                CopyProperties(existingEntity, entity);
-            }
-            return existingEntity;
+            return ExecuteUpdateAsync(id, entity);
         }
 
         /// <summary>
@@ -136,16 +158,9 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="id">The identifier of the entity to remove.</param>
         /// <returns>The removed entity, or null if the entity was not found.</returns>
-        public virtual TEntity? Remove(int id)
+        public virtual TEntity? Remove(IdType id)
         {
-            var entity = DbSet.Find(id);
-
-            if (entity != null)
-            {
-                BeforeRemoving(entity);
-                DbSet.Remove(entity);
-            }
-            return entity;
+            return ExecuteRemove(id);
         }
 
         /// <summary>

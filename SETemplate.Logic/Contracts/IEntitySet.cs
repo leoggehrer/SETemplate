@@ -16,10 +16,28 @@ namespace SETemplate.Logic.Contracts
         TEntity Create();
 
         /// <summary>
+        /// Gets the count of entities in the set.
+        /// </summary>
+        /// <returns>The count of entities in the set.</returns>
+        int Count();
+
+        /// <summary>
+        /// Asynchronously gets the count of entities in the set.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the count of entities in the set.</returns>
+        Task<int> CountAsync();
+
+        /// <summary>
         /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.
         /// </summary>
         /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
         IQueryable<TEntity> AsQuerySet();
+
+        /// <summary>
+        /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.
+        /// </summary>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.</returns>
+        IQueryable<TEntity> AsNoTrackingSet();
 
         /// <summary>
         /// Adds a new entity to the set.
@@ -27,6 +45,13 @@ namespace SETemplate.Logic.Contracts
         /// <param name="entity">The entity to add.</param>
         /// <returns>The added entity.</returns>
         TEntity Add(TEntity entity);
+
+        /// <summary>
+        /// Returns the element of type T with the identification of id.
+        /// </summary>
+        /// <param name = "id">The identification.</param>
+        /// <returns>The element of the type T with the corresponding identification.</returns>
+        ValueTask<TEntity?> GetByIdAsync(IdType id);
 
         /// <summary>
         /// Asynchronously adds a new entity to the set.
@@ -41,7 +66,7 @@ namespace SETemplate.Logic.Contracts
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The updated entity.</param>
         /// <returns>The updated entity, or null if the entity was not found.</returns>
-        TEntity? Update(int id, TEntity entity);
+        TEntity? Update(IdType id, TEntity entity);
 
         /// <summary>
         /// Asynchronously updates an entity in the set by its identifier.
@@ -49,14 +74,14 @@ namespace SETemplate.Logic.Contracts
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The updated entity.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
-        Task<TEntity?> UpdateAsync(int id, TEntity entity);
+        Task<TEntity?> UpdateAsync(IdType id, TEntity entity);
 
         /// <summary>
         /// Removes an entity from the set by its identifier.
         /// </summary>
         /// <param name="id">The identifier of the entity to remove.</param>
         /// <returns>The removed entity, or null if the entity was not found.</returns>
-        TEntity? Remove(int id);
+        TEntity? Remove(IdType id);
 
         /// <summary>
         /// Disposes the entity set.
