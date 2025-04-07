@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 
 
 namespace SETemplate.Logic.Modules.Exceptions

@@ -260,8 +260,15 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"{propertyType} {propertyInfo.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
                 }
             }
+
             // Added copy properties method
-            result.AddRange(CreateContractCopyProperties(type, itemName, pi => generateProperties.Contains(pi)));
+            result.AddRange(CreateContractCopyProperties(type, itemName, pi => pi.Name == StaticLiterals.IdentityProperty
+                                                                            || (ItemProperties.IsEntityType(pi.PropertyType) == false
+                                                                                && ItemProperties.IsEntityListType(pi.PropertyType) == false
+                                                                                && ItemProperties.IsEntityArrayType(pi.PropertyType) == false)));
+
+
+ //           || generateProperties.Contains(pi));;
 
             result.Add("}");
             result.EnvelopeWithANamespace(itemNamespace);
@@ -281,6 +288,8 @@ namespace TemplateTools.Logic.Generation
         public virtual IEnumerable<string> CreateContractCopyProperties(Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
         {
             var result = new List<string>();
+            var generationProperties = type.GetAllPropertyInfos();
+            var filteredProperties = generationProperties.Where(filter ?? (p => true));
 
             result.AddRange(CreateComment("Copies the properties of another object to this instance."));
             result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
@@ -292,7 +301,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("if (handled == false)");
             result.Add("{");
 
-            foreach (var item in type.GetAllPropertyInfos().Where(filter ?? (p => true)))
+            foreach (var item in filteredProperties)
             {
                 if (item.CanWrite && item.CanRead && CanCreate(item) && CanCopyProperty(item))
                 {

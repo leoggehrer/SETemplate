@@ -109,6 +109,7 @@ namespace TemplateTools.Logic
         public static readonly string EntitySetName = "EntitySet";
         public static readonly string ContextAccessor = "ContextAccessor";
         public static readonly string GenericItemViewModel = "GenericItemViewModel";
+        public static readonly string GenericItemsViewModel = "GenericItemsViewModel";
 
         public static readonly string IdentifiableName = "IIdentifiable";
         public static readonly string ContextContractName = "IContext";
@@ -244,6 +245,10 @@ namespace TemplateTools.Logic
         /// Gets the name of the EntitySetGenericType property.
         /// </summary>
         public static string ItemViewModelGenericType => nameof(ItemViewModelGenericType);
+        /// <summary>
+        /// Gets the name of the EntitySetGenericType property.
+        /// </summary>
+        public static string ItemsViewModelGenericType => nameof(ItemsViewModelGenericType);
         /// <summary>
         /// Gets the name of the ContractSetGenericType property.
         /// </summary>

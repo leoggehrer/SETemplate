@@ -17,10 +17,14 @@ namespace SETemplate.WebApi.Controllers
     /// <typeparam name="TContract">The type of the interface.</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public abstract partial class GenericController<TModel, TEntity, TContract>(IContextAccessor contextAccessor) : ControllerBase, IGenericController<TModel, TContract> where TContract : Common.Contracts.IIdentifiable
+    public abstract partial class GenericController<TModel, TEntity, TContract> : ControllerBase, IGenericController<TModel, TContract> where TContract : Common.Contracts.IIdentifiable
         where TModel : Models.ModelObject, TContract, new()
         where TEntity : Logic.Entities.EntityObject, TContract, new()
     {
+        #region fields
+        private readonly IContextAccessor _contextAccessor;
+        #endregion fields
+
         #region properties
         /// <summary>
         /// Gets the max count.
@@ -29,7 +33,16 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the context accessor.
         /// </summary>
-        protected IContextAccessor ContextAccessor { get; } = contextAccessor;
+        protected IContextAccessor ContextAccessor
+        {
+            get
+            {
+                OnReadContextAccessor(_contextAccessor);
+                return _contextAccessor;
+            }
+        }
+        partial void OnReadContextAccessor(IContextAccessor contextAccessor);
+
         /// <summary>
         /// Gets the context.
         /// </summary>
@@ -42,8 +55,38 @@ namespace SETemplate.WebApi.Controllers
         /// Gets the IQueriable<TEntity>.
         /// </summary>
         protected virtual IQueryable<TEntity> QuerySet => EntitySet.AsQuerySet();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericController{TModel, TEntity, TContract}"/> class.
+        /// </summary>
+        /// <param name="contextAccessor">The context accessor.</param>
+        public GenericController(IContextAccessor contextAccessor)
+        {
+            Constructing();
+            BeforeSetContextAccessor(contextAccessor);
+            _contextAccessor = contextAccessor;
+            AfterSetContextAccessor(ContextAccessor);
+            Constructed();
+        }
+        /// <summary>
+        /// This method is called the object is being constraucted.
+        /// </summary>
+        partial void Constructing();
 
-        #endregion properties
+        /// <summary>
+        /// This method is called before setting the context accessor.
+        /// </summary>
+        /// <param name="contextAccessor">The context accessor.</param>
+        partial void BeforeSetContextAccessor(IContextAccessor contextAccessor);
+        /// <summary>
+        /// This method is called after setting the context accessor.
+        /// </summary>
+        /// <param name="contextAccessor">The context accessor.</param>
+        partial void AfterSetContextAccessor(IContextAccessor contextAccessor);
+        /// <summary>
+        /// This method is called when the object is constructed.
+        /// </summary>
+        partial void Constructed();
+        #endregion constructors
 
         /// <summary>
         /// Converts an entity to a model.
@@ -68,6 +111,8 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual ActionResult<IEnumerable<TModel>> Get()
         {
+            var authHeader = HttpContext.Request.Headers.Authorization;
+
             var query = QuerySet.AsNoTracking().Take(MaxCount).ToArray();
             var result = query.Select(e => ToModel(e));
 

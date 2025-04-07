@@ -45,7 +45,7 @@ namespace TemplateTools.Logic.Generation
         public MVVMGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
         {
             GenerateModels = QuerySetting<bool>(ItemType.MVVMAppModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
-            GenerateViewModels = QuerySetting<bool>(ItemType.MVVVMAppViewModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateViewModels = QuerySetting<bool>(ItemType.MVVVMAppItemViewModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
         }
 
         #region generation
@@ -58,7 +58,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
 
             result.AddRange(CreateModels());
-            result.AddRange(CreateMVVMViewModels());
+            result.AddRange(CreateViewModels());
             return result;
         }
         /// <summary>
@@ -125,7 +125,7 @@ namespace TemplateTools.Logic.Generation
         /// Creates view models for entity types.
         /// </summary>
         /// <returns>An enumerable collection of generated items.</returns>
-        private List<IGeneratedItem> CreateMVVMViewModels()
+        private List<IGeneratedItem> CreateViewModels()
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
@@ -134,7 +134,8 @@ namespace TemplateTools.Logic.Generation
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
                 {
-                    result.Add(CreateMVVMViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppViewModel));
+                    result.Add(CreateItemViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemViewModel));
+                    result.Add(CreateItemsViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemsViewModel));
                 }
             }
             return result;
@@ -146,10 +147,10 @@ namespace TemplateTools.Logic.Generation
         /// <param name="unitType">The unit type.</param>
         /// <param name="itemType">The item type.</param>
         /// <returns>An instance of the IGeneratedItem interface representing the created controller.</returns>
-        private GeneratedItem CreateMVVMViewModelFromType(Type type, UnitType unitType, ItemType itemType)
+        private GeneratedItem CreateItemViewModelFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var modelType = ItemProperties.CreateModelSubType(type);
-            var viewModelName = ItemProperties.CreateViewModelName(type);
+            var viewModelName = ItemProperties.CreateItemViewModelName(type);
             var genericItemViewModel = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.ItemViewModelGenericType, StaticLiterals.GenericItemViewModel);
             var viewModelsSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ViewModelsFolder);
             var viewModelsNamespace = $"{ItemProperties.ProjectNamespace}.{viewModelsSubNamespace}";
@@ -181,6 +182,46 @@ namespace TemplateTools.Logic.Generation
                     result.AddRange(CreateViewModelProperty(propertyInfo));
                 }
             }
+
+            result.Add("}");
+            result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
+            result.FormatCSharpCode();
+            return result;
+        }
+        private GeneratedItem CreateItemsViewModelFromType(Type type, UnitType unitType, ItemType itemType)
+        {
+            var modelType = ItemProperties.CreateModelSubType(type);
+            var viewModelName = ItemProperties.CreateItemsViewModelName(type);
+            var genericItemViewModel = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.ItemsViewModelGenericType, StaticLiterals.GenericItemsViewModel);
+            var viewModelsSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ViewModelsFolder);
+            var viewModelsNamespace = $"{ItemProperties.ProjectNamespace}.{viewModelsSubNamespace}";
+            var subFilepath = Path.Combine(StaticLiterals.ViewModelsFolder, ItemProperties.CreateSubFilePath(type, $"{viewModelName.CreatePluralWord()}{StaticLiterals.CSharpFileExtension}"));
+            var typeProperties = type.GetAllPropertyInfos();
+            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
+            var result = new GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateModelFullName(type),
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = subFilepath,
+            };
+
+            genericItemViewModel = QuerySetting<string>(itemType, type, StaticLiterals.ItemsViewModelGenericType, genericItemViewModel);
+            result.AddRange(CreateComment(type));
+            CreateModelAttributes(type, unitType, itemType, result.Source);
+            result.Add($"public partial class {viewModelName.CreatePluralWord()} : {genericItemViewModel}<{modelType}>");
+            result.Add("{");
+            result.AddRange(CreatePartialStaticConstrutor(viewModelName.CreatePluralWord()));
+            result.AddRange(CreatePartialConstrutor("public", viewModelName.CreatePluralWord()));
+
+            result.Add($"protected override Avalonia.Controls.Window CreateWindow()");
+            result.Add("{");
+            result.Add("throw new NotImplementedException();");
+            result.Add("}");
+
+            result.Add($"protected override GenericItemViewModel<{modelType}> CreateViewModel()");
+            result.Add("{");
+            result.Add("throw new NotImplementedException();");
+            result.Add("}");
 
             result.Add("}");
             result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");

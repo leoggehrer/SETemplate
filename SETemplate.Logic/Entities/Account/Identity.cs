@@ -53,10 +53,7 @@ namespace SETemplate.Logic.Entities.Account
         /// Gets or sets the state of the object.
         /// </summary>
         public CommonEnums.State State { get; set; } = Common.Enums.State.Active;
-        /// <summary>
-        /// Gets an array of roles associated with the user.
-        /// </summary>
-        public Role[] Roles => [.. IdentityXRoles.Where(iXr => iXr.Role != null).Select(iXr => iXr.Role!)];
+
         #region Navigation properties
         /// <summary>
         /// Gets or sets the list of IdentityXRole objects associated with this entity.

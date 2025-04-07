@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 namespace TemplateTools.ConApp.Modules
 {
     using SETemplate.Common.Extensions;
@@ -83,7 +82,7 @@ namespace TemplateTools.ConApp.Modules
             ,".css"
             ,".html"
             ,".js"
-            //            ,".json"
+            //,".json"
             ,".less"
             ,".sln"
             ,".tt"
@@ -427,7 +426,7 @@ namespace TemplateTools.ConApp.Modules
                         targetLines.AddRange(ConvertProjectEntry(entryItems, sourceSolutionName, targetSolutionName, sourceProjects));
                     }
                 }
-                targetText.Append(targetLines.ToText());
+                targetText.AppendLine(targetLines.ToText());
 
                 var globalTags = sourceText[projectTags.Last().EndIndex..]
                                                        .GetAllTags("GlobalSection(", "EndGlobalSection");

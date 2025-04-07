@@ -96,13 +96,22 @@ namespace TemplateTools.Logic.Generation
             return $"{CreateModelName(type)}Edit";
         }
         /// <summary>
-        /// Creates the name of the view model based on the provided type.
+        /// Creates the item name of the view model based on the provided type.
         /// </summary>
         /// <param name="type">The type used to create the view model name.</param>
         /// <returns>The view model name.</returns>
-        public static string CreateViewModelName(Type type)
+        public static string CreateItemViewModelName(Type type)
         {
             return $"{CreateModelName(type)}ViewModel";
+        }
+        /// <summary>
+        /// Creates the items name of the view model based on the provided type.
+        /// </summary>
+        /// <param name="type">The type used to create the view model name.</param>
+        /// <returns>The view model name.</returns>
+        public static string CreateItemsViewModelName(Type type)
+        {
+            return $"{CreateModelName(type).CreatePluralWord()}ViewModel";
         }
         #endregion item names
 

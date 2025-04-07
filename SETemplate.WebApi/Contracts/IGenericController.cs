@@ -10,12 +10,12 @@ namespace SETemplate.WebApi.Contracts
         where TModel : ModelObject, TContract, new()
         where TContract : IIdentifiable
     {
-        ActionResult Delete(int id);
-        ActionResult<IEnumerable<TModel>> Get();
-        ActionResult<TModel?> GetById(int id);
-        ActionResult<TModel> Patch(int id, [FromBody] JsonPatchDocument<TModel> patchModel);
-        ActionResult<TModel> Post([FromBody] TModel model);
-        ActionResult<TModel> Put(int id, [FromBody] TModel model);
         ActionResult<IEnumerable<TModel>> Query(string predicate);
+        ActionResult<IEnumerable<TModel>> Get();
+        ActionResult<TModel?> GetById(IdType id);
+        ActionResult<TModel> Post([FromBody] TModel model);
+        ActionResult<TModel> Put(IdType id, [FromBody] TModel model);
+        ActionResult<TModel> Patch(IdType id, [FromBody] JsonPatchDocument<TModel> patchModel);
+        ActionResult Delete(IdType id);
     }
 }

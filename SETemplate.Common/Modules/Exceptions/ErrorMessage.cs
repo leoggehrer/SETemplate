@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 using System.Text;
 
 namespace SETemplate.Common.Modules.Exceptions

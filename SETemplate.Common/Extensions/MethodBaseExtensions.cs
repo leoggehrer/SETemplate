@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 using System.Reflection;
 using System.Runtime.CompilerServices;
 

@@ -1,5 +1,7 @@
 ﻿//@BaseCode
+using SETemplate.Common.Modules.Exceptions;
 using SETemplate.Logic.Contracts;
+using System.Reflection;
 
 namespace SETemplate.Logic.DataContext
 {
@@ -13,7 +15,6 @@ namespace SETemplate.Logic.DataContext
         /// The type of the database (e.g., "Sqlite", "SqlServer").
         /// </summary>
         private static readonly string DatabaseType = "Sqlite";
-
         /// <summary>
         /// The connection string for the database.
         /// </summary>
@@ -73,12 +74,17 @@ namespace SETemplate.Logic.DataContext
         /// This method is called when the object is constructed.
         /// </summary>
         partial void Constructed();
+        #endregion constructors
+
+        #region methods
         /// <summary>
         /// Saves all changes made in this context to the underlying database.
         /// </summary>
         /// <returns>The number of state entries written to the underlying database.</returns>
         public override int SaveChanges()
         {
+            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+
             return ExecuteSaveChanges();
         }
 
@@ -88,6 +94,8 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries written to the underlying database.</returns>
         public Task<int> SaveChangesAsync()
         {
+            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+
             return ExecuteSaveChangesAsync();
         }
         /// <summary>
@@ -129,7 +137,12 @@ namespace SETemplate.Logic.DataContext
             return result ?? Set<E>();
         }
 
-        internal EntitySet<E>? GetEntitySet<E>() where E : Entities.EntityObject, new()
+        /// <summary>
+        /// Determines the domain project EntitySet depending on the type E
+        /// </summary>
+        /// <typeparam name="E">The entity type E</typeparam>
+        /// <returns>The EntitySet depending on the type E</returns>
+        internal EntitySet<E> GetEntitySet<E>() where E : Entities.EntityObject, new()
         {
             var handled = false;
             var result = default(EntitySet<E>);
@@ -139,11 +152,17 @@ namespace SETemplate.Logic.DataContext
             {
                 GetGeneratorEntitySet(ref result, ref handled);
             }
-            return result;
+            return result ?? throw new Modules.Exceptions.LogicException(ErrorType.InvalidEntitySet);  
         }
         #endregion methods
 
         #region partial methods
+        /// <summary>
+        /// This method is called before accessing a method.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed.</param>
+        partial void BeforeAccessing(MethodBase methodBase);
+
         /// <summary>
         /// Determines the domain project DbSet depending on the type E
         /// </summary>

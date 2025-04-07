@@ -40,13 +40,6 @@ namespace SETemplate.Logic.Contracts
         IQueryable<TEntity> AsNoTrackingSet();
 
         /// <summary>
-        /// Adds a new entity to the set.
-        /// </summary>
-        /// <param name="entity">The entity to add.</param>
-        /// <returns>The added entity.</returns>
-        TEntity Add(TEntity entity);
-
-        /// <summary>
         /// Returns the element of type T with the identification of id.
         /// </summary>
         /// <param name = "id">The identification.</param>
@@ -54,11 +47,31 @@ namespace SETemplate.Logic.Contracts
         ValueTask<TEntity?> GetByIdAsync(IdType id);
 
         /// <summary>
+        /// Adds a new entity to the set.
+        /// </summary>
+        /// <param name="entity">The entity to add.</param>
+        /// <returns>The added entity.</returns>
+        TEntity Add(TEntity entity);
+
+        /// <summary>
+        /// Adds a range of entities to the set.
+        /// </summary>
+        /// <param name="entities">The entities to add.</param>
+        void AddRange(IEnumerable<TEntity> entities);
+
+        /// <summary>
         /// Asynchronously adds a new entity to the set.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         Task<TEntity> AddAsync(TEntity entity);
+
+        /// <summary>
+        /// Asynchronously adds a range of entities to the set.
+        /// </summary>
+        /// <param name="entities">The entities to add.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Updates an entity in the set by its identifier.

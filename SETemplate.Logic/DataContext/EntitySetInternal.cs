@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 namespace SETemplate.Logic.DataContext
 {
     partial class EntitySet<TEntity>
@@ -65,6 +65,15 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
+        /// Adds the specified range of entities to the set.
+        /// </summary>
+        /// <param name="entities">The entities to add.</param>
+        internal virtual void ExecuteAddRange(IEnumerable<TEntity> entities)
+        {
+            DbSet.AddRange(entities);
+        }
+
+        /// <summary>
         /// Asynchronously adds the specified entity to the set.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
@@ -75,6 +84,16 @@ namespace SETemplate.Logic.DataContext
             var result = await DbSet.AddAsync(entity).ConfigureAwait(false);
 
             return result.Entity;
+        }
+
+        /// <summary>
+        /// Asynchronously adds the specified range of entities to the set.
+        /// </summary>
+        /// <param name="entities">The entities to add.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        internal virtual async Task ExecuteAddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await DbSet.AddRangeAsync(entities).ConfigureAwait(false);
         }
 
         /// <summary>

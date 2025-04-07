@@ -15,7 +15,7 @@ namespace SETemplate.Logic.Entities.Account
     internal partial class LoginSession : EntityObject
     {
         private DateTime? _logoutTime;
-        private SecureIdentity? identity;
+        private SecureIdentity? _identity;
         
         /// <summary>
         /// Gets or sets the identity ID.
@@ -170,15 +170,6 @@ namespace SETemplate.Logic.Entities.Account
         /// <seealso cref="NotMappedAttribute"/>
         [NotMapped]
         public string Email { get; set; } = string.Empty;
-        /// <summary>
-        /// Gets or sets the JSON Web Token.
-        /// </summary>
-        /// <remarks>
-        /// This property is not mapped to a database column.
-        /// </remarks>
-        /// <value>The JSON Web Token.</value>
-        [NotMapped]
-        public string JsonWebToken { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets a value indicating whether the object is active or not.
@@ -218,13 +209,13 @@ namespace SETemplate.Logic.Entities.Account
         /// </summary>
         public SecureIdentity? Identity
         {
-            get => identity;
+            get => _identity;
             set
             {
-                identity = value;
-                TimeOutInMinutes = identity != null ? identity.TimeOutInMinutes : 0;
-                PasswordHash = identity != null ? identity.PasswordHash : [];
-                PasswordSalt = identity != null ? identity.PasswordSalt : [];
+                _identity = value;
+                TimeOutInMinutes = _identity != null ? _identity.TimeOutInMinutes : 0;
+                PasswordHash = _identity != null ? _identity.PasswordHash : [];
+                PasswordSalt = _identity != null ? _identity.PasswordSalt : [];
             }
         }
         #endregion Navigation properties

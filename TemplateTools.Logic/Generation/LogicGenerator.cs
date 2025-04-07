@@ -123,7 +123,7 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"private {dbSetType} {dbSetName}" + "{ get; set; }");
 
                     result.AddRange(CreateComment(type));
-                    result.Add($"public {StaticLiterals.ContractsFolder}.{StaticLiterals.EntitySetContractName}<{entitySubType}> {entitySetName} => new {entitySetType}(this, {dbSetName});");
+                    result.Add($"public {StaticLiterals.ContractsFolder}.{StaticLiterals.EntitySetContractName}<{entitySubType}> {entitySetName} => GetEntitySet<{entitySubType}>();");
                 }
             }
             result.Add("#endregion properties");
@@ -136,7 +136,7 @@ namespace TemplateTools.Logic.Generation
 
             bool first = false;
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.AllEntityTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -159,7 +159,7 @@ namespace TemplateTools.Logic.Generation
 
             first = false;
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.AllEntityTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -313,7 +313,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
 
             result.AddRange(CreatePartialStaticConstrutor(itemName));
-            result.AddRange(CreatePartialConstrutor("public", itemName, $"DbContext context, DbSet<TEntity> dbSet", "base(context, dbSet)", null, true));
+            result.AddRange(CreatePartialConstrutor("public", itemName, $"ProjectDbContext context, DbSet<TEntity> dbSet", "base(context, dbSet)", null, true));
 
             result.AddRange(CreateCopyProperties("protected override", "TEntity", "TContract", "target", "source"));
             result.Add("}");

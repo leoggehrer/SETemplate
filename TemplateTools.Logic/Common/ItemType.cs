@@ -20,9 +20,10 @@ namespace TemplateTools.Logic.Common
         WebApiEditModel,
         MVVMAppModel,
         MVVMAppEditModel,
-        MVVVMAppViewModel,
+        MVVVMAppItemViewModel,
+        MVVVMAppItemsViewModel,
         #endregion models
-        
+
         #region properties
         Property,
         ModelProperty,

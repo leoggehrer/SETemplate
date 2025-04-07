@@ -163,7 +163,7 @@ namespace SETemplate.Common
         /// <value>
         /// The extensions of source files in the format "*.css|*.cs|*.ts|*.cshtml|*.razor|*.razor.cs|*.template".
         /// </value>
-        public static string SourceFileExtensions => "*.css|*.cs|*.ts|*.cshtml|*.razor|*.razor.cs|*.template|*.puml";
+        public static string SourceFileExtensions => "*.css|*.cs|*.ts|*.cshtml|*.razor|*.razor.cs|*.template|*.puml|*.axaml";
         
         /// <summary>
         /// Gets the maximum page size.

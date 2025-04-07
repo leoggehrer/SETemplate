@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 
 #if ACCOUNT_ON && ACCESSRULES_ON
 namespace SETemplate.Logic.Modules.Exceptions
