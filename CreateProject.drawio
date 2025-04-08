@@ -1,0 +1,101 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.2.9" pages="3">
+  <diagram id="NV0O73wnEwojy1pm9Em5" name="Create domain project overview">
+    <mxGraphModel dx="1428" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="FKtRPnmVIKJ-BTRwxGmR-0" />
+        <mxCell id="FKtRPnmVIKJ-BTRwxGmR-1" parent="FKtRPnmVIKJ-BTRwxGmR-0" />
+        <mxCell id="q_pkdB8jnUIClKvRuqxw-0" value="&lt;b&gt;SETemplate&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=4;hachureGap=8;hachureAngle=45;fillColor=#A9C4EB;sketch=1;fontSize=12;" parent="FKtRPnmVIKJ-BTRwxGmR-1" vertex="1">
+          <mxGeometry x="80" y="40" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="q_pkdB8jnUIClKvRuqxw-1" value="&lt;b&gt;DomainProject&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=4;hachureGap=8;hachureAngle=45;fillColor=#d5e8d4;sketch=1;fontSize=12;strokeColor=#82b366;" parent="FKtRPnmVIKJ-BTRwxGmR-1" vertex="1">
+          <mxGeometry x="610" y="40" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="gYlGJE8trwcfRiRCZoEW-0" value="Copier" style="label;whiteSpace=wrap;html=1;image=img/clipart/Gear_128x128.png;fontSize=12;fillColor=#f9f7ed;strokeColor=#36393d;rounded=1;glass=0;shadow=0;" parent="FKtRPnmVIKJ-BTRwxGmR-1" vertex="1">
+          <mxGeometry x="345" y="60" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="gYlGJE8trwcfRiRCZoEW-2" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rounded=1;glass=0;fontSize=12;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="FKtRPnmVIKJ-BTRwxGmR-1" vertex="1">
+          <mxGeometry x="250" y="82.5" width="90" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="gYlGJE8trwcfRiRCZoEW-3" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rounded=1;glass=0;fontSize=12;fillColor=#eeeeee;strokeColor=#36393d;" parent="FKtRPnmVIKJ-BTRwxGmR-1" vertex="1">
+          <mxGeometry x="510" y="82.5" width="90" height="35" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="1cCb_u2O2cXnM25xXA9q" name="Create domain project">
+    <mxGraphModel dx="1044" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KD4jFZE-13GcvxPWc2QR-12" value="TemplateTools.ConApp" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f5f5f5;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
+          <mxGeometry x="360" y="40" width="240" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="KD4jFZE-13GcvxPWc2QR-15" value="Erzeugt eine Kopie von &#xa;&#39;SETemplate&#39; und passt die &#xa;entsprechenden Namen an.&#xa;Kopier-Prozess:&#xa;Beim Kopieren werden die Dateien, welche mit &#xa;dem Label &#39;BaseCode&#39; gekennzeichnet sind &#xa;mit dem Label &#39;CodeCopy&#39; gekennzeichnet." style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" parent="KD4jFZE-13GcvxPWc2QR-12" vertex="1">
+          <mxGeometry y="26" width="240" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="KD4jFZE-13GcvxPWc2QR-16" value="" style="endArrow=classic;html=1;fontSize=10;" parent="1" target="KD4jFZE-13GcvxPWc2QR-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="133" as="sourcePoint" />
+            <mxPoint x="360" y="179" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KD4jFZE-13GcvxPWc2QR-17" value="" style="endArrow=classic;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="KD4jFZE-13GcvxPWc2QR-15" target="3mBax8T-b5g0QYJkGsF_-5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="580" y="179" as="sourcePoint" />
+            <mxPoint x="760" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3mBax8T-b5g0QYJkGsF_-1" value="SETemplate" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#dae8fc;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#6c8ebf;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="3mBax8T-b5g0QYJkGsF_-3" value="+ SETemplate.CodeGenApp&#xa;+ SETemplate.Common&#xa;+ SETemplate.ConApp&#xa;+ SETemplate.Logic&#xa;+ SETemplate.MVVMApp&#xa;+ SETemplate.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" parent="3mBax8T-b5g0QYJkGsF_-1" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="3mBax8T-b5g0QYJkGsF_-4" value="DomainProject" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#b1ddf0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#10739e;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="720" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="3mBax8T-b5g0QYJkGsF_-5" value="+ DomainProjekt.CodeGenApp&#xa;+ DomainProjekt.Common&#xa;+ DomainProjekt.ConApp&#xa;+ DomainProjekt.Logic&#xa;+ DomainProjekt.MVVMApp&#xa;+ DomainProjekt.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" parent="3mBax8T-b5g0QYJkGsF_-4" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Create SEBookStore" id="eFqnNyfSXRAgzuV-wzoD">
+    <mxGraphModel dx="1428" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--0" />
+        <mxCell id="D0lhavAZlbkVxVLMGDm--1" parent="D0lhavAZlbkVxVLMGDm--0" />
+        <mxCell id="D0lhavAZlbkVxVLMGDm--2" value="TemplateTools.ConApp" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f5f5f5;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--1">
+          <mxGeometry x="360" y="40" width="240" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--3" value="Erzeugt eine Kopie von &#xa;&#39;SETemplate&#39; und passt die &#xa;entsprechenden Namen an.&#xa;Kopier-Prozess:&#xa;Beim Kopieren werden die Dateien, welche mit &#xa;dem Label &#39;BaseCode&#39; gekennzeichnet sind &#xa;mit dem Label &#39;CodeCopy&#39; gekennzeichnet." style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--2">
+          <mxGeometry y="26" width="240" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--4" value="" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="D0lhavAZlbkVxVLMGDm--1" target="D0lhavAZlbkVxVLMGDm--3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="133" as="sourcePoint" />
+            <mxPoint x="360" y="179" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--5" value="" style="endArrow=classic;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="D0lhavAZlbkVxVLMGDm--1" source="D0lhavAZlbkVxVLMGDm--3" target="D0lhavAZlbkVxVLMGDm--9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="580" y="179" as="sourcePoint" />
+            <mxPoint x="760" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--6" value="SETemplate" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#dae8fc;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#6c8ebf;fontColor=#000000;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--1">
+          <mxGeometry x="40" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--7" value="+ SETemplate.CodeGenApp&#xa;+ SETemplate.Common&#xa;+ SETemplate.ConApp&#xa;+ SETemplate.Logic&#xa;+ SETemplate.MVVMApp&#xa;+ SETemplate.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--6">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--8" value="SEBookStore" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#b1ddf0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#10739e;fontColor=#000000;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--1">
+          <mxGeometry x="720" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="D0lhavAZlbkVxVLMGDm--9" value="+ SEBookStore.CodeGenApp&#xa;+ SEBookStore.Common&#xa;+ SEBookStore.ConApp&#xa;+ SEBookStore.Logic&#xa;+ SEBookStore.MVVMApp&#xa;+ SEBookStore.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;fontColor=#000000;" vertex="1" parent="D0lhavAZlbkVxVLMGDm--8">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
