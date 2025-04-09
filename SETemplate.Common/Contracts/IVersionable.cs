@@ -1,5 +1,4 @@
-﻿//@CodeCopy
-namespace SETemplate.Common.Contracts
+﻿namespace SETemplate.Common.Contracts
 {
     /// <summary>
     /// An interface representing versionable entities.
