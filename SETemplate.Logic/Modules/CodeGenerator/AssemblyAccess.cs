@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 using System.Reflection;
 
 namespace SETemplate.Logic.Modules.CodeGenerator
@@ -25,15 +24,12 @@ namespace SETemplate.Logic.Modules.CodeGenerator
         /// <summary>
         /// Gets an array of Entity Types.
         /// </summary>
-        /// <remarks>
-        /// This property filters the <see cref="AllTypes"/> collection and returns only
-        /// the types that have a non-null <see cref="Type.FullName"/> and contain the
-        /// string ".Entities." in their full name.
-        /// </remarks>
-        /// <value>
-        /// An array of Type objects representing entity types.
-        /// </value>
-        public static Type[] EntityTypes => [.. AllTypes.Where(t => string.IsNullOrEmpty(t.FullName) == false && t.FullName.Contains(".Entities."))];
+        public static Type[] EntityTypes => [.. AllTypes.Where(t => t.IsClass
+                                                                 && t.IsAbstract == false
+                                                                 && t.IsNested == false
+                                                                 && string.IsNullOrEmpty(t.FullName) == false 
+                                                                 && t.FullName.Contains(".Entities."))];
+
     }
 }
 

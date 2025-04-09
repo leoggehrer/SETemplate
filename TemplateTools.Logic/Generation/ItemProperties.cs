@@ -289,6 +289,52 @@ namespace TemplateTools.Logic.Generation
             }
             return result;
         }
+        /// <summary>
+        /// Gets the default visibility for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which to get the default visibility.</param>
+        /// <returns>
+        /// A string representing the default visibility of the type.
+        /// Returns "internal" if the type is a system entity; otherwise, returns "public".
+        /// </returns>
+        public static string GetDefaultVisibility(Type type)
+        {
+            return EntityProject.IsSystemEntity(type) ? "internal" : "public";
+        }
+
+        /// <summary>
+        /// Retrieves the base interface for the specified entity type.
+        /// </summary>
+        /// <param name="type">The type of the entity for which the base interface is to be determined.</param>
+        /// <returns>
+        /// A string representing the base interface of the entity type.
+        /// If the entity type has a base type that is not a standard entity or versioned entity,
+        /// the contract name of the base type is returned. Otherwise, a default global identifiable name is returned.
+        /// </returns>
+        public static string GetEntityBaseInterface(Type type)
+        {
+            var baseType = type.BaseType;
+            string result;
+
+            if (baseType != null && baseType.Name.Equals(StaticLiterals.EntityObjectName))
+            {
+                result = $"{StaticLiterals.GlobalUsingIdentifiableName}";
+            }
+            else if (baseType != null && baseType.Name.Equals(StaticLiterals.VersionEntityObjectName))
+            {
+                result = $"{StaticLiterals.GlobalUsingVersionableName}";
+            }
+            else if (baseType != null)
+            {
+                result = $"{ItemProperties.CreateContractName(baseType)}";
+            }
+            else
+            {
+                result = $"{StaticLiterals.GlobalUsingIdentifiableName}";
+            }
+
+            return result;
+        }
         #endregion type items
 
         #region logic items
@@ -484,18 +530,6 @@ namespace TemplateTools.Logic.Generation
             var namespaceItems = CreateModuleSubNamespaceItems(type, preItems);
 
             return $"{string.Join(Path.DirectorySeparatorChar, namespaceItems!.Union([fileName]))}";
-        }
-        /// <summary>
-        /// Gets the default visibility for the specified type.
-        /// </summary>
-        /// <param name="type">The type for which to get the default visibility.</param>
-        /// <returns>
-        /// A string representing the default visibility of the type.
-        /// Returns "internal" if the type is a system entity; otherwise, returns "public".
-        /// </returns>
-        public static string GetDefaultVisibility(Type type)
-        {
-            return EntityProject.IsSystemEntity(type) ? "internal" : "public";
         }
 
         /// <summary>

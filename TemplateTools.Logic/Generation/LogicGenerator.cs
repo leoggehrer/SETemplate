@@ -112,10 +112,8 @@ namespace TemplateTools.Logic.Generation
                 if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
                     var entityType = ItemProperties.GetModuleSubType(type);
-                    var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
                     var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var entitySetName = ItemProperties.CreateEntitySetName(type);
-                    var entitySetType = $"{subNamespace}.{entitySetName}";
                     var dbSetName = $"Db{type.Name}Set";
                     var dbSetType = $"DbSet<{entityType}>";
 

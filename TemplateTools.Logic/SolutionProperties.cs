@@ -8,7 +8,7 @@ namespace TemplateTools.Logic
     /// </summary>
     public sealed partial class SolutionProperties : Contracts.ISolutionProperties
     {
-        #region Project-postfixes
+        #region project-postfixes
         /// <summary>
         /// Gets or sets the common extension.
         /// </summary>
@@ -29,7 +29,7 @@ namespace TemplateTools.Logic
         /// Gets the Angular extension used for the property.
         /// </summary>
         public string AngularExtension => StaticLiterals.AngularExtension;
-        #endregion Project-postfixes
+        #endregion project-postfixes
         
         /// <summary>
         /// Gets the solution path.
@@ -51,7 +51,7 @@ namespace TemplateTools.Logic
         /// <summary>
         /// Gets or sets the logic assembly types.
         /// </summary>
-        public Type[]? LogicAssemblyTypes { get; set; }
+        public Type[] LogicAssemblyTypes { get; set; } = [];
         /// <summary>
         /// Gets the file path of the compiled logic assembly.
         /// </summary>
@@ -69,7 +69,7 @@ namespace TemplateTools.Logic
             }
         }
         
-        #region ProjectNames
+        #region projectNames
         /// <summary>
         /// Gets the template project names.
         /// </summary>
@@ -195,7 +195,7 @@ namespace TemplateTools.Logic
         /// The name of the Angular app project.
         /// </value>
         public string AngularAppProjectName => TemplateProjectNames.First(e => e.EndsWith($"{AngularExtension}"));
-        #endregion ProjectNames
+        #endregion projectNames
         
         /// <summary>
         /// Initializes a new instance of the SolutionProperties class with the specified solution path.
@@ -249,7 +249,7 @@ namespace TemplateTools.Logic
             return TemplateProjectPaths.Any(tpp => filePath.StartsWith(tpp, StringComparison.CurrentCultureIgnoreCase));
         }
         
-        #region factorey methods
+        #region factory methods
         /// <summary>
         /// Creates a new instance of SolutionProperties class.
         /// </summary>
@@ -271,13 +271,13 @@ namespace TemplateTools.Logic
         /// Creates an instance of SolutionProperties with the given solution path and logic assembly types.
         /// </summary>
         /// <param name="solutionPath">The path of the solution.</param>
-        /// <param name="locigAssemblyTypes">An array of logic assembly types.</param>
+        /// <param name="logicAssemblyTypes">An array of logic assembly types.</param>
         /// <returns>The created SolutionProperties instance.</returns>
-        public static SolutionProperties Create(string solutionPath, Type[] locigAssemblyTypes)
+        public static SolutionProperties Create(string solutionPath, Type[] logicAssemblyTypes)
         {
             return new SolutionProperties(solutionPath)
             {
-                LogicAssemblyTypes = locigAssemblyTypes,
+                LogicAssemblyTypes = logicAssemblyTypes,
             };
         }
         #endregion factory methods

@@ -190,6 +190,7 @@ namespace SETemplate.CodeGenApp
         /// </summary>
         private void StartCodeGeneration()
         {
+            var invalidEntities = 0;
             var logicAssemblyTypes = Logic.Modules.CodeGenerator.AssemblyAccess.AllTypes;
             var solutionProperties = SolutionProperties.Create(SourcePath, logicAssemblyTypes);
             IEnumerable<IGeneratedItem>? generatedItems;
@@ -197,31 +198,51 @@ namespace SETemplate.CodeGenApp
             PrintHeader();
             StartProgressBar();
             PrintLine("Generate code...");
-            Console.WriteLine("Create code items...");
-            generatedItems = Generator.Generate(solutionProperties);
 
-            Console.WriteLine("Delete all generated files...");
-            Generator.DeleteGeneratedFiles(SourcePath);
-            if (IncludeCleanDirectory)
+            Console.WriteLine("Check entity types...");
+            foreach (var item in Logic.Modules.CodeGenerator.AssemblyAccess.EntityTypes)
             {
-                Console.WriteLine("Delete all empty folders...");
-                Generator.CleanDirectories(SourcePath);
+                if (Generator.IsEntity(item) == false)
+                {
+                    Console.WriteLine($"Invalid entity type: {item.Name}");
+                    invalidEntities++;
+                }
             }
-            Console.WriteLine("Write code items to files...");
-            Writer.WriteToGroupFile = ToGroupFile;
-            Writer.WriteAll(SourcePath, solutionProperties, generatedItems);
-            if (ExcludeGeneratedFilesFromGIT)
+
+            if (invalidEntities == 0)
             {
-                Console.WriteLine("All generated files are added to gitignore...");
-                GitIgnoreManager.Run(SourcePath);
+                Console.WriteLine("Create code items...");
+                generatedItems = Generator.Generate(solutionProperties);
+
+                Console.WriteLine("Delete all generated files...");
+                Generator.DeleteGeneratedFiles(SourcePath);
+                if (IncludeCleanDirectory)
+                {
+                    Console.WriteLine("Delete all empty folders...");
+                    Generator.CleanDirectories(SourcePath);
+                }
+                Console.WriteLine("Write code items to files...");
+                Writer.WriteToGroupFile = ToGroupFile;
+                Writer.WriteAll(SourcePath, solutionProperties, generatedItems);
+                if (ExcludeGeneratedFilesFromGIT)
+                {
+                    Console.WriteLine("All generated files are added to gitignore...");
+                    GitIgnoreManager.Run(SourcePath);
+                }
+                else
+                {
+                    Console.WriteLine("Remove all generated files from gitignore...");
+                    GitIgnoreManager.DeleteIgnoreEntries(SourcePath);
+                }
+
+                StopProgressBar();
+                Thread.Sleep(700);
             }
             else
             {
-                Console.WriteLine("Remove all generated files from gitignore...");
-                GitIgnoreManager.DeleteIgnoreEntries(SourcePath);
+                StopProgressBar();
+                Thread.Sleep(5000);
             }
-            StopProgressBar();
-            Thread.Sleep(700);
         }
         /// <summary>
         /// Retrieves the name of the solution file without the extension from the given solution path.
@@ -231,7 +252,7 @@ namespace SETemplate.CodeGenApp
         private static string GetSolutionName(string solutionPath)
         {
             var fileInfo = new DirectoryInfo(solutionPath).GetFiles().SingleOrDefault(f => f.Extension.Equals(".sln", StringComparison.CurrentCultureIgnoreCase));
-            
+
             return fileInfo != null ? Path.GetFileNameWithoutExtension(fileInfo.Name) : string.Empty;
         }
         #endregion app methods

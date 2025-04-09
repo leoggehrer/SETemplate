@@ -24,10 +24,9 @@ namespace SETemplate.CodeGenApp
             ToGroupFile = false;
             IncludeCleanDirectory = true;
             ExcludeGeneratedFilesFromGIT = true;
-            HomePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
-            Environment.OSVersion.Platform == PlatformID.MacOSX)
-            ? Environment.GetEnvironmentVariable("HOME")
-            : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            HomePath = (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX) 
+                                                                           ? Environment.GetEnvironmentVariable("HOME")
+                                                                           : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
             
             UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             SourcePath = GetCurrentSolutionPath();

@@ -195,7 +195,7 @@ namespace TemplateTools.Logic.Generation
             var genericItemViewModel = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.ItemsViewModelGenericType, StaticLiterals.GenericItemsViewModel);
             var viewModelsSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ViewModelsFolder);
             var viewModelsNamespace = $"{ItemProperties.ProjectNamespace}.{viewModelsSubNamespace}";
-            var subFilepath = Path.Combine(StaticLiterals.ViewModelsFolder, ItemProperties.CreateSubFilePath(type, $"{viewModelName.CreatePluralWord()}{StaticLiterals.CSharpFileExtension}"));
+            var subFilepath = Path.Combine(StaticLiterals.ViewModelsFolder, ItemProperties.CreateSubFilePath(type, $"{viewModelName}{StaticLiterals.CSharpFileExtension}"));
             var typeProperties = type.GetAllPropertyInfos();
             var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             var result = new GeneratedItem(unitType, itemType)
@@ -208,10 +208,10 @@ namespace TemplateTools.Logic.Generation
             genericItemViewModel = QuerySetting<string>(itemType, type, StaticLiterals.ItemsViewModelGenericType, genericItemViewModel);
             result.AddRange(CreateComment(type));
             CreateModelAttributes(type, unitType, itemType, result.Source);
-            result.Add($"public partial class {viewModelName.CreatePluralWord()} : {genericItemViewModel}<{modelType}>");
+            result.Add($"public partial class {viewModelName} : {genericItemViewModel}<{modelType}>");
             result.Add("{");
-            result.AddRange(CreatePartialStaticConstrutor(viewModelName.CreatePluralWord()));
-            result.AddRange(CreatePartialConstrutor("public", viewModelName.CreatePluralWord()));
+            result.AddRange(CreatePartialStaticConstrutor(viewModelName));
+            result.AddRange(CreatePartialConstrutor("public", viewModelName));
 
             result.Add($"protected override Avalonia.Controls.Window CreateWindow()");
             result.Add("{");

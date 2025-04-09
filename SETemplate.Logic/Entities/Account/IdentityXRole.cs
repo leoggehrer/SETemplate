@@ -11,7 +11,7 @@ namespace SETemplate.Logic.Entities.Account
     [Table("IdentityXRoles", Schema = "account")]
 #endif
     [Index(nameof(IdentityId), nameof(RoleId), IsUnique = true)]
-    internal partial class IdentityXRole : EntityObject
+    internal partial class IdentityXRole : VersionEntityObject
     {
         /// <summary>
         /// Gets or sets the identity ID.

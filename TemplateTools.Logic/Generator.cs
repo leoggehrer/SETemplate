@@ -116,6 +116,22 @@ namespace TemplateTools.Logic
         }
 
         /// <summary>
+        /// Determines whether the specified type is an entity.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <c>true</c> if the specified type is an entity; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsEntity(Type type)
+        {
+            return type.IsClass
+                   && type.IsNested == false
+                   && type.Namespace != null
+                   && type.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
+                   && type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null;
+        }
+
+        /// <summary>
         /// Deletes all generated files in the specified source path.
         /// </summary>
         /// <param name="sourcePath">The path to the source files.</param>

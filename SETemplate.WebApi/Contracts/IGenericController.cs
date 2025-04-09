@@ -1,14 +1,12 @@
 ﻿//@BaseCode
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using SETemplate.Common.Contracts;
-using SETemplate.WebApi.Models;
 
 namespace SETemplate.WebApi.Contracts
 {
     public interface IGenericController<TModel, TContract>
-        where TModel : ModelObject, TContract, new()
-        where TContract : IIdentifiable
+        where TModel : CommonModels.ModelObject, TContract, new()
+        where TContract : CommonContracts.IIdentifiable
     {
         ActionResult<IEnumerable<TModel>> Query(string predicate);
         ActionResult<IEnumerable<TModel>> Get();

@@ -241,7 +241,7 @@ namespace TemplateTools.ConApp.Apps
         /// <seealso cref="ExecuteRunProject(SolutionProperties, string)"/>
         private void StartCodeGeneration()
         {
-            var command = "6";
+            var command = "6";  // Start code generation
             var solutionProperties = SolutionProperties.Create(CodeSolutionPath);
 
             PrintHeader();

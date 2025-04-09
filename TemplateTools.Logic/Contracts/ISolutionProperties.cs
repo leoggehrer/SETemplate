@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 namespace TemplateTools.Logic.Contracts
 {
     /// <summary>
@@ -7,7 +6,7 @@ namespace TemplateTools.Logic.Contracts
     /// </summary>
     public interface ISolutionProperties
     {
-        #region Project extensions
+        #region project extensions
         /// <summary>
         /// Gets the common extension of the property.
         /// </summary>
@@ -28,7 +27,7 @@ namespace TemplateTools.Logic.Contracts
         /// Gets the MVVMExtension property value.
         /// </summary>
         string MVVMExtension { get; }
-        #endregion Project extensions
+        #endregion project extensions
         
         #region properties
         ///<summary>
@@ -50,7 +49,7 @@ namespace TemplateTools.Logic.Contracts
         /// <summary>
         /// Gets or sets an array of types representing logic assemblies.
         /// </summary>
-        Type[]? LogicAssemblyTypes { get; set; }
+        Type[] LogicAssemblyTypes { get; set; }
         /// <summary>
         /// Gets the file path of the compiled logic assembly.
         /// </summary>
