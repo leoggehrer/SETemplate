@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
@@ -123,10 +122,11 @@ namespace TemplateTools.Logic.Generation
         /// Gets the collection of entity types, within the assembly.
         /// </summary>
         public IEnumerable<Type> AllEntityTypes => AssemblyTypes.Where(t => t.IsClass
-                                                              && t.IsAbstract == false
-                                                              && t.IsNested == false
-                                                              && t.Namespace != null
-                                                              && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}"));
+                                                                         && t.IsAbstract == false
+                                                                         && t.IsNested == false
+                                                                         && t.Namespace != null
+                                                                         && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
+                                                                         && t.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null);
 
         /// <summary>
         /// Gets the collection of entity types, excluding certain types, within the assembly.
@@ -143,9 +143,8 @@ namespace TemplateTools.Logic.Generation
         /// </remarks>
         public IEnumerable<Type> EntityTypes => AllEntityTypes.Where(t => t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.AccountFolder}.") == false
                                                                        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
-                                                                       && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
-        
-                                                                       && t.Name.Equals(StaticLiterals.EntityObjectName) == false);
+                                                                       && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false);
+
         /// <summary>
         /// Determines if the specified <paramref name="type"/> is an account entity.
         /// </summary>

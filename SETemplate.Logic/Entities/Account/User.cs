@@ -11,7 +11,7 @@ namespace SETemplate.Logic.Entities.Account
 #else
     [Table("Users", Schema = "account")]
 #endif
-    public partial class User : EntityObject
+    public partial class User : VersionEntityObject
     {
         /// <summary>
         /// Gets or sets the identity ID.

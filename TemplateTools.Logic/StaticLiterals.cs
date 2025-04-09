@@ -104,8 +104,9 @@ namespace TemplateTools.Logic
         public static string AngularExtension => CommonStaticLiterals.AngularExtension;
         #endregion Project Extensions
 
-        #region items
+        #region Items
         public static readonly string EntityObjectName = "EntityObject";
+        public static readonly string VersionEntityObjectName = "VersionEntityObject";
         public static readonly string EntitySetName = "EntitySet";
         public static readonly string ContextAccessor = "ContextAccessor";
         public static readonly string GenericItemViewModel = "GenericItemViewModel";
@@ -116,7 +117,8 @@ namespace TemplateTools.Logic
         public static readonly string EntitySetContractName = "IEntitySet";
 
         public static readonly string GlobalUsingIdentifiableName = "CommonContracts.IIdentifiable";
-        #endregion items
+        public static readonly string GlobalUsingVersionableName = "CommonContracts.IVersionable";
+        #endregion Items
 
         #region Entity properties
         public static readonly string IdentityProperty = "Id";
@@ -130,15 +132,18 @@ namespace TemplateTools.Logic
         #region Model properties
         public static readonly string IdType = nameof(IdType);
         public static readonly string ModelObjectName = "ModelObject";
+        public static readonly string VersionModelObjectName = "VersionModelObject";
         #endregion Model properties
 
         public static readonly string[] ModelBaseClasses =
         [
             ModelObjectName,
+            VersionModelObjectName,
         ];
         public static readonly Dictionary<string, string> BaseClassMapping = new()
         {
             { EntityObjectName, ModelObjectName },
+            { VersionEntityObjectName, VersionModelObjectName },
         };
         
         #region Folders and Files

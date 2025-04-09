@@ -41,7 +41,7 @@ Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage wir
 - Alle Projektteile aus der Vorlage werden in das Zielverzeichnis kopiert.
 - Die Namen der Projekte und Komponenten werden entsprechend angepasst.
 - Alle Projekte mit dem Prefix **SETemplate** werden mit dem domainspezifischen Namen erstezt.
-- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt (Diese Labels werden fur einen späteren Abgleich-Prozess verwendet).
+- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt (Diese Labels werden fur einen späteren Abgleich-Prozess verwendet).
 
 Nach dem der Erstellungsprozess ausgeführt würde, haben Sie eine weiters Projekt (Solution) erhalten - ein Domain-Projekt.
 

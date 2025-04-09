@@ -3,7 +3,6 @@
 namespace TemplateTools.Logic.Generation
 {
     using System.Reflection;
-    using System.Runtime.CompilerServices;
     using TemplateTools.Logic.Common;
     using TemplateTools.Logic.Contracts;
     using TemplateTools.Logic.Extensions;
@@ -215,8 +214,7 @@ namespace TemplateTools.Logic.Generation
         /// <returns>A <see cref="GeneratedItem"/> representing the created entity contract.</returns>
         protected virtual GeneratedItem CreateEntityContract(Type type, UnitType unitType, ItemType itemType)
         {
-            var baseType = type.BaseType;
-            var inherit = baseType != null ? (baseType.Name.Equals(StaticLiterals.EntityObjectName) ? $" : {StaticLiterals.GlobalUsingIdentifiableName}" : $" : {ItemProperties.CreateContractName(baseType)}") : string.Empty;
+            var baseInterface = ItemProperties.GetEntityBaseInterface(type);
             var itemName = ItemProperties.CreateContractName(type);
             var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
             var visibility = ItemProperties.GetDefaultVisibility(type);
@@ -237,7 +235,7 @@ namespace TemplateTools.Logic.Generation
             visibility = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Visibility, visibility);
 
             result.AddRange(CreateComment(type));
-            result.Add($"{visibility} partial interface {itemName}{inherit}");
+            result.Add($"{visibility} partial interface {itemName} : {baseInterface}");
             result.Add("{");
             foreach (var propertyInfo in generateProperties)
             {
@@ -266,9 +264,6 @@ namespace TemplateTools.Logic.Generation
                                                                             || (ItemProperties.IsEntityType(pi.PropertyType) == false
                                                                                 && ItemProperties.IsEntityListType(pi.PropertyType) == false
                                                                                 && ItemProperties.IsEntityArrayType(pi.PropertyType) == false)));
-
-
- //           || generateProperties.Contains(pi));;
 
             result.Add("}");
             result.EnvelopeWithANamespace(itemNamespace);

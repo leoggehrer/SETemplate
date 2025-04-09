@@ -11,7 +11,7 @@ namespace SETemplate.Logic.Entities.Account
     [Table("Identities", Schema = "account")]
 #endif
     [Index(nameof(Email), IsUnique = true)]
-    internal partial class Identity : EntityObject
+    internal partial class Identity : VersionEntityObject
     {
 #if GUID_OFF
         /// <summary>

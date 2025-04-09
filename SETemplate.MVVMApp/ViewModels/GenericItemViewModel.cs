@@ -12,7 +12,7 @@ using SETemplate.MVVMApp.Views;
 namespace SETemplate.MVVMApp.ViewModels
 {
     public abstract partial class GenericItemViewModel<TModel> : ViewModelBase
-        where TModel : Models.ModelObject, new()
+        where TModel : CommonModels.ModelObject, new()
     {
         #region fields
         private TModel model = new();
