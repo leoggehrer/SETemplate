@@ -17,7 +17,7 @@ namespace SETemplate.WebApi.Controllers
     /// <typeparam name="TContract">The type of the interface.</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public abstract partial class GenericController<TModel, TEntity, TContract> : ControllerBase, IGenericController<TModel, TContract> where TContract : CommonContracts.IIdentifiable
+    public abstract partial class GenericController<TModel, TEntity, TContract> : ApiControllerBase, IGenericController<TModel, TContract> where TContract : CommonContracts.IIdentifiable
         where TModel : CommonModels.ModelObject, TContract, new()
         where TEntity : Logic.Entities.EntityObject, TContract, new()
     {
