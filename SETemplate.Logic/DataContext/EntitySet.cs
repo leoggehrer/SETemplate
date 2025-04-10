@@ -29,33 +29,6 @@ namespace SETemplate.Logic.DataContext
         protected DbSet<TEntity> DbSet => _dbSet!;
         #endregion properties
 
-        #region overridables
-        /// <summary>
-        /// Copies properties from the source entity to the target entity.
-        /// </summary>
-        /// <param name="target">The target entity.</param>
-        /// <param name="source">The source entity.</param>
-        protected abstract void CopyProperties(TEntity target, TEntity source);
-
-        /// <summary>
-        /// Performs actions before adding an entity.
-        /// </summary>
-        /// <param name="entity">The entity to be added.</param>
-        protected virtual void BeforeAdding(TEntity entity) { }
-
-        /// <summary>
-        /// Performs actions before updating an entity.
-        /// </summary>
-        /// <param name="entity">The entity to be updated.</param>
-        protected virtual void BeforeUpdating(TEntity entity) { }
-
-        /// <summary>
-        /// Performs actions before removing an entity.
-        /// </summary>
-        /// <param name="entity">The entity to be removed.</param>
-        protected virtual void BeforeRemoving(TEntity entity) { }
-        #endregion ovveridables
-
         #region methods
         /// <summary>
         /// Creates a new instance of the entity.

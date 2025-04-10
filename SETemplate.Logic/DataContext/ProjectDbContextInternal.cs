@@ -11,15 +11,16 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The number of state entries written to the underlying database.</returns>
         internal int ExecuteSaveChanges()
         {
-            // Vor dem Speichern alle Entitäten validieren
+            // Validate all entities before saving
             var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is IValidatableEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+                                       .Where(e => e.Entity is IValidatableEntity 
+                                                && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
             foreach (var entry in entries)
             {
                 var validatableEntity = (IValidatableEntity)entry.Entity;
 
-                validatableEntity.Validate(this);
+                validatableEntity.Validate(this, entry.State);
             }
 
             return base.SaveChanges();
@@ -31,15 +32,16 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries written to the underlying database.</returns>
         internal Task<int> ExecuteSaveChangesAsync()
         {
-            // Vor dem Speichern alle Entitäten validieren
+            // Validate all entities before saving
             var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is IValidatableEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+                                       .Where(e => e.Entity is IValidatableEntity 
+                                                && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
             foreach (var entry in entries)
             {
                 var validatableEntity = (IValidatableEntity)entry.Entity;
 
-                validatableEntity.Validate(this);
+                validatableEntity.Validate(this, entry.State);
             }
 
             return base.SaveChangesAsync();
