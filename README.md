@@ -71,7 +71,7 @@ Das Datenmodell für ***BookStore*** hat folgenden Aufbau:
 ```txt
 +-------+--------+ 
 |                | 
-|     Book       + 
+|      Book      + 
 |                | 
 +-------+--------+ 
 ```

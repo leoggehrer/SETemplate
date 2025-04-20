@@ -17,6 +17,5 @@ namespace SETemplate.Logic.Entities
         /// </summary>
         public Guid Guid { get; set; }
 #endif
-
     }
 }

@@ -47,10 +47,11 @@ namespace SETemplate.Logic.Contracts
         TEntity Add(TEntity entity);
 
         /// <summary>
-        /// Adds a range of entities to the set.
+        /// Adds a range of new entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        void AddRange(IEnumerable<TEntity> entities);
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>The added entities.</returns>
+        IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Asynchronously adds a new entity to the set.
@@ -60,11 +61,11 @@ namespace SETemplate.Logic.Contracts
         Task<TEntity> AddAsync(TEntity entity);
 
         /// <summary>
-        /// Asynchronously adds a range of entities to the set.
+        /// Asynchronously adds a range of new entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        Task AddRangeAsync(IEnumerable<TEntity> entities);
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the added entities.</returns>
+        Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Removes the specified entity from the set.

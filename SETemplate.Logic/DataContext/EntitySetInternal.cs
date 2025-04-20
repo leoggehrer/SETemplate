@@ -112,17 +112,22 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
-        /// Adds the specified range of entities to the set.
+        /// Adds a range of entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        internal virtual void ExecuteAddRange(IEnumerable<TEntity> entities)
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>A collection of the added entities.</returns>
+        internal virtual IEnumerable<TEntity> ExecuteAddRange(IEnumerable<TEntity> entities)
         {
+            var result = new List<TEntity>();
+
             entities.ForEach(e =>
             {
                 BeforeAdding(e);
                 BeforeExecuteAdding(e);
+                result.Add(e);
             });
-            DbSet.AddRange(entities);
+            DbSet.AddRange(result);
+            return result;
         }
 
         /// <summary>
@@ -140,18 +145,24 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
-        /// Asynchronously adds the specified range of entities to the set.
+        /// Asynchronously adds a range of entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        internal virtual async Task ExecuteAddRangeAsync(IEnumerable<TEntity> entities)
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a collection of the added entities.
+        /// </returns>
+        internal virtual async Task<IEnumerable<TEntity>> ExecuteAddRangeAsync(IEnumerable<TEntity> entities)
         {
+            var result = new List<TEntity>();
+
             entities.ForEach(e =>
             {
                 BeforeAdding(e);
                 BeforeExecuteAdding(e);
+                result.Add(e);
             });
-            await DbSet.AddRangeAsync(entities).ConfigureAwait(false);
+            await DbSet.AddRangeAsync(result).ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>

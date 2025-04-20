@@ -249,7 +249,6 @@ namespace TemplateTools.Logic.Generation
                         var viewName = viewAttribute.Name.HasContent() ? viewAttribute.Name : type.Name.CreatePluralWord();
                         var viewShema = viewAttribute.Schema;
                         var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
-                        var builderStatement = $"modelBuilder.Entity<{entitySubType}>()";
 
                         result.Add($"modelBuilder.Entity<{entitySubType}>()");
                         if (viewShema.HasContent())

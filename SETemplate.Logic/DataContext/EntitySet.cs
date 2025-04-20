@@ -112,12 +112,13 @@ namespace SETemplate.Logic.DataContext
         /// <summary>
         /// Adds a range of entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        public virtual void AddRange(IEnumerable<TEntity> entities)
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>The added entities.</returns>
+        public virtual IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
             BeforeAccessing(MethodBase.GetCurrentMethod()!);
 
-            ExecuteAddRange(entities);
+            return ExecuteAddRange(entities);
         }
 
         /// <summary>
@@ -135,9 +136,9 @@ namespace SETemplate.Logic.DataContext
         /// <summary>
         /// Asynchronously adds a range of entities to the set.
         /// </summary>
-        /// <param name="entities">The entities to add.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public virtual Task AddRangeAsync(IEnumerable<TEntity> entities)
+        /// <param name="entities">The collection of entities to add.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the added entities.</returns>
+        public virtual Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
         {
             BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
