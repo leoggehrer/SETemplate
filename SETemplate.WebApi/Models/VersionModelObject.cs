@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 namespace SETemplate.WebApi.Models
 {
     /// <summary>

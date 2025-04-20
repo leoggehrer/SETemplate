@@ -30,6 +30,36 @@ namespace TemplateTools.Logic
         static partial void ClassConstructed();
         #endregion Class-Constructors
 
+        #region fields
+        private static readonly string[] InfoText =
+        [
+            $"//{StaticLiterals.GeneratedCodeLabel}",
+            "/*****************************************************************************************",
+            "  Please note that this file is regenerated each time it is generated",
+            "  and all your changes will be overwritten in this file.",
+            "  If you still want to make changes, you can do this in 2 ways:",
+            "  ",
+            "  1. Use a 'partial class name' according to the following pattern:",
+            "  ",
+            "  #if GENERATEDCODE_ON",
+            "  namespace_name {",
+            "    partial class ClassName",
+            "    {",
+            "      partial void BeforeExecute(ref bool handled)",
+            "      {",
+            "        //... do something",
+            "        handled = true;",
+            "      }",
+            "    }",
+            "   }",
+            "  #endif",
+            "  ",
+            "  2. Change the label //@GeneratedCode to //@CustomizedCode, for example.",
+            "     Alternatively, you can also remove the label or give it a different name.",
+            "*****************************************************************************************/",
+        ];
+        #endregion fields
+
         #region properties
         /// <summary>
         /// Gets or sets the logging console.
@@ -42,6 +72,13 @@ namespace TemplateTools.Logic
         /// True if the data should be written to the group file; otherwise, false.
         /// </value>
         public static bool WriteToGroupFile { get; set; } = true;
+        /// <summary>
+        /// Gets or sets a value indicating whether the information header should be written.
+        /// </summary>
+        /// <value>
+        /// True if the information header should be written; otherwise, false.
+        /// </value>
+        public static bool WriteInfoHeader { get; set; } = true;
         #endregion  properties
 
         /// <summary>
@@ -64,7 +101,20 @@ namespace TemplateTools.Logic
                 {
                     var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Common && e.ItemType == ItemType.EntityContract));
 
-                    WriteLogging("Write Logic-DataContext...");
+                    WriteLogging("Write Common-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.CommonProjectName);
+                var projectName = solutionProperties.GetProjectNameFromPath(projectPath);
+
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Common && e.ItemType == ItemType.ViewContract));
+
+                    WriteLogging("Write Common-Contracts...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
@@ -78,7 +128,18 @@ namespace TemplateTools.Logic
                 {
                     var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntityContract));
 
-                    WriteLogging("Write Logic-Entity-Contracts...");
+                    WriteLogging("Write Logic-Connect-Entity-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ViewContract));
+
+                    WriteLogging("Write Logic-Connect-View-Contracts...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
@@ -101,6 +162,28 @@ namespace TemplateTools.Logic
                     var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.EntitySet));
 
                     WriteLogging("Write Logic-Entity-Sets...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ViewSetContract));
+
+                    WriteLogging("Write Logic-View-Set-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ViewSet));
+
+                    WriteLogging("Write Logic-View-Sets...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             })));
@@ -167,9 +250,20 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.Controller);
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.EntityController);
 
-                    WriteLogging("Write WebApi-Controllers...");
+                    WriteLogging("Write WebApi-Entity-Controllers...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.ViewController);
+
+                    WriteLogging("Write WebApi-View-Controllers...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             }));
@@ -380,7 +474,19 @@ namespace TemplateTools.Logic
                 }
                 else
                 {
-                    sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
+                    if (WriteInfoHeader)
+                    {
+                        var index = 0;
+
+                        foreach (var info in InfoText)
+                        {
+                            sourceLines.Insert(index++, info);
+                        }
+                    }
+                    else
+                    {
+                        sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
+                    }
                 }
                 WriteCodeFile(filePath, sourceLines);
             }
@@ -401,7 +507,7 @@ namespace TemplateTools.Logic
             {
                 var lines = File.ReadAllLines(sourceFilePath);
                 var header = lines.FirstOrDefault(l => l.Contains(StaticLiterals.GeneratedCodeLabel)
-                || l.Contains(StaticLiterals.CustomizedAndGeneratedCodeLabel));
+                                                    || l.Contains(StaticLiterals.CustomizedAndGeneratedCodeLabel));
 
                 if (header != null)
                 {
@@ -413,7 +519,7 @@ namespace TemplateTools.Logic
                 }
             }
             else if (string.IsNullOrEmpty(sourcePath) == false
-            && Directory.Exists(sourcePath) == false)
+                     && Directory.Exists(sourcePath) == false)
             {
                 Directory.CreateDirectory(sourcePath);
             }

@@ -63,7 +63,11 @@ namespace SETemplate.Logic.Models.Account
 
             return new Role
             {
+#if EXTERNALGUID_OFF
                 Id = entity.Id,
+#else
+                Guid = entity.Guid,
+#endif
                 Designation = entity.Designation,
                 Description = entity.Description
             };

@@ -1,6 +1,4 @@
 ﻿//@BaseCode
-
-using System.Reflection;
 using TemplateTools.Logic.Common;
 using TemplateTools.Logic.Contracts;
 using TemplateTools.Logic.Extensions;
@@ -132,7 +130,7 @@ namespace TemplateTools.Logic.Generation
 
             foreach (var type in entityProject.EntityTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.EntityController, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
                 {
                     result.Add(CreateItemViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemViewModel));
                     result.Add(CreateItemsViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemsViewModel));
@@ -226,63 +224,6 @@ namespace TemplateTools.Logic.Generation
             result.Add("}");
             result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");
             result.FormatCSharpCode();
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a ViewModel property based on the provided PropertyInfo.
-        /// </summary>
-        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
-        /// <returns>An enumerable collection of strings representing the generated ViewModel property.</returns>
-        public IEnumerable<string> CreateViewModelProperty(PropertyInfo propertyInfo)
-        {
-            var result = new List<string>();
-            var fieldType = GetPropertyType(propertyInfo);
-
-            result.Add(string.Empty);
-            result.AddRange(CreateComment(propertyInfo));
-            CreatePropertyAttributes(propertyInfo, result);
-            result.Add($"public {fieldType} {propertyInfo.Name}");
-            result.Add("{");
-            result.AddRange(CreateViewModelGetProperty(propertyInfo));
-            result.AddRange(CreateViewModelSetProperty(propertyInfo));
-            result.Add("}");
-
-            return result;
-        }
-        /// <summary>  
-        /// Creates the getter property for a ViewModel based on the provided PropertyInfo.  
-        /// </summary>  
-        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>  
-        /// <returns>An enumerable collection of strings representing the generated getter property.</returns>  
-        public IEnumerable<string> CreateViewModelGetProperty(PropertyInfo propertyInfo)
-        {
-            var result = new List<string>();
-            var propName = propertyInfo.Name;
-
-            CreateGetPropertyAttributes(propertyInfo, result);
-            result.Add("get");
-            result.Add("{");
-            result.Add($"return Model.{propName};");
-            result.Add("}");
-            return result;
-        }
-        /// <summary>
-        /// Creates the setter property for a ViewModel based on the provided PropertyInfo.
-        /// </summary>
-        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
-        /// <returns>An enumerable collection of strings representing the generated setter property.</returns>
-        public IEnumerable<string> CreateViewModelSetProperty(PropertyInfo propertyInfo)
-        {
-            var result = new List<string>();
-            var propName = propertyInfo.Name;
-
-            CreateSetPropertyAttributes(propertyInfo, result);
-            result.Add("set");
-            result.Add("{");
-            result.Add($"Model.{propName} = value;");
-            result.Add($"OnPropertyChanged();");
-            result.Add("}");
             return result;
         }
         #endregion generation

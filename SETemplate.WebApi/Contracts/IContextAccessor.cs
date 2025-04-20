@@ -18,5 +18,13 @@ namespace SETemplate.WebApi.Contracts
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>The entity set for the specified entity type, or null if not found.</returns>
         Logic.Contracts.IEntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new();
+
+
+        /// <summary>
+        /// Gets the view set for the specified entity type.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>The entity set for the specified entity type, or null if not found.</returns>
+        Logic.Contracts.IViewSet<TEntity>? GetViewSet<TEntity>() where TEntity : Logic.Entities.ViewObject, new();
     }
 }

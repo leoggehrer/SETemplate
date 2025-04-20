@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 using System.Collections;
 
 namespace SETemplate.Common.Models
@@ -8,13 +8,6 @@ namespace SETemplate.Common.Models
     /// </summary>
     public abstract partial class ModelObject : Contracts.IIdentifiable
     {
-        #region properties
-        /// <summary>
-        /// Gets or sets the unique identifier for the model object.
-        /// </summary>
-        public IdType Id { get; set; }
-        #endregion properties
-
         #region methods
         /// <summary>
         /// Determines whether two object instances are equal
@@ -54,7 +47,11 @@ namespace SETemplate.Common.Models
         /// <returns>A hash code for the current object.</returns>
         protected virtual int GetHashCode(List<object?> items)
         {
+#if EXTERNALGUID_OFF
             items.Add(Id);
+#else
+            items.Add(Guid);
+#endif
             return this.CalculateHashCode(items);
         }
         #endregion methods

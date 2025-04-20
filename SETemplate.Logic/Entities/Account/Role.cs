@@ -13,12 +13,7 @@ namespace SETemplate.Logic.Entities.Account
     [Index(nameof(Designation), IsUnique = true)]
     internal partial class Role : VersionEntityObject
     {
-#if GUID_OFF
         /// <summary>
-        /// Gets or sets the unique identifier.
-        /// </summary>
-        public Guid Guid { get; set; }
-#endif
         /// <summary>
         /// Gets or sets the designation of a person.
         /// </summary>

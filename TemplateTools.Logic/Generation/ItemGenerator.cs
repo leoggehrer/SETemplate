@@ -6,12 +6,28 @@ namespace TemplateTools.Logic.Generation
     using TemplateTools.Logic.Common;
     using TemplateTools.Logic.Contracts;
     using TemplateTools.Logic.Extensions;
+    using TemplateTools.Logic.Models;
 
     /// <summary>
     /// This class provides many methods for generating program parts.
     /// </summary>
-    internal partial class ItemGenerator : GeneratorObject
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ItemGenerator"/> class.
+    /// </remarks>
+    /// <param name="solutionProperties">The solution properties.</param>
+    internal abstract partial class ItemGenerator(ISolutionProperties solutionProperties) : GeneratorObject(solutionProperties)
     {
+        #region properties
+        /// <summary>
+        /// Gets the properties of the item.
+        /// </summary>
+        protected abstract ItemProperties ItemProperties { get; }
+        /// <summary>
+        /// The separators used to split values in the valueSeparators array.
+        /// </summary>
+        private static readonly char[] valueSeparators = [','];
+        #endregion properties
+
         #region queries
         /// <summary>
         /// Determines whether or not a given type can be created.
@@ -59,25 +75,6 @@ namespace TemplateTools.Logic.Generation
             return viewProperties ?? [];
         }
         #endregion queries
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemGenerator"/> class.
-        /// </summary>
-        /// <param name="solutionProperties">The solution properties.</param>
-        protected ItemGenerator(ISolutionProperties solutionProperties)
-            : base(solutionProperties)
-        {
-
-        }
-        /// <summary>
-        /// Creates a new instance of the <see cref="ItemGenerator"/> class with the specified <see cref="ISolutionProperties"/> object.
-        /// </summary>
-        /// <param name="solutionProperties">The <see cref="ISolutionProperties"/> object to be used for generating items.</param>
-        /// <returns>A new instance of the <see cref="ItemGenerator"/> class.</returns>
-        public static ItemGenerator Create(ISolutionProperties solutionProperties)
-        {
-            return new ItemGenerator(solutionProperties);
-        }
 
         #region create constructors
         /// <summary>
@@ -154,171 +151,28 @@ namespace TemplateTools.Logic.Generation
             }
             return lines;
         }
-        #endregion create constructors
-
-        #region create factory methode
         /// <summary>
-        /// Creates a factory method for the specified item type.
+        /// Retrieves the properties of a type that are eligible for generation.
         /// </summary>
-        /// <param name="newPrefix">True to include "new" keyword in the method signature, otherwise false.</param>
-        /// <param name="itemType">The type of the item.</param>
-        /// <returns>An IEnumerable of strings containing the XML documentation for the specified factory method.</returns>
-        public IEnumerable<string> CreateFactoryMethod(bool newPrefix, string itemType)
+        /// <param name="type">The type whose properties are to be retrieved.</param>
+        /// <returns>
+        /// An enumerable collection of <see cref="PropertyInfo"/> objects representing the properties
+        /// of the specified type that are eligible for generation.
+        /// </returns>
+        public static IEnumerable<PropertyInfo> GetGenerationProperties(Type type)
         {
-            var result = new List<string>();
-
-            result.AddRange(CreateComment());
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create()");
-            result.Add("{");
-            result.Add("BeforeCreate();");
-            result.Add($"var result = new {itemType}();");
-            result.Add("AfterCreate(result);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment());
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create(object other)");
-            result.Add("{");
-            result.Add("BeforeCreate(other);");
-            //result.Add("ObjectExtensions.CheckArgument(other, nameof(other));");
-            result.Add($"var result = new {itemType}();");
-            result.Add("ObjectExtensions.CopyFrom(result, other);");
-            result.Add("AfterCreate(result, other);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("static partial void BeforeCreate();");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance);");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add("static partial void BeforeCreate(object other);");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created Track instance.</param>");
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance, object other);");
-            return result;
+            var typeProperties = type.GetProperties().Where(pi => pi.DeclaringType == type);
+            var generationProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
+                                                                && ItemProperties.IsListType(e.PropertyType) == false
+                                                                && (e.PropertyType.IsEnum 
+                                                                    || e.PropertyType.IsValueType 
+                                                                    || e.PropertyType.IsPrimitive
+                                                                    || ItemProperties.IsPrimitiveArrayType(e)
+                                                                    || ItemProperties.IsPrimitiveNullable(e) 
+                                                                    || e.PropertyType == typeof(string)));
+            return generationProperties ?? [];
         }
-        /// <summary>
-        /// Create a factory method that creates an instance of the specified <paramref name="itemType"/>
-        /// by copying properties from another instance of the specified <paramref name="copyType"/>.
-        /// </summary>
-        /// <param name="newPrefix">A boolean value indicating whether to prefix the method with "new" keyword.</param>
-        /// <param name="itemType">The type of the item to create.</param>
-        /// <param name="copyType">The type of the item from which to copy properties.</param>
-        /// <returns>An IEnumerable of strings representing the lines of the factory method.</returns>
-        public IEnumerable<string> CreateFactoryMethod(bool newPrefix, string itemType, string copyType)
-        {
-            var result = new List<string>();
-
-            result.AddRange(CreateComment());
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create({copyType} other)");
-            result.Add("{");
-            result.Add("BeforeCreate(other);");
-            result.Add($"var result = new {itemType}();");
-            result.Add("result.CopyProperties(other);");
-            result.Add("AfterCreate(result, other);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void BeforeCreate({copyType} other);");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance, {copyType} other);");
-            return result;
-        }
-        /// <summary>
-        /// Creates delegate factory methods for the specified item type.
-        /// </summary>
-        /// <param name="itemType">The type of the item.</param>
-        /// <param name="delegateName">The name of the delegate.</param>
-        /// <param name="isPublic">Specifies whether the created methods should be public or internal.</param>
-        /// <param name="newPrefix">Specifies whether the 'new' prefix should be used.</param>
-        /// <returns>An enumerable collection of strings representing the delegate factory methods.</returns>
-        public IEnumerable<string> CreateDelegateFactoryMethods(string itemType, string delegateName, bool isPublic, bool newPrefix)
-        {
-#pragma warning disable IDE0028 // Simplify collection initialization
-            var result = new List<string>(CreateComment());
-#pragma warning restore IDE0028 // Simplify collection initialization
-
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create()");
-            result.Add("{");
-            result.Add("BeforeCreate();");
-            result.Add($"var result = new {itemType}();");
-            result.Add("AfterCreate(result);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment());
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create(object other)");
-            result.Add("{");
-            result.Add("BeforeCreate(other);");
-            result.Add($"var result = new {itemType}();");
-            result.Add("ObjectExtensions.CopyFrom(result, other);");
-            result.Add("AfterCreate(result, other);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment());
-            result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create({itemType} other)");
-            result.Add("{");
-            result.Add("BeforeCreate(other);");
-            result.Add($"var result = new {itemType}();");
-            result.Add("result.CopyProperties(other);");
-            result.Add("AfterCreate(result, other);");
-            result.Add("return result;");
-            result.Add("}");
-
-            var visibility = isPublic ? "public" : "internal";
-
-            result.AddRange(CreateComment());
-            result.Add($"{visibility}{(newPrefix ? " new " : " ")}static {itemType} Create({delegateName} other)");
-            result.Add("{");
-            result.Add("BeforeCreate(other);");
-            result.Add($"var result = new {itemType}();");
-            result.Add("result.Source = other;");
-            result.Add("AfterCreate(result, other);");
-            result.Add("return result;");
-            result.Add("}");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("static partial void BeforeCreate();");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance);");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add("static partial void BeforeCreate(object other);");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance, object other);");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void BeforeCreate({itemType} other);");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance, {itemType} other);");
-
-            result.AddRange(CreateComment("This method is called before the creation of an instance."));
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void BeforeCreate({delegateName} other);");
-            result.AddRange(CreateComment("This method is called after the creation of an instance."));
-            result.Add("/// <param name=\"instance\">The newly created instance of the Track class.</param>");
-            result.Add("/// <param name=\"other\">The object being created.</param>");
-            result.Add($"static partial void AfterCreate({itemType} instance, {delegateName} other);");
-            return result;
-        }
-        #endregion create items
+        #endregion get generation properties
 
         #region create property
         /// <summary>
@@ -326,11 +180,6 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
         /// <param name="codeLines">The list of code lines to add the attributes to.</param>
-        /// <remarks>
-        /// This method is used to generate and add the necessary attributes for a property based on its PropertyInfo.
-        /// </remarks>
-        /// <seealso cref="PropertyInfo"/>
-        /// <seealso cref="List{T}"/>
         protected virtual void CreatePropertyAttributes(PropertyInfo propertyInfo, List<string> codeLines) { }
         /// <summary>
         /// Creates XML documentation for the method that retrieves attributes of a property.
@@ -384,9 +233,6 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The type containing the newly created property.</param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object representing the newly created property.</param>
         /// <param name="codeLines">The list of code lines for the property.</param>
-        /// <remarks>
-        /// This method can be overridden in a partial class to perform custom actions after a property is created.
-        /// </remarks>
         partial void AfterCreateProperty(Type type, PropertyInfo propertyInfo, List<string> codeLines);
 
         /// <summary>
@@ -395,11 +241,6 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The type to create the auto property for.</param>
         /// <param name="propertyInfo">The property information of the property.</param>
         /// <returns>An enumerable of strings representing the auto property.</returns>
-        /// <remarks>
-        /// This method generates a property with the specified type and property information. The generated property
-        /// will have a default getter and setter implementation. It returns an enumerable of strings representing the
-        /// auto property generated by the generator.
-        /// </remarks>
         public virtual IEnumerable<string> CreateAutoProperty(Type type, PropertyInfo propertyInfo)
         {
             return CreateAutoProperty(type, propertyInfo, $"Property '{propertyInfo.Name}' generated by the generator.");
@@ -513,182 +354,131 @@ namespace TemplateTools.Logic.Generation
             result.Add("}");
             return [.. result];
         }
-        #endregion create properties
-
-        #region delegate property helpers
-        /// <summary>
-        /// Creates a delegate property for the given property using the specified delegate object and delegate property.
-        /// </summary>
-        /// <param name="propertyInfo">The PropertyInfo of the property for which the delegate property is being created.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The PropertyInfo of the delegate property.</param>
-        /// <returns>An IEnumerable of strings representing the created delegate property.</returns>
-        public virtual IEnumerable<string> CreateDelegateProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
-        {
-            var handled = false;
-            var result = new List<string>();
-
-            BeforeCreateDelegateProperty(propertyInfo, delegateObjectName, delegatePropertyInfo, result, ref handled);
-            if (handled == false)
-            {
-                result.AddRange(CreateDelegateAutoProperty(propertyInfo, delegateObjectName, delegatePropertyInfo));
-            }
-            AfterCreateDelegateProperty(propertyInfo, delegateObjectName, delegatePropertyInfo, result);
-            return result;
-        }
-        /// <summary>
-        /// This method is called before creating a delegate property.
-        /// </summary>
-        /// <param name="propertyInfo">The PropertyInfo object representing the main property.</param>
-        /// <param name="delegateObjectName">The name of the object containing the delegate property.</param>
-        /// <param name="delegatePropertyInfo">The PropertyInfo object representing the delegate property.</param>
-        /// <param name="codeLines">A list of string containing the code lines for the delegate property.</param>
-        /// <param name="handled">A boolean flag indicating whether the event has been handled.</param>
-        partial void BeforeCreateDelegateProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo, List<string> codeLines, ref bool handled);
-        /// <summary>
-        /// This method is called after a delegate property is created.
-        /// </summary>
-        /// <param name="propertyInfo">The property info of the delegate.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The property info of the delegate property.</param>
-        /// <param name="codeLines">The list of code lines for the delegate.</param>
-        partial void AfterCreateDelegateProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo, List<string> codeLines);
 
         /// <summary>
-        /// Creates an auto-implemented property with delegate backing, given the property information, delegate object name, and delegate property information.
+        /// Creates a ViewModel property based on the provided PropertyInfo.
         /// </summary>
-        /// <param name="propertyInfo">The information of the property.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The information of the delegate property.</param>
-        /// <returns>An enumerable collection of generated code for the auto-implemented property.</returns>
-        public virtual IEnumerable<string> CreateDelegateAutoProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
-        {
-            var result = new List<string>();
-            var propertyType = GetPropertyType(propertyInfo);
-
-            result.Add(string.Empty);
-            result.AddRange(CreateComment($"This property is a proxy access to the data of the '{propertyInfo.Name}' property in the entity."));
-            CreatePropertyAttributes(propertyInfo, result);
-            result.Add($"public {propertyType} {propertyInfo.Name}");
-            result.Add("{");
-            if (propertyInfo.CanRead)
-            {
-                result.AddRange(CreateDelegateAutoGet(propertyInfo, delegateObjectName, delegatePropertyInfo));
-            }
-            if (propertyInfo.CanWrite)
-            {
-                result.AddRange(CreateDelegateAutoSet(propertyInfo, delegateObjectName, delegatePropertyInfo));
-            }
-            result.Add("}");
-            return result;
-        }
-        /// <summary>
-        /// Creates a delegate for auto-getting a property using the provided <paramref name="propertyInfo"/>, <paramref name="delegateObjectName"/>, and <paramref name="delegatePropertyInfo"/>.
-        /// </summary>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> of the property to get.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The <see cref="PropertyInfo"/> of the property in the delegate object to get.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="string"/> containing the generated source code for the auto-get delegate.</returns>
-        public virtual IEnumerable<string> CreateDelegateAutoGet(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
-        {
-            var visibility = propertyInfo.GetGetMethod(true)!.IsPublic ? string.Empty : "internal ";
-
-            return [$"{visibility}get => {delegateObjectName}.{delegatePropertyInfo.Name};"];
-        }
-        /// <summary>
-        /// Creates a delegate that will automatically set the value of a property using the provided delegate object and property information.
-        /// </summary>
-        /// <param name="propertyInfo">The PropertyInfo of the property whose value needs to be set.</param>
-        /// <param name="delegateObjectName">The name of the delegate object that will be used to set the property value.</param>
-        /// <param name="delegatePropertyInfo">The PropertyInfo of the property that will store the value.</param>
-        /// <returns>An IEnumerable&lt;string&gt; containing the generated code for the delegate.</returns>
-        public virtual IEnumerable<string> CreateDelegateAutoSet(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
-        {
-            var visibility = propertyInfo.GetSetMethod(true)!.IsPublic ? string.Empty : "internal ";
-
-            return [$"{visibility}set => {delegateObjectName}.{delegatePropertyInfo.Name} = value;"];
-        }
-        /// <summary>
-        /// Creates XML documentation for the method.
-        /// </summary>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object representing the property.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The <see cref="PropertyInfo"/> object representing the delegate property.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="string"/> containing the generated documentation.</returns>
-        public virtual IEnumerable<string> CreateDelegatePartialProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
+        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
+        /// <returns>An enumerable collection of strings representing the generated ViewModel property.</returns>
+        public virtual IEnumerable<string> CreateViewModelProperty(PropertyInfo propertyInfo)
         {
             var result = new List<string>();
             var fieldType = GetPropertyType(propertyInfo);
-            var paramName = CreateParameterName(propertyInfo);
 
             result.Add(string.Empty);
+            result.AddRange(CreateComment(propertyInfo));
             CreatePropertyAttributes(propertyInfo, result);
             result.Add($"public {fieldType} {propertyInfo.Name}");
             result.Add("{");
-            result.AddRange(CreateDelegatePartialGetProperty(propertyInfo, delegateObjectName, delegatePropertyInfo));
-            result.AddRange(CreateDelegatePartialSetProperty(propertyInfo, delegateObjectName, delegatePropertyInfo));
+            result.AddRange(CreateViewModelGetProperty(propertyInfo));
+            result.AddRange(CreateViewModelSetProperty(propertyInfo));
             result.Add("}");
 
-            result.Add($"partial void On{propertyInfo.Name}Reading();");
-            result.Add($"partial void On{propertyInfo.Name}Changing(ref bool handled, {fieldType} value, ref {fieldType} {paramName});");
-            result.Add($"partial void On{propertyInfo.Name}Changed();");
             return result;
         }
-        /// <summary>
-        /// Creates a partial get property delegate for the specified property information and delegate object.
-        /// </summary>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> of the property to create the delegate for.</param>
-        /// <param name="delegateObjectName">The name of the delegate object.</param>
-        /// <param name="delegatePropertyInfo">The <see cref="PropertyInfo"/> of the delegate property.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> containing the lines of code for the created get property delegate.</returns>
-        public virtual IEnumerable<string> CreateDelegatePartialGetProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
+        /// <summary>  
+        /// Creates the getter property for a ViewModel based on the provided PropertyInfo.  
+        /// </summary>  
+        /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>  
+        /// <returns>An enumerable collection of strings representing the generated getter property.</returns>  
+        public virtual IEnumerable<string> CreateViewModelGetProperty(PropertyInfo propertyInfo)
         {
             var result = new List<string>();
+            var propName = propertyInfo.Name;
 
             CreateGetPropertyAttributes(propertyInfo, result);
             result.Add("get");
             result.Add("{");
-            result.Add($"On{propertyInfo.Name}Reading();");
-            result.Add($"return {delegateObjectName}.{delegatePropertyInfo.Name};");
+            result.Add($"return Model.{propName};");
             result.Add("}");
             return result;
         }
         /// <summary>
-        /// Creates a partial set property delegate for a given property.
+        /// Creates the setter property for a ViewModel based on the provided PropertyInfo.
         /// </summary>
         /// <param name="propertyInfo">The PropertyInfo object representing the property.</param>
-        /// <param name="delegateObjectName">The name of the object containing the delegate property.</param>
-        /// <param name="delegatePropertyInfo">The PropertyInfo object representing the delegate property.</param>
-        /// <returns>An IEnumerable of strings representing the generated code for the set property delegate.</returns>
-        public virtual IEnumerable<string> CreateDelegatePartialSetProperty(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
+        /// <returns>An enumerable collection of strings representing the generated setter property.</returns>
+        public virtual IEnumerable<string> CreateViewModelSetProperty(PropertyInfo propertyInfo)
         {
             var result = new List<string>();
             var propName = propertyInfo.Name;
-            var fieldType = GetPropertyType(propertyInfo);
-            var fieldName = CreateFieldName(propertyInfo, "_");
-            var defaultValue = GetDefaultValue(propertyInfo);
 
             CreateSetPropertyAttributes(propertyInfo, result);
             result.Add("set");
             result.Add("{");
-            result.Add("bool handled = false;");
-            result.Add(string.IsNullOrEmpty(defaultValue)
-            ? $"{fieldType} {fieldName} = default;"
-            : $"{fieldType} {fieldName} = {defaultValue};");
-            result.Add($"On{propName}Changing(ref handled, value, ref {fieldName});");
-            result.Add("if (handled == false)");
-            result.Add("{");
-            result.Add($"{delegateObjectName}.{delegatePropertyInfo.Name} = value;");
+            result.Add($"Model.{propName} = value;");
+            result.Add($"OnPropertyChanged();");
             result.Add("}");
-            result.Add("else");
-            result.Add("{");
-            result.Add($"{delegateObjectName}.{delegatePropertyInfo.Name} = {fieldName};");
-            result.Add("}");
-            result.Add($"On{propName}Changed();");
-            result.Add("}");
-            return [.. result];
+            return result;
         }
-        #endregion delegate property helpers
+        #endregion create properties
+
+        #region create contracts
+        /// <summary>
+        /// Creates an entity contract for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which the entity contract is created.</param>
+        /// <param name="unitType">The unit type.</param>
+        /// <param name="itemType">The item type.</param>
+        /// <param name="filter">An optional filter function to determine which properties to copy.</param>
+        /// <returns>A <see cref="GeneratedItem"/> representing the created entity contract.</returns>
+        protected virtual GeneratedItem CreateEntityContract(Type type, UnitType unitType, ItemType itemType, Func<PropertyInfo, bool>? filter = null)
+        {
+            var baseInterface = ItemProperties.GetEntityBaseInterface(type);
+            var itemName = ItemProperties.CreateContractName(type);
+            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
+            var visibility = ItemProperties.GetDefaultVisibility(type);
+            var itemFullName = ItemProperties.CreateFullContractType(type);
+            var itemNamespace = ItemProperties.CreateFullNamespace(type, StaticLiterals.ContractsFolder);
+            var typeProperties = type.GetProperties().Where(pi => pi.DeclaringType == type);
+            var filteredProperties = GetGenerationProperties(type).Where(filter ?? (p => true));
+
+            var result = new GeneratedItem(unitType, itemType)
+            {
+                FullName = itemFullName,
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateSubFilePath(type, fileName, StaticLiterals.ContractsFolder),
+            };
+
+            visibility = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Visibility, visibility);
+
+            result.AddRange(CreateComment(type));
+            result.Add($"{visibility} partial interface {itemName} : {baseInterface}");
+            result.Add("{");
+            foreach (var propertyInfo in filteredProperties)
+            {
+                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.Generate, "True"))
+                {
+                    var getAccessor = string.Empty;
+                    var setAccessor = string.Empty;
+                    var propertyType = GetPropertyType(propertyInfo);
+
+                    if (propertyInfo.CanRead
+                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.GetAccessor, "True"))
+                    {
+                        getAccessor = "get;";
+                    }
+                    if (propertyInfo.CanWrite
+                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.SetAccessor, "True"))
+                    {
+                        setAccessor = "set;";
+                    }
+                    result.Add($"{propertyType} {propertyInfo.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
+                }
+            }
+
+            // Added copy properties method
+            result.AddRange(CreateContractCopyProperties(type, itemName, pi => pi.Name == StaticLiterals.IdentityProperty
+                                                                            || (ItemProperties.IsEntityType(pi.PropertyType) == false
+                                                                                && ItemProperties.IsEntityListType(pi.PropertyType) == false
+                                                                                && ItemProperties.IsEntityArrayType(pi.PropertyType) == false)));
+
+            result.Add("}");
+            result.EnvelopeWithANamespace(itemNamespace);
+            result.FormatCSharpCode();
+            return result;
+        }
+        #endregion create contracts
 
         #region copy properties
         /// <summary>
@@ -701,53 +491,6 @@ namespace TemplateTools.Logic.Generation
         {
             return $"{propertyInfo.Name} = other.{propertyInfo.Name};";
         }
-        /// <summary>
-        /// Creates a copy of the properties of the specified <paramref name="type"/>.
-        /// </summary>
-        /// <param name="visibility">The visibility of the copy properties method.</param>
-        /// <param name="type">The type whose properties will be copied.</param>
-        /// <param name="copyType">The type to which the properties will be copied.</param>
-        /// <param name="filter">An optional filter function to determine which properties to copy.</param>
-        /// <returns>
-        /// An enumerable collection of strings representing the generated copy properties method.
-        /// </returns>
-        public virtual IEnumerable<string> CreateCopyProperties(string visibility, Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
-        {
-            var result = new List<string>();
-
-            result.AddRange(CreateComment("Copies the properties of another object to this instance."));
-            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
-            result.Add($"{visibility} void CopyProperties({copyType} other)");
-            result.Add("{");
-            result.Add("other.CheckArgument(nameof(other));");
-            result.Add("bool handled = false;");
-            result.Add("BeforeCopyProperties(other, ref handled);");
-            result.Add("if (handled == false)");
-            result.Add("{");
-
-            foreach (var item in type.GetAllPropertyInfos().Where(filter ?? (p => true)))
-            {
-                if (item.CanRead && CanCreate(item) && CanCopyProperty(item))
-                {
-                    result.Add(CopyProperty(copyType, item));
-                }
-            }
-
-            result.Add("}");
-            result.Add("AfterCopyProperties(other);");
-            result.Add("}");
-
-            result.AddRange(CreateComment("This method is called before copying the properties of another object to the current instance."));
-            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
-            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param>");
-            result.Add($"partial void BeforeCopyProperties({copyType} other, ref bool handled);");
-
-            result.AddRange(CreateComment("This method is called after copying properties from another instance of the class."));
-            result.Add("/// <param name=\"other\">The other instance of the class from which properties were copied.</param>");
-            result.Add($"partial void AfterCopyProperties({copyType} other);");
-            return result.Where(l => string.IsNullOrEmpty(l) == false);
-        }
-
         /// <summary>
         /// Creates the source code for copy properties of the specified types.
         /// </summary>
@@ -797,69 +540,46 @@ namespace TemplateTools.Logic.Generation
             result.Add($"partial void AfterCopyProperties({entityType} {targetName}, {entityType} {sourceName});");
             return result.Where(l => string.IsNullOrEmpty(l) == false);
         }
-
         /// <summary>
-        /// Copies the value of a delegate property from one object to another.
+        /// Creates a copy of the properties of the specified <paramref name="type"/>.
         /// </summary>
-        /// <param name="copyType">The type of copy operation.</param>
-        /// <param name="propertyInfo">The PropertyInfo of the delegate property.</param>
-        /// <returns>A string representation of the copied delegate value.</returns>
-        protected virtual string CopyDelegateProperty(string copyType, PropertyInfo propertyInfo)
-        {
-            return $"{propertyInfo.Name} = other.{propertyInfo.Name};";
-        }
-        /// <summary>
-        /// Creates a copy of delegate properties for a given visibility and type.
-        /// </summary>
-        /// <param name="visibility">The visibility level of the properties (e.g., public, private, etc.).</param>
-        /// <param name="type">The type of the object whose properties will be copied.</param>
-        /// <returns>An enumerable collection of string representing the copied delegate properties.</returns>
-        public virtual IEnumerable<string> CreateDelegateCopyProperties(string visibility, Type type)
-        {
-            return CreateDelegateCopyProperties(visibility, type, type.FullName ?? string.Empty);
-        }
-        /// <summary>
-        ///     Creates a delegate to copy properties from one object instance to another.
-        /// </summary>
-        /// <param name="visibility">The visibility of the generated method.</param>
-        /// <param name="type">The type of the object whose properties are copied.</param>
-        /// <param name="copyType">The type of the object to copy the properties into.</param>
-        /// <param name="filter">Optional filter to specify which properties to copy.</param>
+        /// <param name="visibility">The visibility of the copy properties method.</param>
+        /// <param name="type">The type whose properties will be copied.</param>
+        /// <param name="copyType">The type to which the properties will be copied.</param>
+        /// <param name="filter">An optional filter function to determine which properties to copy.</param>
         /// <returns>
-        ///     An enumerable collection of strings representing the generated code for the copy properties delegate method.
+        /// An enumerable collection of strings representing the generated copy properties method.
         /// </returns>
-        /// <remarks>
-        ///     This method generates a delegate method for copying properties from one object instance to another,
-        ///     based on the specified parameters. By providing the desired visibility for the generated method,
-        ///     the generated method will have the specified visibility modifier.
-        ///     The specified type indicates the type of object whose properties are copied, while the copyType
-        ///     parameter denotes the type of object to copy the properties into.
-        ///     An optional filter parameter can be passed to selectively copy properties based on specific conditions.
-        ///     The generated code for the copy properties delegate method is then returned as an enumerable collection
-        ///     of strings.
-        ///     Before performing the copy operation, the delegate method invokes the BeforeCopyProperties method, which
-        ///     can be partially implemented to customize the behavior before the copy operation takes place.
-        ///     After the copy operation, the delegate method invokes the AfterCopyProperties method, which can also be
-        ///     partially implemented to perform any necessary post-copy operations.
-        /// </remarks>
-        public virtual IEnumerable<string> CreateDelegateCopyProperties(string visibility, Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
+        public virtual IEnumerable<string> CreateContractCopyProperties(Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
         {
-#pragma warning disable IDE0028 // Simplify collection initialization
-            var result = new List<string>(CreateComment(type));
-#pragma warning restore IDE0028 // Simplify collection initialization
+            var result = new List<string>();
+            var baseInterface = ItemProperties.GetEntityBaseInterface(type);
+            var typeProperties = type.GetProperties().Where(pi => pi.DeclaringType == type);
+            var filteredProperties = typeProperties.Where(filter ?? (p => true));
 
-            result.Add($"{visibility} void CopyProperties({copyType} other)");
+            result.AddRange(CreateComment("Copies the properties of another object to this instance."));
+            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
+            result.Add($"void CopyProperties({copyType} other)");
             result.Add("{");
             result.Add("bool handled = false;");
             result.Add("BeforeCopyProperties(other, ref handled);");
             result.Add("if (handled == false)");
             result.Add("{");
 
-            foreach (var item in type.GetAllPropertyInfos().Where(filter ?? (p => true)))
+            if (baseInterface == default)
             {
-                if (item.CanRead && item.CanWrite && CanCreate(item))
+                result.Add("other.CheckArgument(nameof(other));");
+            }
+            else
+            {
+                result.Add($"(({baseInterface})this).CopyProperties(other);");
+            }
+
+            foreach (var item in filteredProperties)
+            {
+                if (item.CanWrite && item.CanRead && CanCreate(item) && CanCopyProperty(item))
                 {
-                    result.Add(CopyDelegateProperty(copyType, item));
+                    result.Add(CopyProperty(copyType, item));
                 }
             }
 
@@ -869,8 +589,9 @@ namespace TemplateTools.Logic.Generation
 
             result.AddRange(CreateComment("This method is called before copying the properties of another object to the current instance."));
             result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
-            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param");
+            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param>");
             result.Add($"partial void BeforeCopyProperties({copyType} other, ref bool handled);");
+
             result.AddRange(CreateComment("This method is called after copying properties from another instance of the class."));
             result.Add("/// <param name=\"other\">The other instance of the class from which properties were copied.</param>");
             result.Add($"partial void AfterCopyProperties({copyType} other);");
@@ -888,10 +609,9 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<string>();
             var counter = 0;
-            var typeProperties = type.GetAllPropertyInfos();
-            var filteredProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)));
+            var generationProperties = GetGenerationProperties(type);
 
-            if (filteredProperties.Any())
+            if (generationProperties.Any())
             {
                 result.AddRange(CreateComment("Determines whether the specified object is equal to the current object."));
                 result.Add("/// <param name=\"obj\">The object to compare with the current object.</param>");
@@ -901,11 +621,11 @@ namespace TemplateTools.Logic.Generation
                 result.Add($"if (obj is {otherType} other)");
                 result.Add("{");
 
-                foreach (var pi in filteredProperties)
+                foreach (var pi in generationProperties)
                 {
                     if (pi.CanRead)
                     {
-                        var codeLine = counter == 0 ? "result = " : "       && ";
+                        var codeLine = counter == 0 ? "result = base.Equals(other) && " : "    && ";
 
                         if (pi.PropertyType.IsValueType)
                         {
@@ -942,23 +662,22 @@ namespace TemplateTools.Logic.Generation
             var braces = 0;
             var counter = 0;
             var codeLine = string.Empty;
-            var properties = type.GetAllPropertyInfos();
-            var filteredProperties = properties;
+            var generationProperties = GetGenerationProperties(type);
 
-            if (filteredProperties.Any())
+            if (generationProperties.Any())
             {
                 result.AddRange(CreateComment("Serves as the default hash function."));
                 result.Add($"public override int GetHashCode()");
                 result.Add("{");
 
-                foreach (var pi in filteredProperties)
+                foreach (var pi in generationProperties)
                 {
                     if (pi.CanRead && CanCreate(pi) && pi.IsNavigationProperties() == false)
                     {
                         if (counter == 0)
                         {
                             braces++;
-                            codeLine = "this.CalculateHashCode(";
+                            codeLine = "this.CalculateHashCode(base.GetHashCode(), ";
                         }
                         else
                         {
@@ -987,11 +706,6 @@ namespace TemplateTools.Logic.Generation
         }
 
         #region query settings
-        /// <summary>
-        /// The separators used to split values in the valueSeparators array.
-        /// </summary>
-        internal static readonly char[] valueSeparators = [','];
-
         /// <summary>
         /// Retrieves the query settings for a given unit type, item type, item name, sub-item names, and setting name.
         /// </summary>

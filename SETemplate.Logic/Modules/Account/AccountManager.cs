@@ -100,7 +100,6 @@ namespace SETemplate.Logic.Modules.Account
                     };
                     var identity = new SecureIdentity
                     {
-                        Guid = Guid.NewGuid(),
                         Name = name,
                         Email = email,
                         PasswordHash = Hash,
@@ -167,7 +166,6 @@ namespace SETemplate.Logic.Modules.Account
                 var (Hash, Salt) = CreatePasswordHash(password);
                 var identity = new SecureIdentity
                 {
-                    Guid = Guid.NewGuid(),
                     Name = name,
                     Email = email,
                     PasswordHash = Hash,

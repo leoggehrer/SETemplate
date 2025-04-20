@@ -47,22 +47,11 @@ namespace TemplateTools.Logic.Generation
         public WebApiGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
         {
             GenerateModels = QuerySetting<bool>(ItemType.WebApiModel, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
-            GenerateControllers = QuerySetting<bool>(ItemType.Controller, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            GenerateControllers = QuerySetting<bool>(ItemType.EntityController, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
             GenerateContextAccessor = QuerySetting<bool>(ItemType.ContextAccessor, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
         }
 
         #region generation
-        /// <summary>
-        ///   Determines whether the specified type should generate default values.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified type is not a generation entity; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool GetGenerateDefault(Type type)
-        {
-            return EntityProject.IsCustomEntity(type);
-        }
         /// <summary>
         /// Generates all the required items such as models, controllers, and services.
         /// </summary>
@@ -72,7 +61,8 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             
             result.AddRange(CreateModels());
-            result.AddRange(CreateControllers());
+            result.AddRange(CreateEntityControllers());
+            result.AddRange(CreateViewControllers());
             result.Add(CreateContextAccessor(UnitType.WebApi, ItemType.ContextAccessor));
             return result;
         }
@@ -86,6 +76,16 @@ namespace TemplateTools.Logic.Generation
             var entityProject = EntityProject.Create(SolutionProperties);
             
             foreach (var type in entityProject.EntityTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.WebApiModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
+                {
+                    result.Add(CreateModelFromType(type, UnitType.WebApi, ItemType.WebApiModel));
+                    result.Add(CreateModelInheritance(type, UnitType.WebApi, ItemType.WebApiModel));
+                    result.Add(CreateEditModelFromType(type, UnitType.WebApi, ItemType.WebApiEditModel));
+                }
+            }
+
+            foreach (var type in entityProject.AllViewTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.WebApiModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
                 {
@@ -140,16 +140,16 @@ namespace TemplateTools.Logic.Generation
         /// Creates controllers for entity types.
         /// </summary>
         /// <returns>An enumerable collection of generated items.</returns>
-        private List<IGeneratedItem> CreateControllers()
+        private List<IGeneratedItem> CreateEntityControllers()
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
             
             foreach (var type in entityProject.EntityTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, GenerateControllers.ToString()))
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.EntityController, type, StaticLiterals.Generate, GenerateControllers.ToString()))
                 {
-                    result.Add(CreateControllerFromType(type, UnitType.WebApi, ItemType.Controller));
+                    result.Add(CreateEntityControllerFromType(type, UnitType.WebApi, ItemType.EntityController));
                 }
             }
             return result;
@@ -161,11 +161,11 @@ namespace TemplateTools.Logic.Generation
         /// <param name="unitType">The unit type.</param>
         /// <param name="itemType">The item type.</param>
         /// <returns>An instance of the IGeneratedItem interface representing the created controller.</returns>
-        private GeneratedItem CreateControllerFromType(Type type, UnitType unitType, ItemType itemType)
+        private GeneratedItem CreateEntityControllerFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var visibility = "public";
             var logicProject = $"{ItemProperties.SolutionName}{StaticLiterals.LogicExtension}";
-            var genericType = $"Controllers.GenericController";
+            var genericType = $"Controllers.GenericEntityController";
             var modelType = ItemProperties.CreateModelType(type);
             var entityType = $"{logicProject}.{ItemProperties.GetModuleSubType(type)}";
             var controllerName = ItemProperties.CreateControllerClassName(type);
@@ -227,6 +227,78 @@ namespace TemplateTools.Logic.Generation
         }
 
         /// <summary>
+        /// Creates controllers for entity types.
+        /// </summary>
+        /// <returns>An enumerable collection of generated items.</returns>
+        private List<IGeneratedItem> CreateViewControllers()
+        {
+            var result = new List<IGeneratedItem>();
+            var entityProject = EntityProject.Create(SolutionProperties);
+
+            foreach (var type in entityProject.AllViewTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.ViewController, type, StaticLiterals.Generate, GenerateControllers.ToString()))
+                {
+                    result.Add(CreateViewControllerFromType(type, UnitType.WebApi, ItemType.EntityController));
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// Creates a controller from the specified type.
+        /// </summary>
+        /// <param name="type">The type of the controller.</param>
+        /// <param name="unitType">The unit type.</param>
+        /// <param name="itemType">The item type.</param>
+        /// <returns>An instance of the IGeneratedItem interface representing the created controller.</returns>
+        private GeneratedItem CreateViewControllerFromType(Type type, UnitType unitType, ItemType itemType)
+        {
+            var visibility = "public";
+            var logicProject = $"{ItemProperties.SolutionName}{StaticLiterals.LogicExtension}";
+            var genericType = $"Controllers.GenericViewController";
+            var modelType = ItemProperties.CreateModelType(type);
+            var viewType = $"{logicProject}.{ItemProperties.GetModuleSubType(type)}";
+            var controllerName = ItemProperties.CreateControllerClassName(type);
+            var contractType = ItemProperties.CreateFullCommonContractType(type);
+            var result = new GeneratedItem(unitType, itemType)
+            {
+                FullName = $"{ItemProperties.CreateControllerType(type)}",
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateControllersSubPathFromType(type, string.Empty, StaticLiterals.CSharpFileExtension),
+            };
+            result.Add($"using TModel = {modelType};");
+            result.Add($"using TView = {viewType};");
+            result.Add($"using TContract = {contractType};");
+            result.AddRange(CreateComment(type));
+            CreateControllerAttributes(type, unitType, itemType, result.Source);
+            result.Add($"{visibility} sealed partial class {controllerName}(Contracts.IContextAccessor contextAccessor) : {genericType}<TModel, TView, TContract>(contextAccessor)");
+            result.Add("{");
+            result.AddRange(CreatePartialStaticConstrutor(controllerName));
+
+            result.AddRange(CreateComment(type));
+            result.Add($"protected override TModel ToModel(TView view)");
+            result.Add("{");
+            result.Add($"var handled = false;");
+            result.Add($"var result = new TModel();");
+            result.Add("BeforeToModel(view, ref result, ref handled);");
+            result.Add("if (handled == false)");
+            result.Add("{");
+            result.Add($"(result as TContract).CopyProperties(view);");
+            result.Add("}");
+            result.Add("AfterToModel(result);");
+            result.Add($"return result;");
+            result.Add("}");
+
+            result.Add($"partial void BeforeToModel(TView view, ref TModel outModel, ref bool handled);");
+            result.Add($"partial void AfterToModel(TModel model);");
+
+            result.Add("}");
+            result.EnvelopeWithANamespace(ItemProperties.CreateControllerNamespace(type));
+            result.FormatCSharpCode();
+            return result;
+        }
+
+        /// <summary>
         /// Creates a context accessor for the specified unit type and item type.
         /// </summary>
         /// <param name="unitType">The unit type for the context accessor.</param>
@@ -261,7 +333,25 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"if (typeof(TEntity) == typeof({type.FullName}))");
                     result.Add("{");
                     result.Add($"entitySet = GetContext().{ItemProperties.CreateEntitySetName(type)} as Logic.Contracts.IEntitySet<TEntity>;");
-                    result.Add("handled = true;");
+                    result.Add("handled = entitySet != default;");
+                    result.Add("}");
+                }
+            }
+
+            result.Add("}");
+
+            result.AddRange(CreateComment());
+            result.Add("partial void GetViewSetHandler<TView>(ref Logic.Contracts.IViewSet<TView>? viewSet, ref bool handled) where TView : Logic.Entities.ViewObject, new()");
+            result.Add("{");
+
+            if (GenerateContextAccessor)
+            {
+                foreach (var type in entityProject.AllViewTypes)
+                {
+                    result.Add($"if (typeof(TView) == typeof({type.FullName}))");
+                    result.Add("{");
+                    result.Add($"viewSet = GetContext().{ItemProperties.CreateViewSetName(type)} as Logic.Contracts.IViewSet<TView>;");
+                    result.Add("handled = viewSet != default;");
                     result.Add("}");
                 }
             }

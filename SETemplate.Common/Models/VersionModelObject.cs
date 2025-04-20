@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 using System.ComponentModel.DataAnnotations;
 
 namespace SETemplate.Common.Models

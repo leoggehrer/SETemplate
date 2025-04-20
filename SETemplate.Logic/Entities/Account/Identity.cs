@@ -13,12 +13,6 @@ namespace SETemplate.Logic.Entities.Account
     [Index(nameof(Email), IsUnique = true)]
     internal partial class Identity : VersionEntityObject
     {
-#if GUID_OFF
-        /// <summary>
-        /// Gets or sets the unique identifier.
-        /// </summary>
-        public Guid Guid { get; set; }
-#endif
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -52,7 +46,7 @@ namespace SETemplate.Logic.Entities.Account
         /// <summary>
         /// Gets or sets the state of the object.
         /// </summary>
-        public CommonEnums.State State { get; set; } = Common.Enums.State.Active;
+        public CommonEnums.State State { get; set; } = CommonEnums.State.Active;
 
         #region Navigation properties
         /// <summary>
@@ -60,16 +54,6 @@ namespace SETemplate.Logic.Entities.Account
         /// </summary>
         public List<IdentityXRole> IdentityXRoles { get; internal set; } = [];
         #endregion Navigation properties
-
-        /// <summary>
-        /// Checks if the user has a role with the specified GUID.
-        /// </summary>
-        /// <param name="guid">The GUID of the role to check.</param>
-        /// <returns>True if the user has the role, otherwise false.</returns>
-        public bool HasRole(Guid guid)
-        {
-            return IdentityXRoles.Any(iXr => iXr.Role != null && iXr.Role.Guid == guid);
-        }
     }
 }
 #endif

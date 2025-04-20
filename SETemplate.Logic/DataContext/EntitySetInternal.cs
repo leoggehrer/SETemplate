@@ -106,6 +106,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entity.</returns>
         internal virtual TEntity ExecuteAdd(TEntity entity)
         {
+            BeforeAdding(entity);
             BeforeExecuteAdding(entity);
             return DbSet.Add(entity).Entity;
         }
@@ -116,7 +117,11 @@ namespace SETemplate.Logic.DataContext
         /// <param name="entities">The entities to add.</param>
         internal virtual void ExecuteAddRange(IEnumerable<TEntity> entities)
         {
-            entities.ForEach(e => BeforeExecuteAdding(e));
+            entities.ForEach(e =>
+            {
+                BeforeAdding(e);
+                BeforeExecuteAdding(e);
+            });
             DbSet.AddRange(entities);
         }
 
@@ -127,6 +132,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         internal virtual async Task<TEntity> ExecuteAddAsync(TEntity entity)
         {
+            BeforeAdding(entity);
             BeforeExecuteAdding(entity);
             var result = await DbSet.AddAsync(entity).ConfigureAwait(false);
 
@@ -140,7 +146,11 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal virtual async Task ExecuteAddRangeAsync(IEnumerable<TEntity> entities)
         {
-            entities.ForEach(e => BeforeExecuteAdding(e));
+            entities.ForEach(e =>
+            {
+                BeforeAdding(e);
+                BeforeExecuteAdding(e);
+            });
             await DbSet.AddRangeAsync(entities).ConfigureAwait(false);
         }
 
@@ -237,5 +247,9 @@ namespace SETemplate.Logic.DataContext
             return Context.ExecuteSaveChangesAsync();
         }
         #endregion context methods
+
+        #region partial methods
+        partial void BeforeAdding(TEntity entity);
+        #endregion partial methods
     }
 }

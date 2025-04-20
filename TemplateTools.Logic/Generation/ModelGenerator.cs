@@ -18,10 +18,6 @@ namespace TemplateTools.Logic.Generation
     /// <param name="solutionProperties">The solution properties.</param>
     internal abstract partial class ModelGenerator(ISolutionProperties solutionProperties) : ItemGenerator(solutionProperties)
     {
-        /// <summary>
-        /// Gets the properties of the item.
-        /// </summary>
-        protected abstract ItemProperties ItemProperties { get; }
         #region overrides
         /// <summary>
         /// Returns the type of the property.
@@ -78,38 +74,6 @@ namespace TemplateTools.Logic.Generation
                     var modelType = ItemProperties.GetSubType(propertyInfo.PropertyType);
 
                     modelType = $"{modelFolder}{modelType}";
-                    result = $"{propertyInfo.Name} = other.{propertyInfo.Name} != null ? {modelType}.Create((object)other.{propertyInfo.Name}) : null;";
-                }
-            }
-            return result ?? base.CopyProperty(copyType, propertyInfo);
-        }
-        /// <summary>
-        /// Copies the specified property of the given copy type.
-        /// </summary>
-        /// <param name="copyType">The type to copy.</param>
-        /// <param name="propertyInfo">The PropertyInfo object representing the property to be copied.</param>
-        /// <returns>A string representation of the copied property.</returns>
-        protected override string CopyDelegateProperty(string copyType, PropertyInfo propertyInfo)
-        {
-            string? result = null;
-
-            if (StaticLiterals.VersionProperties.Any(vp => vp.Equals(propertyInfo.Name)) == false
-            && copyType.Equals(propertyInfo.DeclaringType!.FullName, StringComparison.CurrentCultureIgnoreCase) == false)
-            {
-                if (ItemProperties.IsArrayType(propertyInfo.PropertyType))
-                {
-                    var modelType = ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.GetElementType()!.FullName!);
-
-                    result = $"{propertyInfo.Name} = other.{propertyInfo.Name}.Select(e => {modelType}.Create((object)e)).ToArray();";
-                }
-                else if (ItemProperties.IsListType(propertyInfo.PropertyType))
-                {
-                    result = string.Empty;
-                }
-                else if (ItemProperties.IsEntityType(propertyInfo.PropertyType))
-                {
-                    var modelType = ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.FullName!);
-
                     result = $"{propertyInfo.Name} = other.{propertyInfo.Name} != null ? {modelType}.Create((object)other.{propertyInfo.Name}) : null;";
                 }
             }
@@ -206,120 +170,6 @@ namespace TemplateTools.Logic.Generation
         #endregion converters
 
         /// <summary>
-        /// Creates an entity contract for the specified type.
-        /// </summary>
-        /// <param name="type">The type for which the entity contract is created.</param>
-        /// <param name="unitType">The unit type.</param>
-        /// <param name="itemType">The item type.</param>
-        /// <returns>A <see cref="GeneratedItem"/> representing the created entity contract.</returns>
-        protected virtual GeneratedItem CreateEntityContract(Type type, UnitType unitType, ItemType itemType)
-        {
-            var baseInterface = ItemProperties.GetEntityBaseInterface(type);
-            var itemName = ItemProperties.CreateContractName(type);
-            var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
-            var visibility = ItemProperties.GetDefaultVisibility(type);
-            var itemFullName = ItemProperties.CreateFullContractType(type);
-            var itemNamespace = ItemProperties.CreateFullNamespace(type, StaticLiterals.ContractsFolder);
-            var typeProperties = type.GetAllPropertyInfos().Where(pi => pi.DeclaringType == type) ?? [];
-            var generateProperties = typeProperties.Where(pi => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(pi.Name)) == false
-                                                             && ItemProperties.IsEntityType(pi.PropertyType) == false
-                                                             && ItemProperties.IsEntityListType(pi.PropertyType) == false
-                                                             && ItemProperties.IsEntityArrayType(pi.PropertyType) == false) ?? [];
-            var result = new GeneratedItem(unitType, itemType)
-            {
-                FullName = itemFullName,
-                FileExtension = StaticLiterals.CSharpFileExtension,
-                SubFilePath = ItemProperties.CreateSubFilePath(type, fileName, StaticLiterals.ContractsFolder),
-            };
-
-            visibility = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Visibility, visibility);
-
-            result.AddRange(CreateComment(type));
-            result.Add($"{visibility} partial interface {itemName} : {baseInterface}");
-            result.Add("{");
-            foreach (var propertyInfo in generateProperties)
-            {
-                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.Generate, "True"))
-                {
-                    var getAccessor = string.Empty;
-                    var setAccessor = string.Empty;
-                    var propertyType = GetPropertyType(propertyInfo);
-
-                    if (propertyInfo.CanRead 
-                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.GetAccessor, "True"))
-                    {
-                        getAccessor = "get;";
-                    }
-                    if (propertyInfo.CanWrite 
-                        && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.SetAccessor, "True"))
-                    {
-                        setAccessor = "set;";
-                    }
-                    result.Add($"{propertyType} {propertyInfo.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
-                }
-            }
-
-            // Added copy properties method
-            result.AddRange(CreateContractCopyProperties(type, itemName, pi => pi.Name == StaticLiterals.IdentityProperty
-                                                                            || (ItemProperties.IsEntityType(pi.PropertyType) == false
-                                                                                && ItemProperties.IsEntityListType(pi.PropertyType) == false
-                                                                                && ItemProperties.IsEntityArrayType(pi.PropertyType) == false)));
-
-            result.Add("}");
-            result.EnvelopeWithANamespace(itemNamespace);
-            result.FormatCSharpCode();
-            return result;
-        }
-        /// <summary>
-        /// Creates a copy of the properties of the specified <paramref name="type"/>.
-        /// </summary>
-        /// <param name="visibility">The visibility of the copy properties method.</param>
-        /// <param name="type">The type whose properties will be copied.</param>
-        /// <param name="copyType">The type to which the properties will be copied.</param>
-        /// <param name="filter">An optional filter function to determine which properties to copy.</param>
-        /// <returns>
-        /// An enumerable collection of strings representing the generated copy properties method.
-        /// </returns>
-        public virtual IEnumerable<string> CreateContractCopyProperties(Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
-        {
-            var result = new List<string>();
-            var generationProperties = type.GetAllPropertyInfos();
-            var filteredProperties = generationProperties.Where(filter ?? (p => true));
-
-            result.AddRange(CreateComment("Copies the properties of another object to this instance."));
-            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
-            result.Add($"void CopyProperties({copyType} other)");
-            result.Add("{");
-            result.Add("other.CheckArgument(nameof(other));");
-            result.Add("bool handled = false;");
-            result.Add("BeforeCopyProperties(other, ref handled);");
-            result.Add("if (handled == false)");
-            result.Add("{");
-
-            foreach (var item in filteredProperties)
-            {
-                if (item.CanWrite && item.CanRead && CanCreate(item) && CanCopyProperty(item))
-                {
-                    result.Add(CopyProperty(copyType, item));
-                }
-            }
-
-            result.Add("}");
-            result.Add("AfterCopyProperties(other);");
-            result.Add("}");
-
-            result.AddRange(CreateComment("This method is called before copying the properties of another object to the current instance."));
-            result.Add("/// <param name=\"other\">The object to copy the properties from.</param>");
-            result.Add("/// <param name=\"handled\">A boolean value that indicates whether the method has been handled.</param>");
-            result.Add($"partial void BeforeCopyProperties({copyType} other, ref bool handled);");
-
-            result.AddRange(CreateComment("This method is called after copying properties from another instance of the class."));
-            result.Add("/// <param name=\"other\">The other instance of the class from which properties were copied.</param>");
-            result.Add($"partial void AfterCopyProperties({copyType} other);");
-            return result.Where(l => string.IsNullOrEmpty(l) == false);
-        }
-
-        /// <summary>
         /// Creates a model from a given type, unit type, and item type.
         /// </summary>
         /// <param name="type">The type of the model.</param>
@@ -337,7 +187,7 @@ namespace TemplateTools.Logic.Generation
             var attributes = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Attribute, string.Empty);
             var contractType = ItemProperties.CreateFullCommonContractType(type);
             var typeProperties = type.GetAllPropertyInfos();
-            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
+            var generationProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             GeneratedItem result = new(unitType, itemType)
             {
                 FullName = modelFullName,
@@ -352,7 +202,7 @@ namespace TemplateTools.Logic.Generation
             result.AddRange(CreatePartialStaticConstrutor(modelName));
             result.AddRange(CreatePartialConstrutor("public", modelName));
 
-            foreach (var propertyInfo in generateProperties)
+            foreach (var propertyInfo in generationProperties)
             {
                 if (CanCreate(propertyInfo)
                     && propertyInfo.IsNavigationProperties() == false

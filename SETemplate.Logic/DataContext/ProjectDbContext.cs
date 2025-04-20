@@ -104,19 +104,47 @@ namespace SETemplate.Logic.DataContext
         /// <param name="optionsBuilder">The options builder to be used for configuration.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var handled = false;
+
+            BeforeOnConfiguring(optionsBuilder, ref handled);
+            if (handled == false)
+            {
+
 #if POSTGRES_ON
-            optionsBuilder.UseNpgsql(ConnectionString);
+                optionsBuilder.UseNpgsql(ConnectionString);
 #endif
 
 #if SQLSERVER_ON
-            optionsBuilder.UseSqlServer(ConnectionString);
+                optionsBuilder.UseSqlServer(ConnectionString);
 #endif
 
 #if SQLITE_ON
-            optionsBuilder.UseSqlite(ConnectionString);
+                optionsBuilder.UseSqlite(ConnectionString);
 #endif
-
+            }
+            AfterOnConfiguring(optionsBuilder);
             base.OnConfiguring(optionsBuilder);
+        }
+
+        /// <summary>
+        /// Configures the model for the database context.
+        /// </summary>
+        /// <param name="modelBuilder">The builder used to define the model for the context.</param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var handled = false;
+
+            OnViewModelCreating(modelBuilder);
+            BeforeOnModelCreating(modelBuilder, ref handled);
+            if (handled == false)
+            {
+                foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+                {
+                    relationship.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
+            AfterOnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>
@@ -124,7 +152,7 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <typeparam name="E">The entity type E</typeparam>
         /// <returns>The DbSet depending on the type E</returns>
-        internal DbSet<E> GetDbSet<E>() where E : Entities.EntityObject
+        internal DbSet<E> GetDbSet<E>() where E : Entities.DbObject
         {
             var handled = false;
             var result = default(DbSet<E>);
@@ -154,9 +182,53 @@ namespace SETemplate.Logic.DataContext
             }
             return result ?? throw new Modules.Exceptions.LogicException(ErrorType.InvalidEntitySet);  
         }
+
+        internal ViewSet<E> GetViewSet<E>() where E : Entities.ViewObject, new()
+        {
+            var handled = false;
+            var result = default(ViewSet<E>);
+            GetViewSet(ref result, ref handled);
+            if (handled == false || result == null)
+            {
+                GetGeneratorViewSet(ref result, ref handled);
+            }
+            return result ?? throw new Modules.Exceptions.LogicException(ErrorType.InvalidEntitySet);
+        }
         #endregion methods
 
         #region partial methods
+        /// <summary>
+        /// This method is called before configuring the database context options.
+        /// </summary>
+        /// <param name="optionsBuilder">The options builder to be used for configuration.</param>
+        /// <param name="handled">Indicates whether the configuration was handled.</param>
+        static partial void BeforeOnConfiguring(DbContextOptionsBuilder optionsBuilder, ref bool handled);
+        /// <summary>
+        /// This method is called after configuring the database context options.
+        /// </summary>
+        /// <param name="optionsBuilder">The options builder to be used for configuration.</param>
+        static partial void AfterOnConfiguring(DbContextOptionsBuilder optionsBuilder);
+
+        /// <summary>
+        /// This method is called during the creation of the model for the database context.
+        /// It allows customization of the model by adding configurations, constraints, or relationships
+        /// between entities before the model is finalized.
+        /// </summary>
+        /// <param name="modelBuilder">The builder used to define the model for the context.</param>
+        static partial void OnViewModelCreating(ModelBuilder modelBuilder);
+
+        /// <summary>
+        /// This method is called before the model for a derived context has been initialized.
+        /// </summary>
+        /// <param name="modelBuilder">The builder that defines the model for the context being created.</param>
+        /// <param name="handled">Indicates whether the method handled the model creation process.</param>
+        static partial void BeforeOnModelCreating(ModelBuilder modelBuilder, ref bool handled);
+        /// <summary>
+        /// This method is called after the model for a derived context has been initialized.
+        /// </summary>
+        /// <param name="modelBuilder">The builder that defines the model for the context being created.</param>
+        static partial void AfterOnModelCreating(ModelBuilder modelBuilder);
+
         /// <summary>
         /// This method is called before accessing a method.
         /// </summary>
@@ -169,14 +241,14 @@ namespace SETemplate.Logic.DataContext
         /// <typeparam name="E">The entity type E</typeparam>
         /// <param name="dbSet">The DbSet depending on the type E</param>
         /// <param name="handled">Indicates whether the method found the DbSet</param>
-        partial void GetDbSet<E>(ref DbSet<E>? dbSet, ref bool handled) where E : Entities.EntityObject;
+        partial void GetDbSet<E>(ref DbSet<E>? dbSet, ref bool handled) where E : Entities.DbObject;
         /// <summary>
         /// Determines the domain project DbSet depending on the type E
         /// </summary>
         /// <typeparam name="E">The entity type E</typeparam>
         /// <param name="dbSet">The DbSet depending on the type E</param>
         /// <param name="handled">Indicates whether the method found the DbSet</param>
-        partial void GetGeneratorDbSet<E>(ref DbSet<E>? dbSet, ref bool handled) where E : Entities.EntityObject;
+        partial void GetGeneratorDbSet<E>(ref DbSet<E>? dbSet, ref bool handled) where E : Entities.DbObject;
 
         /// <summary>
         /// Determines the domain project EntitySet depending on the type E
@@ -192,6 +264,21 @@ namespace SETemplate.Logic.DataContext
         /// <param name="entitySet">The EntitySet depending on the type E</param>
         /// <param name="handled">Indicates whether the method found the EntitySet</param>
         partial void GetGeneratorEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.EntityObject, new();
+
+        /// <summary>
+        /// Determines the domain project ViewSet depending on the type E.
+        /// </summary>
+        /// <typeparam name="E">The view object type E.</typeparam>
+        /// <param name="viewSet">The ViewSet depending on the type E.</param>
+        /// <param name="handled">Indicates whether the method found the ViewSet.</param>
+        partial void GetViewSet<E>(ref ViewSet<E>? viewSet, ref bool handled) where E : Entities.ViewObject, new();
+        /// <summary>
+        /// Determines the domain project ViewSet depending on the type E.
+        /// </summary>
+        /// <typeparam name="E">The view object type E.</typeparam>
+        /// <param name="viewSet">The ViewSet depending on the type E.</param>
+        /// <param name="handled">Indicates whether the method found the ViewSet.</param>
+        partial void GetGeneratorViewSet<E>(ref ViewSet<E>? viewSet, ref bool handled) where E : Entities.ViewObject, new();
         #endregion partial methods
     }
 }

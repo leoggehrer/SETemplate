@@ -171,6 +171,18 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
+        /// Removes the specified entity from the set.
+        /// </summary>
+        /// <param name="entity">The entity to remove.</param>
+        /// <returns>The removed entity, or null if the entity was not found.</returns>
+        public virtual TEntity? Remove(TEntity entity)
+        {
+            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+
+            return Remove(entity.Id);
+        }
+
+        /// <summary>
         /// Removes the entity with the specified identifier from the set.
         /// </summary>
         /// <param name="id">The identifier of the entity to remove.</param>

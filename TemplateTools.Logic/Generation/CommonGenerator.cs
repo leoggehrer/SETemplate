@@ -27,10 +27,11 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// Gets or sets a value indicating whether all entity contracts should be generated.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if all entity contracts should be generated; otherwise, <c>false</c>.
-        /// </value>
         public bool GenerateEntityContracts { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether all view contracts should be generated.
+        /// </summary>
+        public bool GenerateViewContracts { get; set; }
         #endregion properties
 
         #region constructors
@@ -43,6 +44,7 @@ namespace TemplateTools.Logic.Generation
             var generateAll = QuerySetting<string>(Common.ItemType.AllItems, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
 
             GenerateEntityContracts = QuerySetting<bool>(Common.ItemType.EntityContract, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
+            GenerateViewContracts = QuerySetting<bool>(Common.ItemType.ViewContract, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
         }
         #endregion constructors
 
@@ -84,9 +86,21 @@ namespace TemplateTools.Logic.Generation
             {
                 var defaultValue = (GenerateEntityContracts && GetGenerateDefault(type)).ToString();
 
-                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.EntityContract, type, StaticLiterals.Generate, defaultValue))
+                if (CanCreate(type) 
+                    && QuerySetting<bool>(Common.ItemType.EntityContract, type, StaticLiterals.Generate, defaultValue))
                 {
                     result.Add(CreateEntityContract(type, Common.UnitType.Common, Common.ItemType.EntityContract));
+                }
+            }
+
+            foreach (var type in entityProject.AllViewTypes)
+            {
+                var defaultValue = (GenerateViewContracts && GetGenerateDefault(type)).ToString();
+
+                if (CanCreate(type)
+                    && QuerySetting<bool>(Common.ItemType.ViewContract, type, StaticLiterals.Generate, defaultValue))
+                {
+                    result.Add(CreateEntityContract(type, Common.UnitType.Common, Common.ItemType.ViewContract));
                 }
             }
             return result;

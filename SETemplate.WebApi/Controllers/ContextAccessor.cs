@@ -20,10 +20,10 @@ namespace SETemplate.WebApi.Controllers
         public Logic.Contracts.IContext GetContext() => _context ??= Factory.CreateContext();
 
         /// <summary>
-        /// Gets the DbSet for the specified entity type.
+        /// Gets the entity set for the specified entity type.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>The DbSet for the specified entity type, or null if the entity type is not recognized.</returns>
+        /// <returns>The entity set for the specified entity type, or null if the entity type is not recognized.</returns>
         public Logic.Contracts.IEntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new()
         {
             bool handled = false;
@@ -35,11 +35,20 @@ namespace SETemplate.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the DbSet for the specified entity type.
+        /// Gets the view set for the specified view type.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="entitySet"></param>
-        partial void GetEntitySetHandler<TEntity>(ref Logic.Contracts.IEntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new();
+        /// <typeparam name="TView">The type of the entity.</typeparam>
+        /// <returns>The view set for the specified entity type, or null if the entity type is not recognized.</returns>
+        public Logic.Contracts.IViewSet<TView>? GetViewSet<TView>() where TView : Logic.Entities.ViewObject, new()
+        {
+            bool handled = false;
+            Logic.Contracts.IViewSet<TView>? result = default;
+
+            GetViewSetHandler<TView>(ref result, ref handled);
+
+            return result;
+        }
+
         /// <summary>
         /// Disposes the current context.
         /// </summary>
@@ -48,5 +57,21 @@ namespace SETemplate.WebApi.Controllers
             _context?.Dispose();
             _context = null;
         }
+
+        #region partial methods
+        /// <summary>
+        /// Gets the DbSet for the specified entity type.
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entitySet"></param>
+        partial void GetEntitySetHandler<TEntity>(ref Logic.Contracts.IEntitySet<TEntity>? entitySet, ref bool handled) where TEntity : Logic.Entities.EntityObject, new();
+
+        /// <summary>
+        /// Gets the DbSet for the specified entity type.
+        /// </summary>
+        /// <typeparam name="TView"></typeparam>
+        /// <param name="entitySet"></param>
+        partial void GetViewSetHandler<TView>(ref Logic.Contracts.IViewSet<TView>? viewSet, ref bool handled) where TView : Logic.Entities.ViewObject, new();
+        #endregion partial methods
     }
 }

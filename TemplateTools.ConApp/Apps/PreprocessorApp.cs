@@ -101,7 +101,7 @@ namespace TemplateTools.ConApp.Apps
                     foreColor = ConsoleColor.Yellow;
                 }
 
-                if (mnuIdx == 5 || mnuIdx == 11 || mnuIdx == 14 || mnuIdx == 17)
+                if (define.StartsWith("IDINT_") || define.StartsWith("ROWVERSION_") || define.StartsWith("POSTGRES_") || define.StartsWith("DOCKER_"))
                 {
                     menuItems.Add(new()
                     {

@@ -5,12 +5,15 @@ using System.Reflection;
 
 namespace SETemplate.Logic.DataContext
 {
+    /// <summary>
+    /// Represents a secure entity set with authorization checks.
+    /// </summary>
     [Authorize]
     partial class EntitySet<TEntity>
     {
         #region properties
         /// <summary>
-        /// Sets the session token.
+        /// Gets or sets the session token used for authorization.
         /// </summary>
         public string SessionToken
         {
@@ -20,6 +23,10 @@ namespace SETemplate.Logic.DataContext
         #endregion properties
 
         #region methods
+        /// <summary>
+        /// Executes logic before accessing a method, including authorization checks.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed.</param>
         partial void BeforeAccessing(MethodBase methodBase)
         {
             bool handled;
@@ -48,6 +55,11 @@ namespace SETemplate.Logic.DataContext
         #endregion methods
 
         #region customize accessing
+        /// <summary>
+        /// Customizable handler for logic before accessing a method.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed.</param>
+        /// <returns>True if the access is handled; otherwise, false.</returns>
         protected virtual bool BeforeAccessingHandler(MethodBase methodBase)
         {
             return false;

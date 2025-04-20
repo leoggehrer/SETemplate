@@ -1,6 +1,4 @@
 ﻿//@BaseCode
-
-//@BaseCode
 using SETemplate.MVVMApp.Models.Templates;
 
 namespace SETemplate.MVVMApp.ViewModels.Templates

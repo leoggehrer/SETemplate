@@ -25,7 +25,7 @@ namespace TemplateTools.Logic.Extensions
             
             if (type.IsGenericType)
             {
-                name = name.Remove(name.IndexOf(GenericSpecialChar));
+                name = name[..name.IndexOf(GenericSpecialChar)];
             }
             return name;
         }
@@ -44,11 +44,11 @@ namespace TemplateTools.Logic.Extensions
                 var names = from genericArg in type.GetGenericArguments()
                 select GetCodeDefinition(genericArg);
                 sb.Append('<');
-                sb.Append(string.Join(GenericSeparator, names.ToArray()));
+                sb.Append(string.Join(GenericSeparator, [.. names]));
                 sb.Append('>');
             }
             if (sb.ToString().StartsWith("System.Nullable<")
-            && sb.ToString().EndsWith(">"))
+            && sb.ToString().EndsWith('>'))
             {
                 sb.Replace("System.Nullable<", string.Empty);
                 sb.Replace(">", string.Empty);
