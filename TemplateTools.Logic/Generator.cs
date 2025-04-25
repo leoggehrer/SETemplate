@@ -172,9 +172,9 @@ namespace TemplateTools.Logic
 
                         if (canDelete)
                         {
-                            if (Generation.FileHandler.IsTypeScriptFile(file))
+                            if (Generation.FileHandler.IsCustomizeableFile(file))
                             {
-                                Generation.FileHandler.SaveAngularCustomParts(file);
+                                Generation.FileHandler.SaveCustomParts(file);
                             }
                             File.Delete(file);
                         }

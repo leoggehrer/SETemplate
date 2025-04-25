@@ -19,8 +19,6 @@ namespace TemplateTools.Logic.Preprocessor
             Defines =
             [
                 "ACCOUNT_OFF",
-                "LOGGING_OFF",
-                "REVISION_OFF",
                 "IDINT_OFF",
                 "IDLONG_OFF",
                 "IDGUID_OFF",

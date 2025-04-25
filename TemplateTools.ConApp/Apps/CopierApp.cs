@@ -109,6 +109,7 @@ namespace TemplateTools.ConApp.Apps
             };
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
+
         /// <summary>
         /// Prints the header for the PlantUML application.
         /// </summary>

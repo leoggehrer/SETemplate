@@ -67,7 +67,7 @@ namespace SETemplate.MVVMApp.ViewModels
                 }
                 else
                 {
-                    var messageDialog = new MessageDialog("Fehler", "Beim Speichern ist ein Fehler aufgetreten!", MessageType.Error);
+                    var messageDialog = new MessageDialog("Fehler beim Anmelden", "Benutzername und Kennwort stimmen nicht überein!", MessageType.Error);
                     var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
                     await messageDialog.ShowDialog(mainWindow!);

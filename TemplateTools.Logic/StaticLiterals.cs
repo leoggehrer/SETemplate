@@ -56,19 +56,19 @@ namespace TemplateTools.Logic
         /// <summary>
         /// Gets or sets the beginning label for custom imports in Angular.
         /// </summary>
-        public static string AngularCustomImportBeginLabel => "//@CustomImportBegin";
+        public static string CustomImportBeginLabel => "//@CustomImportBegin";
         ///<summary>
         /// Gets or sets the end label for custom imports in Angular.
         ///</summary>
-        public static string AngularCustomImportEndLabel => "//@CustomImportEnd";
+        public static string CustomImportEndLabel => "//@CustomImportEnd";
         /// <summary>
         /// Gets or sets the Angular custom code begin label.
         /// </summary>
-        public static string AngularCustomCodeBeginLabel => "//@CustomCodeBegin";
+        public static string CustomCodeBeginLabel => "//@CustomCodeBegin";
         /// <summary>
         /// Gets the end label of custom code for Angular.
         /// </summary>
-        public static string AngularCustomCodeEndLabel => "//@CustomCodeEnd";
+        public static string CustomCodeEndLabel => "//@CustomCodeEnd";
         
         /// <summary>
         /// Gets or sets the alias for the entity.

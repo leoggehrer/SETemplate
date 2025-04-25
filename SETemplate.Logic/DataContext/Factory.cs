@@ -19,7 +19,16 @@ namespace SETemplate.Logic.DataContext
             return result;
         }
 
-#if DEBUG
+#if DEBUG && DEVELOP_ON && DBOPERATION_ON
+        /// <summary>
+        /// Creates the database by ensuring it is deleted and then created anew.
+        /// </summary>
+        /// <remarks>
+        /// This method is intended for use in development environments where the database schema
+        /// needs to be reset. It calls partial methods <see cref="BevoreCreateDatabase(ProjectDbContext)"/> 
+        /// and <see cref="AfterCreateDatabase(ProjectDbContext)"/> to allow for custom logic before and after 
+        /// the database creation process.
+        /// </remarks>
         public static void CreateDatabase()
         {
             var context = new ProjectDbContext();
@@ -30,14 +39,20 @@ namespace SETemplate.Logic.DataContext
             AfterCreateDatabase(context);
         }
 
-
+        /// <summary>
+        /// Initializes the database by creating it and allowing for data import.
+        /// </summary>
+        /// <remarks>
+        /// This method is intended for use in development environments. It ensures the database is created
+        /// and provides hooks for custom logic before and after initialization. Data import can also be performed
+        /// within this method.
+        /// </remarks>
         public static void InitDatabase()
         {
             BeforeInitDatabase();
             CreateDatabase();
 
             // Hier koennen Daten importiert werden
-
             AfterInitDatabase();
         }
 #endif

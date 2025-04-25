@@ -48,18 +48,18 @@ namespace SETemplate.MVVMApp.ViewModels
             {
                 var selectedItem = SelectedItem;
 
-                Models.Clear();
+                _filteredModels.Clear();
                 foreach (var model in _models)
                 {
                     if (model != default && model.ToString()!.Contains(filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        Models.Add(model);
+                        _filteredModels.Add(model);
                     }
                 }
                 OnPropertyChanged(nameof(Models));
                 if (selectedItem != null)
                 {
-                    SelectedItem = Models.FirstOrDefault(e => e.Id == selectedItem.Id);
+                    SelectedItem = _filteredModels.FirstOrDefault(e => e.Id == selectedItem.Id);
                 }
             });
         }

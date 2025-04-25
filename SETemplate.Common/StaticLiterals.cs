@@ -136,7 +136,7 @@ namespace SETemplate.Common
         /// Gets a label for code copy.
         /// </summary>
         /// <value>A string representing the label for code copy.</value>
-        public static string CodeCopyLabel => "@BaseCode";
+        public static string CodeCopyLabel => "@CodeCopy";
         /// <summary>
         /// Gets the file extension for C# files.
         /// </summary>

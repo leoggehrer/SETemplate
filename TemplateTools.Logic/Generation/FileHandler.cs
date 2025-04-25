@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 namespace TemplateTools.Logic.Generation
 {
     using System.Text;
@@ -9,13 +8,15 @@ namespace TemplateTools.Logic.Generation
     internal class FileHandler
     {
         /// <summary>
-        /// Determines whether the given file path corresponds to a TypeScript file by checking its extension.
+        /// Dettermine if the file is a TypeScript or C# file.
         /// </summary>
         /// <param name="filePath">The path of the file.</param>
-        /// <returns>True if the file is a TypeScript file, false otherwise.</returns>
-        public static bool IsTypeScriptFile(string filePath)
+        /// <returns>True if the file is a TypeScript or C# file, false otherwise.</returns>
+        public static bool IsCustomizeableFile(string filePath)
         {
-            return Path.GetExtension(filePath).Equals(".ts", StringComparison.CurrentCultureIgnoreCase);
+            var extension = Path.GetExtension(filePath).ToLower();
+
+            return extension.Equals(".ts") || extension.Equals(".cs");
         }
         /// <summary>
         /// Creates a custom file path based on the given file path.
@@ -35,24 +36,24 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="filePath">The path of the file to read.</param>
         /// <returns>An enumerable collection of string containing the angular custom parts.</returns>
-        public static IEnumerable<string> ReadAngularCustomParts(string filePath)
+        public static IEnumerable<string> ReadCustomParts(string filePath)
         {
             var result = new List<string>();
-            var imports = ReadAngularCustomImports(filePath).Where(l => string.IsNullOrEmpty(l.Trim()) == false);
-            var code = ReadAngularCustomCode(filePath).Where(l => string.IsNullOrEmpty(l.Trim()) == false);
+            var imports = ReadCustomImports(filePath).Where(l => string.IsNullOrEmpty(l.Trim()) == false);
+            var code = ReadCustomCode(filePath).Where(l => string.IsNullOrEmpty(l.Trim()) == false);
             
             if (imports.Any())
             {
-                result.Add(StaticLiterals.AngularCustomImportBeginLabel);
+                result.Add(StaticLiterals.CustomImportBeginLabel);
                 result.AddRange(imports);
-                result.Add(StaticLiterals.AngularCustomImportEndLabel);
+                result.Add(StaticLiterals.CustomImportEndLabel);
             }
             
             if (code.Any())
             {
-                result.Add(StaticLiterals.AngularCustomCodeBeginLabel);
+                result.Add(StaticLiterals.CustomCodeBeginLabel);
                 result.AddRange(code);
-                result.Add(StaticLiterals.AngularCustomCodeEndLabel);
+                result.Add(StaticLiterals.CustomCodeEndLabel);
             }
             
             return result;
@@ -62,11 +63,11 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="filePath">The file path to read the custom imports from.</param>
         /// <returns>An enumerable collection of custom imports as strings.</returns>
-        public static IEnumerable<string> ReadAngularCustomImports(string filePath)
+        public static IEnumerable<string> ReadCustomImports(string filePath)
         {
             var result = new List<string>();
             
-            result.AddRange(ReadCustomPart(filePath, StaticLiterals.AngularCustomImportBeginLabel, StaticLiterals.AngularCustomImportEndLabel));
+            result.AddRange(ReadCustomPart(filePath, StaticLiterals.CustomImportBeginLabel, StaticLiterals.CustomImportEndLabel));
             
             return result;
         }
@@ -75,11 +76,11 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="filePath">The file path of the file to read.</param>
         /// <returns>An enumerable collection of strings representing the custom code read from the file.</returns>
-        public static IEnumerable<string> ReadAngularCustomCode(string filePath)
+        public static IEnumerable<string> ReadCustomCode(string filePath)
         {
             var result = new List<string>();
             
-            result.AddRange(ReadCustomPart(filePath, StaticLiterals.AngularCustomCodeBeginLabel, StaticLiterals.AngularCustomCodeEndLabel));
+            result.AddRange(ReadCustomPart(filePath, StaticLiterals.CustomCodeBeginLabel, StaticLiterals.CustomCodeEndLabel));
             
             return result;
         }
@@ -115,10 +116,10 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <param name="filePath">The file path to save the custom parts at.</param>
         /// <returns>The file path where the custom parts were saved.</returns>
-        public static string SaveAngularCustomParts(string filePath)
+        public static string SaveCustomParts(string filePath)
         {
             var result = CreateCustomFilePath(filePath);
-            var lines = ReadAngularCustomParts(filePath);
+            var lines = ReadCustomParts(filePath);
             
             if (File.Exists(result))
             {

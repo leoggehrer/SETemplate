@@ -124,7 +124,10 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     Text = ToLabelText("Path", "Change the source solution path"),
-                    Action = (self) => CodeSolutionPath = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath),
+                    Action = (self) =>
+                    {
+                        CodeSolutionPath = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath);
+                    }
                 },
                 new()
                 {
@@ -161,7 +164,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     OptionalKey = "a",
-                    Text = ToLabelText("Compare with", $"{path.Replace(ReposPath, ".")}", 19, ' '),
+                    Text = ToLabelText("Synchronize with", $"{path.Replace(ReposPath, ".")}", 19, ' '),
                     Action = (self) =>
                     {
                         var targetPath = self.Params["path"]?.ToString() ?? string.Empty;

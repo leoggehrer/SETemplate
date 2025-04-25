@@ -11,17 +11,46 @@ using System.Threading.Tasks;
 
 namespace SETemplate.MVVMApp.ViewModels
 {
+    /// <summary>
+    /// A generic ViewModel for managing a collection of items of type <typeparamref name="TModel"/>.
+    /// Provides functionality for filtering, adding, editing, and loading items.
+    /// </summary>
+    /// <typeparam name="TModel">The type of the model object.</typeparam>
     public abstract partial class GenericItemsViewModel<TModel> : ViewModelBase
         where TModel : CommonModels.ModelObject, new()
     {
         #region fields
+        /// <summary>
+        /// The current filter string used to filter the items.
+        /// </summary>
         private string _filter = string.Empty;
+
+        /// <summary>
+        /// The currently selected item in the collection.
+        /// </summary>
         private TModel? selectedItem;
+
+        /// <summary>
+        /// The complete list of models loaded from the data source.
+        /// </summary>
         private readonly List<TModel> _models = [];
+
+        /// <summary>
+        /// The filtered list of models based on the current filter.
+        /// </summary>
+        private readonly List<TModel> _filteredModels = [];
         #endregion fields
 
         #region properties
+        /// <summary>
+        /// Gets the API request URI for the current model type.
+        /// </summary>
         public virtual string RequestUri => $"{typeof(TModel).Name.CreatePluralWord()}";
+
+        /// <summary>
+        /// Gets or sets the filter string used to filter the items.
+        /// Updates the filtered list when set.
+        /// </summary>
         public virtual string Filter
         {
             get
@@ -35,6 +64,10 @@ namespace SETemplate.MVVMApp.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Gets or sets the currently selected item in the collection.
+        /// </summary>
         public virtual TModel? SelectedItem
         {
             get => selectedItem;
@@ -44,44 +77,65 @@ namespace SETemplate.MVVMApp.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Gets the filtered collection of models as an observable collection.
+        /// </summary>
         public virtual ObservableCollection<TModel> Models
         {
             get
             {
-                var result = new ObservableCollection<TModel>();
-
-                foreach (var model in _models)
-                {
-                    result.Add(model);
-                }
-                return result;
+                return new ObservableCollection<TModel>(_filteredModels);
             }
         }
         #endregion properties
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericItemsViewModel{TModel}"/> class.
+        /// Automatically loads the models asynchronously.
+        /// </summary>
         public GenericItemsViewModel()
         {
             _ = LoadModelsAsync();
         }
 
+        /// <summary>
+        /// Creates a new window for adding or editing an item.
+        /// Must be implemented by derived classes.
+        /// </summary>
+        /// <returns>A new instance of a <see cref="Window"/>.</returns>
         protected abstract Window CreateWindow();
+
+        /// <summary>
+        /// Creates a new ViewModel for adding or editing an item.
+        /// Must be implemented by derived classes.
+        /// </summary>
+        /// <returns>A new instance of <see cref="GenericItemViewModel{TModel}"/>.</returns>
         protected abstract GenericItemViewModel<TModel> CreateViewModel();
 
         #region commands
+        /// <summary>
+        /// Command to load the models asynchronously.
+        /// </summary>
         [RelayCommand]
         public virtual async Task LoadModels()
         {
             await LoadModelsAsync();
         }
+
+        /// <summary>
+        /// Command to add a new item. Opens a dialog window for item creation.
+        /// </summary>
         [RelayCommand]
         public virtual async Task AddItem()
         {
             var viewModelWindow = CreateWindow();
             var viewModel = CreateViewModel();
-            
+
             viewModel.CloseAction = viewModelWindow.Close;
             viewModelWindow.DataContext = viewModel;
-            // Aktuelles Hauptfenster als Parent setzen
+
+            // Set the current main window as the parent
             var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (mainWindow != null)
             {
@@ -89,6 +143,11 @@ namespace SETemplate.MVVMApp.ViewModels
                 _ = LoadModelsAsync();
             }
         }
+
+        /// <summary>
+        /// Command to edit an existing item. Opens a dialog window for item editing.
+        /// </summary>
+        /// <param name="model">The model to be edited.</param>
         [RelayCommand]
         public virtual async Task EditItem(TModel model)
         {
@@ -97,7 +156,9 @@ namespace SETemplate.MVVMApp.ViewModels
 
             viewModel.CloseAction = viewModelWindow.Close;
             viewModelWindow.DataContext = viewModel;
-            // Aktuelles Hauptfenster als Parent setzen
+            viewModel.Model = model;
+
+            // Set the current main window as the parent
             var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
             if (mainWindow != null)
@@ -108,6 +169,10 @@ namespace SETemplate.MVVMApp.ViewModels
         }
         #endregion commands
 
+        /// <summary>
+        /// Loads the models asynchronously from the data source.
+        /// Applies the current filter after loading.
+        /// </summary>
         protected virtual async Task LoadModelsAsync()
         {
             try

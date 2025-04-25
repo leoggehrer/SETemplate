@@ -129,8 +129,16 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Path", "Change the source solution path"),
-                    Action = (self) => CodeSolutionPath = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath),
+                    Text = ToLabelText("Source path", "Change the source solution path"),
+                    Action = (self) => 
+                    {
+                        var result = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath);
+
+                        if (result.HasContent())
+                        {
+                            CodeSolutionPath = result;
+                        }
+                    }
                 },
                 new()
                 {

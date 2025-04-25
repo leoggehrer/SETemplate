@@ -144,7 +144,7 @@ namespace TemplateTools.ConApp.Apps
             menuItems.AddRange(CreatePageMenuItems(ref mnuIdx, targetPaths, (item, menuItem) =>
             {
                 menuItem.OptionalKey = "a";
-                menuItem.Text = ToLabelText("Comparison with", $"{item.Replace(TargetCodePath, string.Empty)}");
+                menuItem.Text = ToLabelText("Synchronize with", $"{item.Replace(TargetCodePath, string.Empty)}");
                 menuItem.Action = (self) =>
                 {
                     var targetPath = self.Params["targetpath"]?.ToString() ?? string.Empty;

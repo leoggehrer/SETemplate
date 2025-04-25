@@ -77,6 +77,16 @@ namespace TemplateTools.Logic.Generation
                     result.Add(CreateEditModelFromType(type, UnitType.MVVMApp, ItemType.MVVMAppEditModel));
                 }
             }
+
+            foreach (var type in entityProject.AllViewTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
+                {
+                    result.Add(CreateModelFromType(type, UnitType.MVVMApp, ItemType.MVVMAppModel));
+                    result.Add(CreateModelInheritance(type, UnitType.MVVMApp, ItemType.MVVMAppModel));
+                    result.Add(CreateEditModelFromType(type, UnitType.MVVMApp, ItemType.MVVMAppEditModel));
+                }
+            }
             return result;
         }
 
@@ -130,7 +140,7 @@ namespace TemplateTools.Logic.Generation
 
             foreach (var type in entityProject.EntityTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(ItemType.EntityController, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
+                if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
                 {
                     result.Add(CreateItemViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemViewModel));
                     result.Add(CreateItemsViewModelFromType(type, UnitType.MVVMApp, ItemType.MVVVMAppItemsViewModel));
@@ -210,16 +220,6 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(viewModelName));
             result.AddRange(CreatePartialConstrutor("public", viewModelName));
-
-            result.Add($"protected override Avalonia.Controls.Window CreateWindow()");
-            result.Add("{");
-            result.Add("throw new NotImplementedException();");
-            result.Add("}");
-
-            result.Add($"protected override GenericItemViewModel<{modelType}> CreateViewModel()");
-            result.Add("{");
-            result.Add("throw new NotImplementedException();");
-            result.Add("}");
 
             result.Add("}");
             result.EnvelopeWithANamespace(viewModelsNamespace, "using System;");

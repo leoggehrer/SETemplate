@@ -70,12 +70,6 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = $"{++mnuIdx}",
-                    Text = ToLabelText("Force", "Change force flag"),
-                    Action = (self) => ChangeForce(),
-                },
-                new()
-                {
-                    Key = $"{++mnuIdx}",
                     Text = ToLabelText("Path", "Change solution path"),
                     Action = (self) => ChangeSolutionPath(),
                 },
@@ -128,7 +122,7 @@ namespace TemplateTools.ConApp.Apps
         /// <param name="sourcePath">The path of the solution.</param>
         protected override void PrintHeader()
         {
-            List<KeyValuePair<string, object>> headerParams = [new("Force flag:", Force), new("Solution path:", SolutionPath)];
+            List<KeyValuePair<string, object>> headerParams = [new("Solution path:", SolutionPath)];
 
             base.PrintHeader("Template Tools", [.. headerParams]);
         }

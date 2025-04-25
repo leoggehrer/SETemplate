@@ -1,23 +1,44 @@
-﻿SETemplateBase – Vorlage für Software-Architektur-Projekte
+﻿# SETemplate – Vorlage für SE-Architektur-Projekte
 
-Die SETemplateBase ist eine wiederverwendbare Projektvorlage, die auf dem Konzept von [SEArchitecture](https://github.com/leoggehrer/SEArchitecture) basiert. Sie dient als technische Grundlage für Anwendungen, die einer strukturierten und wartbaren Software-Architektur folgen sollen und ermöglicht die schnelle und einheitliche Erstellung neuer Projekte.
+**Inhaltsverzeichnis:**
 
-Zielgruppe
-Entwickler:innen, die auf Basis der definierten Architektur schnell Projekte aufsetzen, anpassen und erweitern wollen.
+1. [Einleitung](#einleitung)
+2. [Projektübersicht](#projektübersicht)
+3. [Voraussetzungen](#voraussetzungen)
+4. [Arbeitsweise von SETemplate](#arbeitsweise-von-setemplate)
+   - [Projekterstellung](#projekterstellung)
+5. [Verwendung der Vorlage SETemplate](#verwendung-der-vorlage-setemplate)
+   - [Repository klonen](#repository-klonen)
+   - [Bedienungsanleitung](#bedienungsanleitung)
+     - [Hauptmenü](#hauptmenu)
+     - [Menü: Copier](#menu-copier)
+     - [Menü: Preprocessor](#menu-preprocessor)
+     - [Menü: CodeGenerator](#menu-codegenerator)
+     - [Menü: Synchronization](#menu-synchronization)
+     - [Menü: Cleanup](#menu-cleanup)
+6. [Beispiele](#beispiele)
+
+---
+
+## Einleitung
+
+Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzept von [SEArchitecture](https://github.com/leoggehrer/SEArchitecture) basiert. Sie dient als technische Grundlage für Anwendungen, die einer strukturierten und wartbaren Software-Architektur folgen sollen und ermöglicht die schnelle und einheitliche Erstellung neuer Projekte.
+
+**Zielgruppe:** Entwickler: innen, die auf Basis der definierten Architektur schnell Projekte **aufsetzen**, **anpassen** und **erweitern** wollen.
 
 ---
 
 ## Projektübersicht
 
-|Projekt|Beschreibung|Typ|Abhaengigkeit|
+|Projekt|Beschreibung|Typ|Abhängigkeit|
 |---|---|---|---|
-|**SETemplate.Common** |In diesem Projekt werden alle Hilfsfunktionen, allgemeine Erweiterungen und Schnittstellen zusammengefasst. Diese sind unabhaengig vom Problembereich und koennen auch in andere Domaen-Projekte wiederverwendet werden.| Library | keine |
-|**SETemplate.Logic**|Dieses Projekt beinhaltet den vollstaendigen Datenzugriff, die gesamte Geschaeftslogik und stellt somit den zentralen Baustein des Systems dar.| Library | SETemplate.Common |
-|**SETemplate.Logic.UnitTest**|In diesem Projekt befinden sich die Unit-Tests fuer die gesamte Geschaeftslogik.| MSTest | SETemplate.Common, SETemplate.Logic |
-|**SETemplate.WebApi**|In diesem Projekt ist die REST-Schnittstelle implementiert. Dieses Modul stellt eine API (Aplication Programming Interface) fuer den Zugriff auf das System ueber das Netzwerk zur Verfuegung.| Host | SETemplate.Logic |
-|**SETemplate.ConApp**|Dieses Projekt dient als Initial-Anwendung zum Erstellen der Datenbank, das Anlegen von Anmeldedaten falls die Authentifizierung aktiv ist und zum Importieren von bestehenden Daten. Nach der Initialisierung wird diese Anwendung kaum verwendet.| Console | SETemplate.Logic |
-|**SETemplate.MVVMApp**|Diese Projekt beinhaltet die Basisfunktionen fuer eine Wpf-Anwendung (Avalonia) und kann als Vorlage fuer die Entwicklung einer einer Wpf-Anwendung mit dem SETemplate Framework verwendet werden.|Host| SETemplate.Logic |
-|**SETemplate.XxxYyy**|Es folgen noch weitere Vorlagen von Client-Anwendungen wie Angular, Blazor und mobile Apps. Zum jetzigen Zeitpunkt existiert nur die AspMvc-Anwendung und Wpf-Anwendung. Die Erstellung und Beschreibung weiterer Client-Anwendungen erfolgt zu einem spaeteren Zeitpunkt.| Host | SETemplate.Logic |
+|**SETemplate.Common** |In diesem Projekt werden alle Hilfsfunktionen, allgemeine Erweiterungen und Schnittstellen zusammengefasst. Diese sind unabhängig vom Problembereich und können auch in andere Domän-Projekte wiederverwendet werden.| Library | keine |
+|**SETemplate.Logic**|Dieses Projekt beinhaltet den vollständigen Datenzugriff, die gesamte Geschäftslogik und stellt somit den zentralen Baustein des Systems dar.| Library | SETemplate.Common |
+|**SETemplate.Logic.UnitTest**|In diesem Projekt befinden sich die **Unit-Tests** für die gesamte Geschäftslogik.| MSTest | SETemplate.Logic, SETemplate.Common |
+|**SETemplate.WebApi**|In diesem Projekt ist die REST-Schnittstelle implementiert. Dieses Modul stellt eine API (Aplication Programming Interface) für den Zugriff auf das System über das Netzwerk zur Verfügung.| Host | SETemplate.Logic, SETemplate.Common |
+|**SETemplate.ConApp**|Dieses Projekt dient als Initial-Anwendung zum Erstellen bzw. Abgleichen der Datenbank, das Anlegen von Konten falls die Authentifizierung aktiv ist und zum Importieren von bestehenden Daten. Nach der Initialisierung wird diese Anwendung kaum verwendet.| Console | SETemplate.Logic, SETemplate.Common |
+|**SETemplate.MVVMApp**|Diese Projekt beinhaltet die Basisfunktionen für eine Wpf-Anwendung (Avalonia) und kann als Vorlage für die Entwicklung einer Wpf-Anwendung mit dem SETemplate Framework verwendet werden.|Host| SETemplate.Logic, SETemplate.Common |
+|**SETemplate.XxxYyy**|Es folgen noch weitere Vorlagen von Client-Anwendungen wie Angular, Blazor und mobile Apps. Zum jetzigen Zeitpunkt existiert nur die Wpf-Anwendung (Avalonia). Die Erstellung und Beschreibung weiterer Client-Anwendungen erfolgt zu einem späteren Zeitpunkt.| Host | SETemplate.Logic, SETTemplate.Common |
 
 ---
 
@@ -28,169 +49,99 @@ Entwickler:innen, die auf Basis der definierten Architektur schnell Projekte auf
 - Visual Studio Code (mit den entsprechenden Extensions)
 - Git
 
-## Arbeitsweise von `SETemplate`
+## Arbeitsweise von SETemplate
 
-### Projekterstellung  
+### Projekterstellung
 
 Die nachfolgenden Abbildung zeigt den schematischen Erstellungs-Prozess für ein Domain-Projekt:  
   
 ![Projekterstellung](img/template_copier.png)  
   
-Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage wird mit Hilfe dem Hilfsprogramm ***'TemplateTools.ConApp'*** in ein Verzeichnis eigener Wahl kopiert. Bei der Erstellung des Domain-Projektes **SEBookStore** werden die folgenden Aktionen ausgefuehrt:
+Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage beinhaltet das Hilfsprogramm ***'TemplateTools.ConApp'***. Mit Hilfe dieses Programms kann eine Kopie (Domain-Projekt) in ein Verzeichnis eigener Wahl erstellt werden. Bei der Erstellung des Domain-Projektes, zum Beispiel das Projekt **SEBookStore**, werden die folgenden Aktionen ausgeführt:
 
 - Alle Projektteile aus der Vorlage werden in das Zielverzeichnis kopiert.
 - Die Namen der Projekte und Komponenten werden entsprechend angepasst.
-- Alle Projekte mit dem Prefix **SETemplate** werden mit dem domainspezifischen Namen erstezt.
-- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt (Diese Labels werden fur einen späteren Abgleich-Prozess verwendet).
+- Alle Projekte mit dem Präfix **SETemplate** werden mit dem domainspezifischen Namen ersetzt.
+- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
 
-Nach dem der Erstellungsprozess ausgeführt würde, haben Sie eine weiters Projekt (Solution) erhalten - ein Domain-Projekt.
+Nach dem der Erstellungsprozess ausgeführt wurde, haben Sie ein weiters Projekt (Solution) erhalten - ein Domain-Projekt.
 
 ![Projekterstellung2](img/template_copier2.png)  
 
-> **Hinweis:** Die beiden Projekte 'SETemplate' und 'DomainProjekt' können zu eoinem späteren Zeitpunkt abgeglichen werden.
+> **Hinweis:** Die beiden Projekte **SETemplate** und **DomainProjekt** können zu einem späteren Zeitpunkt abgeglichen werden.
 
-## Verwendung der Vorlage
+## Verwendung der Vorlage SETemplate
 
-### 1. Repository klonen
+### Repository klonen
 
 ```bash
 git clone https://github.com/leoggehrer/SETemplate.git
 cd SETemplate
 ```
 
-## Verwendung der Vorlage
-  
-Nachfolgend werden die einzelnen Schritte von der Vorlage ***SETemplate*** bis zum konkreten Projekt ***SEBookStore*** erlaeutert. Das Projekt ist eine einfache Anwendung zur Demonstration von der Verwendung der Vorlage. Im Projekt ***SEBookStore*** werden Bücher und deren Daten verwaltet. Das Datenmodell ist sehr einfach und besteht aus einer Entität.  
+### Bedienungsanleitung
 
-## Aufgabenbeschreibung **BookStrore**
+Das Programm **Template Tools** bietet verschiedene Funktionen zum Verwalten und Bearbeiten von Software‑Projekten, welche mit dem `SETemplate` erstellt wurden. Das `Hauptmenü` zeigt alle verfügbaren Aktionen an, die durch Eingabe einer Ziffer, mehrerer Ziffern, des Buchstabens „a“ (für „all“) oder „x“/„X“ (zum Beenden) ausgewählt werden.
 
-### Datenmodell und Datenbank
-
-Das Datenmodell für ***BookStore*** hat folgenden Aufbau:
-
-```txt
-+-------+--------+ 
-|                | 
-|      Book      + 
-|                | 
-+-------+--------+ 
-```
-
-#### Definition von ***Book***
-
-| Name          | Type   | MaxLength | Nullable |Unique|Db-Field|Access|
-|---------------|--------|-----------|----------|------|--------|------|
-| Id            | int    | --------- | -------- | ---- | Yes    | R    |
-| ISBNNumber    | String | 10        | No       | Yes  | Yes    | RW   |
-| Author        | String | 128       | No       | Yes+ | Yes    | RW   |
-| Title         | String | 256       | No       | Yes+ | Yes    | RW   |
-| Description   | String | 1024      | Yes      | No   | Yes    | RW   |
-| YearOfRelease | int    | --------- | -------- | No   | Yes    | RW   |
-| Price         | double | --------- | -------- | No   | Yes    | RW |
-
-+...beide zusammen sind eindeutig
-
-### Business-Logik  
-
-Das System muss einige Geschäftsregeln umsetzen. Diese Regeln werden im Backend implementiert und müssen mit UnitTests überprüft werden.
-
-> **HINWEIS:** Unter **Geschäftsregeln** (Business-Rules) versteht man **elementare technische Sachverhalte** im Zusammenhang mit Computerprogrammen. Mit *WENN* *DANN* Scenarien werden die einzelnen Regeln beschrieben.  
-
-Für den ***BookStore*** sind folgende Regeln definiert:
-
-| Rule | Subject | Type   | Operation | Description | Note |
-|------|---------|--------|-----------|-------------|------|
-|**A1**| Book    |        |           |             |      |
-|      |         |**WENN**|           | eine *Book* erstellt oder bearbeitet wird, |  |
-|      |         |**DANN**|           | muss die `ISBNNumber` festgelegt sein und gültig sein (die Regen finden Sie im Abschnitt **Prüfung der ISBN-Nummern**. | |
-|**A2**| Book    |        |           |             |      |
-|      |         |**WENN**|           | eine *Book* erstellt oder bearbeitet wird, |  |
-|      |         |**DANN**|           | muss der `Author` festgelegt sein und mindestens 3 Zeichen lang sein. | |
-|**A3**| Book    |        |           |             |      |
-|      |         |**WENN**|           | eine *Book* erstellt oder bearbeitet wird, |  |
-|      |         |**DANN**|           | muss der `Title` festgelegt sein und mindestens 5 Zeichen lang sein. | |
-|**A4**| Book    |        |           |             |      |
-|      |         |**WENN**|           | eine *Book* erstellt oder bearbeitet wird, |  |
-|      |         |**DANN**|           | muss die `YearOfRelease` festgelegt und im im Bereich von 1900 bis aktuelles Datum + 1 Jahr sein. | |
-|**A5**| Book    |        |           |             |      |
-|      |         |**WENN**|           | eine *Book* erstellt oder bearbeitet wird, |  |
-|      |         |**DANN**|           | muss der `Price` festgelegt und im Bereich von 1 EUR bis 10.000 EUR sein. | |
-
-**Hinweis:** Falls einer der Geschäftsregeln nicht erfüllt ist, muss eine **BusinessRuleException** mit einer entsprechenden Fehlermeldung (in Englisch) geworfen werden.
-
-#### Prüfung der ISBN-Nummern
-
-Die **Prüfziffer (10. Ziffer)** der ISBN-Nummer wird so berechnet:
-
-1. Multipliziere jede der ersten 9 Ziffern mit ihrer Position (1 bis 9).  
-2. Summiere alle Produkte.  
-3. Teile die Summe ganzzahlig durch 11.  
-4. Der **Rest** ist die Prüfziffer. Falls der Rest 10 ist, ist die Prüfziffer **„X“**.
-
-#### Beispiele:
-
-1. **ISBN 3-499-13599-[?]**  
-   `3·1 + 4·2 + 9·3 + 9·4 + 1·5 + 3·6 + 5·7 + 9·8 + 9·9 = 285`  
-   `285 % 11 = 10` ⇒ Prüfziffer: **X**
-
-2. **ISBN 3-446-19313-[?]**  
-   `3·1 + 4·2 + 4·3 + 6·4 + 1·5 + 9·6 + 3·7 + 1·8 + 3·9 = 162`  
-   `162 % 11 = 8` ⇒ Prüfziffer: **8**
-
-3. **ISBN 0-7475-5100-[?]**  
-   `0·1 + 7·2 + 4·3 + 7·4 + 5·5 + 5·6 + 1·7 + 0·8 + 0·9 = 116`  
-   `116 % 11 = 6` ⇒ Prüfziffer: **6**
-
-4. **ISBN 1-57231-422-[?]**  
-   `1·1 + 5·2 + 7·3 + 2·4 + 3·5 + 1·6 + 4·7 + 2·8 + 2·9 = 123`  
-   `123 % 11 = 2` ⇒ Prüfziffer: **2**
-
-**Hinweis:** Wenn die ISBN-Prüfziffer nicht korrekt ist, **muss eine Ausnahme geworfen werden.**
-
-### Datenimport
-
-Erstellen Sie ein Konsolenprogramm welches die Datenbank erzeugt und die beigelegte csv-Datei in die Datenbank importiert. Falls es beim Import zu Fehlern kommt (z.B. ISBN-Prüfziffer falsch), muss eine entsprechende Fehlermeldung ausgegeben werden.
-
-
-## Umsetzung der Aufgabe mit dem `SETemplate`
-
-### Starten Sie die Anwendung `TemplateTools.ConApp`
-
-Nach dem Start von `TemplateTools.ConApp` wird folgendes Menü angezeigt:
+#### Hauptmenü
 
 ```bash
-==============
-Template Tools
-==============
+==============  
+Template Tools  
+==============  
 
-Force flag:    False
 Solution path: ...\SETemplate
 
-[ ----] -----------------------------------------------------------------
-[    1] Force...............Change force flag
-[    2] Path................Change solution path
-[ ----] -----------------------------------------------------------------
-[    3] Copier..............Copy this solution to a domain solution
-[    4] Preprocessor........Setting defines for project options
-[    5] CodeGenerator.......Generate code for this solution
-[    6] Comparison..........Compares a project with the template
-[    7] Cleanup.............Deletes the temporary directories
-[-----] -----------------------------------------------------------------
-[  x|X] Exit................Exits the application
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
 
-Choose [n|n,n|a...all|x|X]:
+Choose [n|n,n|a...all|x|X]:  
 ```
 
-Wählen Sie den Menüpunkt 'Copier' aus und setzen Sie den 'Target name' auf 'SEBookStore':
+**Menü‑Optionen im Detail**
+
+*Menü-Auswahl: Pfad ändern*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Path                | Ändert das Verzeichnis (Pfad), in dem das aktuelle Template liegt. |
+|         |                     | *Solution path:* ...\SETemplate zeigt den aktuellen Pfad zum Template an. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Aufforderung zur Eingabe des neuen Pfads.  |
+| 2       | Prüfung, ob das Verzeichnis existiert?     |
+| 3       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 4       | Zurück in die Menü-Optionen.               |
+
+---
+
+##### Menü-Option: Copier
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Copier              | Kopiert die aktuelle Vorlage in ein Domain‑Projekt. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Menü `Copier`.           |
 
 ```bash
 ===============
 Template Copier
 ===============
 
-'SETemplate' from: ...\SETemplate
+'SETemplate' from:   ...\repos\SETemplate
   -> copy ->
-'SEBookStore' to:  ...\SEBookStore
+'TargetSolution' to: ...\repos\TargetSolution
 
 [  ---] -----------------------------------------------------------------
 [    1] 1...................Change max sub path depth
@@ -202,144 +153,746 @@ Template Copier
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
-Choose [n|n,n|a...all|x|X]:
+Choose [n|n,n|a...all|x|X]:  
 ```
 
-Nun können Sie die Projekt-Erstellung mit dem Menüpunkt 5 starten. Nach dem Vorgang hat das System einen Ordner mit dem Namen 'SEBookStore' erstellt und die einzelnen Projekte kopiert:
+*Menü-Auswahl: 1*
 
-![Projekt-Erstellung](img/sebookstore_create.png)
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Change depth        | Ändert die Pfad-Tiefe für die Auswahl eines Pfades. |
 
-## Umsetzung der Aufgabe
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Geben Sie eine Zahl >= 0 ein.              |
 
-Öffnen Sie die Projektmappe 'SEBookStore' mit der IDE und beginnen Sie nun mit der Erstellung der Entität 'Book':
+*Menü-Auswahl: Source path*
 
-### Erstellung der Entität 'Book'
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Source path         | Ändert den Pfad der Vorlage. |
 
-```csharp
-namespace SEBookStore.Logic.Entities
-{
-    /// <summary>
-    /// Represents a book entity.
-    /// </summary>
-    [Table("Books")]
-    [Index(nameof(ISBNNumber), IsUnique = true)]
-    [Index(nameof(Author), nameof(Title), IsUnique = true)]
-    public partial class Book : EntityObject
-    {
-        private string iSBNNumber = string.Empty;
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus <br > oder geben Sie den Pfad ein: |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
 
-        /// <summary>
-        /// Gets or sets the ISBN number of the book.
-        /// </summary>
-        [Required, MaxLength(10)]
-        public string ISBNNumber 
-        { 
-            get => iSBNNumber; 
-            set => iSBNNumber = value.Replace("-", string.Empty); 
-        }
-        /// <summary>
-        /// Gets or sets the author of the book.
-        /// </summary>
-        [Required, MaxLength(128)]
-        public string Author { get; set; } = string.Empty;
+*Menü-Auswahl: Target path*
 
-        /// <summary>
-        /// Gets or sets the title of the book.
-        /// </summary>
-        [Required, MaxLength(256)]
-        public string Title { get; set; } = string.Empty;
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 3       | Target path         | Ändern Sie den Pfad für die Erstellung. |
 
-        /// <summary>
-        /// Gets or sets the description of the book.
-        /// </summary>
-        [Required, MaxLength(2048)]
-        public string Description { get; set; } = string.Empty;
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
 
-        /// <summary>
-        /// Gets or sets the year of release of the book.
-        /// </summary>
-        public int YearOfRelease { get; set; }
+*Menü-Auswahl: Target name*
 
-        /// <summary>
-        /// Gets or sets the price of the book.
-        /// </summary>
-        public double Price { get; set; }
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 4       | Target name         | Ändern den Namen für das Domain-Projekt. |
 
-        public override string ToString()
-        {
-            return $"{Author} - {Title}";
-        }
-    }
-}
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Geben Sie den gewünschten Namen für das Domain-Projekt ein. |
+
+*Menü-Auswahl: Start*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 5       | Start               | Startet der Kopier-Prozess mit den entsprechenden Einstellungen. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Erstellt eine Kopie aus der Vorlage und berücksichtigt den `Target name`. |
+| 2       | Nachdem die `Target-Solution` erstellt wurde, wird der Datei-Explorer geöffnet. <br > **INFO:** Gilt nur für Windows-Betriebssysteme. |
+| 3       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung                |
+|---------|---------------------|-----------------------------|
+| x od. X | Exit                | Beendet die 'Copier-App'.   |
+
+| Ablauf  | Beschreibung                                      |
+|---------|---------------------------------------------------|
+| 1       | Beendet die Anwendung und zeigt das `Hauptmenü` an. |
+
+```bash
+==============  
+Template Tools  
+==============  
+
+Solution path: ...\SETemplate
+
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
+
+Choose [n|n,n|a...all|x|X]:  
 ```
-
-> **Entwicklungsrichtlinien:** 
->* Erstellen Sie alle Entitäten als `partial`-Klassen.
->* Geben Sie den Tabellenname als Klassen-Attribut an.
->* Erstellen Sie alle Eigenschaften und deren Einschränkungen.
->* Geben Sie alle Index-Einschränkungen als Klassen-Attribute an.
-
-### Erstellung der Validierung für die Entität 'Book'
-
-Im nächsten Schritt implementieren Sie die Geschäftsregeln für die Entität-'Book':
- 
-```csharp
-using SEBookStore.Logic.Contracts;
-using SEBookStore.Logic.Exceptions;
-
-namespace SEBookStore.Logic.Entities
-{
-    partial class Book : IValidatableEntity
-    {
-        public void Validate(IContext context)
-        {
-            if (CheckISBNNumer(ISBNNumber) == false)
-            {
-                throw new BusinessException("Invalid ISBN number");
-            }
-
-            if (Author.Length < 3)
-            {
-                throw new BusinessException("The character length of the author must be at least 3 characters long.");
-            }
-
-            if (Title.Length < 5)
-            {
-                throw new BusinessException("The character length of the title must be at least 5 characters long.");
-            }
-
-            if (YearOfRelease < 1900 || YearOfRelease > DateTime.Now.Year + 1)
-            {
-                throw new BusinessException($"The publication must be between 1900 and {DateTime.Now.Year + 1}.");
-            }
-
-            if (Price < 1.0 || Price > 10_000.0)
-            {
-                throw new BusinessException("The price must be between EUR 1 and EUR 10,000.");
-            }
-        }
-
-        public static bool CheckISBNNumer(string number)
-        {
-            var result = number != null && number.Where((c, i) => i == 9 ? (c == 'X' || c == 'x' || char.IsDigit(c)) : char.IsDigit(c)).Count() == 10;
-            var sum = 0;
-            var rest = 0;
-
-            for (int i = 0; result && i < number?.Length - 1; i++)
-            {
-                sum += (number == null ? 0 : number[i] - '0') * (i + 1);
-            }
-            rest = sum % 11;
-
-            return result && number != null && ((rest == 10 && char.ToUpper(number[^1]) == 'X') || (rest == number[^1] - '0'));
-        }
-    }
-}
-```
-
-> **Entwicklungsrichtlinien:** 
->* Erstellen Sie eine `partial`-Klassen und implementieren Sie die Schnittstelle `IValidatableEntity`.
->* Vergeben Sie für die Klasse den Dateinamen 'BookValidation'.
 
 ---
+
+##### Menü: Preprocessor
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 3       | Preprocessor        | Legt Compiler‑Defines bzw. Präprozessor‑Anweisungen für das Projekt fest und speichert diese in der Projektkonfigurationsdatei (*.csproj). |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Listet alle möglichen 'Defines' auf und zeigt den aktuellen Status (ON oder OFF) an. |
+| 2       | Setzen der entsprechenden Nummer (2 bis 14) schaltet das `Define` ein oder aus. |
+
+*Übersicht:*
+
+```bash
+========================
+Template Setting Defines
+========================
+
+Solution path: ...\SETemplate
+
+[  ---] -----------------------------------------------------------------
+[    1] Path................Change preprocessor solution path
+[  ---] -----------------------------------------------------------------
+[    2] Set definition ACCOUNT_OFF               ==> ACCOUNT_ON
+[  ---] -----------------------------------------------------------------
+[    3] Set definition IDINT_OFF                 ==> IDINT_ON
+[    4] Set definition IDLONG_OFF                ==> IDLONG_ON
+[    5] Set definition IDGUID_ON                 ==> IDGUID_OFF
+[  ---] -----------------------------------------------------------------
+[    6] Set definition ROWVERSION_OFF            ==> ROWVERSION_ON
+[    7] Set definition EXTERNALGUID_ON           ==> EXTERNALGUID_OFF
+[  ---] -----------------------------------------------------------------
+[    8] Set definition POSTGRES_OFF              ==> POSTGRES_ON
+[    9] Set definition SQLSERVER_ON              ==> SQLSERVER_OFF
+[   10] Set definition SQLITE_OFF                ==> SQLITE_ON
+[  ---] -----------------------------------------------------------------
+[   11] Set definition DOCKER_OFF                ==> DOCKER_ON
+[   12] Set definition DEVELOP_ON                ==> DEVELOP_OFF
+[   13] Set definition DBOPERATION_ON            ==> DBOPERATION_OFF
+[   14] Set definition GENERATEDCODE_OFF         ==> GENERATEDCODE_ON
+[  ---] -----------------------------------------------------------------
+[   15] Start...............Start assignment process
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+Erklärung der `Konstanten`:
+
+| Konstante        | Beschreibung                                            |
+|------------------|---------------------------------------------------------|
+| ACCOUNT_ON       | Schaltet die Authentifizierung ein. Ein Zugriff auf die App ist nur mit einem gültigen Konto möglich.
+| IDINT_ON         | Als Identifizierung wird der Datentyp `int` verwendet.  |
+| IDLONG_ON        | Als Identifizierung wird der Datentyp `long` verwendet. |
+| IDGUID_ON        | Als Identifizierung wird der Datentyp `Guid` verwendet. |
+| ROWVERSION_ON    | Schaltet die `optimistische Nebenläufigkeitskontrolle` ein. <br > **INFO:** Wird nicht von der SQLITE-Datenbank unterstützt. |
+| EXTERNALGUID_ON  | Die Identifizierung der Entitäten erfolgt von extern über diese `Guid`. |
+| POSTGRES_ON      | Schaltet die Verwendung der PostgreSQL-Datenbank ein. |
+| SQLSERVER_ON     | Schaltet die Verwendung der SQL-Server-Datenbank ein. |
+| SQLITE_ON        | Schaltet die Verwendung der SQLITE-Datenbank ein.     |
+| DOCKER_ON        | Zeigt an, dass `Docker` verwendet wird. <br > **HINWEIS:** Wird derzeit nicht verwendet.
+| DEVELOPER_ON     | Zeigt an, dass sich das Projekt im Entwicklerstatus befindet. <br > **HINWIES:** Mit diesem Schalter können Entwickler-Funktionen ein.- bzw. ausgeschaltet werden. |
+| DBOPERATION_ON   | Schaltet die Operationen `public static void CreateDatabase()` und `public static void InitDatabase()` ein. <br > **HINWEIS:** Zusätzlich müssen die `Defines` 'DEBUG' und 'DEVELOP_ON' eingeschaltet sein.
+| GENERATEDCODE_ON | Zeigt an, dass die Code-Generierung durchgeführt wurde. <br > **HINWEIS:** Diese `Konstante` wird automatisch vom Code-Generator gesetzt. |
+
+*Menü-Auswahl: Path*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Change path         | Ändert den Pfad der Vorlage. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: 2 bis 14*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2 - 14  | Define ändern       | Ändern des entsprechenden 'Define'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 2 - 14  | Ändert den Status des entsprechenden 'Define' <br > ON ==> OFF oder OFF ==> ON. |
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die 'Preprocessor-App'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Beendet die Anwendung und zeigt das `Hauptmenü` an. |
+
+```bash
+==============  
+Template Tools  
+==============  
+
+Solution path: ...\SETemplate
+
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+---
+
+##### Menü: CodeGenerator
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 4       | CodeGenerator       | Generiert für die aktuelle Vorlage den Programm-Code. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Menü `CodeGenerator`-App.  |
+
+```bash
+=======================
+Template Code Generator
+=======================
+
+Solution path:                    ...\SETemplate
+---------------------------------
+Write generated source into:      False
+Write info header into source:    True
+Delete empty folders in the path: True
+Exclude generated files from GIT: True
+
+[-----] -----------------------------------------------------------------
+[    1] Generation file.....Change generation file option
+[    2] Add info header.....Change add info header option
+[    3] Delete folders......Change delete empty folders option
+[    4] Exclude files.......Change the exclusion of generated files from GIT
+[    5] Source path.........Change the source solution path
+[-----] -----------------------------------------------------------------
+[    6] Compile.............Compile logic project
+[    7] Delete files........Delete generated files
+[    8] Delete folders......Delete empty folders in the path
+[    9] Start...............Start code generation
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+*Menü-Auswahl: Generation file*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Generation file     | Gibt an, ob die Generierung in einer Datei (`_GeneratedCode.cs`) oder je Klasse in einer eigenen Datei erfolgen soll. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt den Generierungsmode <br > **Single file ==> Group file** oder **Group file ==> Single file**. |
+
+*Menü-Auswahl: Add info header*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Add info header     | Gibt an, ob in der Code-Generierungsdatei ein Info-Text eingefügt wird. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt das Flag **Add info header** <br > **HINWEIS:** Diese Einstellung gilt nur für den **Single file**-Modus. |
+
+*Menü-Auswahl: Delete folders*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 3       | Delete folders      | Gibt an, ob bei der Code-Generierung die leeren Ordner gelöscht werden. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt die Option für das **Löschen** der leeren Ordner. |
+
+*Menü-Auswahl: Exclude files*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 4       | Exclude files       | Gibt an, ob bei der Code-Generierung die generierten Datein in das **'.gitignore'** eingetragen werden. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt die Option für das **Ausschließen** von generierten Datein im GIT-Repository. |
+
+*Menü-Auswahl: Source path*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Source path         | Ändert den Pfad der Vorlage. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus <br > oder geben Sie den Pfad ein: |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Compile*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 6       | Compile             | Kompiliert den Quellcode und zeigt das Ergebnis an. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Kompiliert das `Solutionname.Common` Projekt und legt das Kompilat in einem temporären Ordner ab. |
+| 2       | Kompiliert das `Solutionname.Logic` Projekt und legt das Kompilat in einem temporären Ordner ab. |
+| 3       | Zeigt das Ergebnis des Kompilierens an. <br > **HINWEIS:** Falls Fehler vorhanden sind, korrigieren Sie diese. |
+| 4       | Bestätigen Sie das Ergebnis mit der **Enter-Taste**. |
+
+*Ausgabe: Compile*
+
+```bash
+=======================
+Template Code Generator
+=======================
+
+Solution path:                    ...\SETemplate
+---------------------------------
+Write generated source into:      False
+Write info header into source:    True
+Delete empty folders in the path: True
+Exclude generated files from GIT: True
+
+========================>                                            4 [sec]
+
+Compile project...
+dotnet build "...\SETemplate\SETemplate.Logic\SETemplate.Logic.csproj" -c Release -o "...\Local\Temp\SETemplate"
+Restore complete (0.5s)
+  SETemplate.Common succeeded (2.5s) → ...\Local\Temp\SETemplate\SETemplate.Common.dll
+  SETemplate.Logic succeeded (0.7s) → ...\Local\Temp\SETemplate\SETemplate.Logic.dll
+
+Build succeeded in 4.4s
+Press enter...                                                                                                  
+```
+
+*Menü-Auswahl: Delete files*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 7       | Delete files        | Löscht alle zuvor mit dem Code-Generator erzeugten Datein. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Sammelt alle Dateien welche mit dem Label `@GeneratedCode` gekennzeichnet sind. |
+| 2       | Anschließend werden alle Dateien mit diesem Label gelöscht. |
+| 3       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Delete folders*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 8       | Delete folders      | Löscht alle leeren Ordner im `Solution path`. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Alle Ordner innerhalb der `Solution` werden überprüft, ob Dateien enthalten sind. |
+| 2       | Wenn nein, dann wird der Ordner gelöscht, <br > *sonst* erfolgt keine Aktion. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Start*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 9       | Start               | Erzeugt Quellcode auf Basis der definierten **Entitäten** und **Views** im Projekt **Solutionname.Logic**. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Kompiliert das `Solutionname.Common` Projekt und legt das Kompilat in einem temporären Ordner ab. |
+| 2       | Kompiliert das `Solutionname.Logic` Projekt und legt das Kompilat in einem temporären Ordner ab. |
+| ---     | ***Common.Contracts*** |
+| 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Entitäten** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
+| 4       | Generiert zu allen **Entitäten** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Entitäten** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a EntityObject`. |
+| ---     | ***Logic.Entities*** |
+| 5       | Generiert zu allen **Entitäten** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Entitäten** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'EntityNameGeneration.cs'.
+| ---     | ***Logic.DataContext*** |
+| 6       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Klassen in den Ordner `Logic.DataContext`. | 
+| ---     | ***Logic.Contracts*** |
+| 7       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Schnittstellen in den Ordner `Logic.Contracts`. | 
+| ---     | ***Common.Contracts*** |
+| 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Views** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
+| 4       | Generiert zu allen **Views** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Views** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a ViewObject`. |
+| ---     | ***Logic.Entities*** |
+| 5       | Generiert zu allen **Views** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Views** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'ViewNameGeneration.cs'.
+| ---     | ***Logic.DataContext*** |
+| 6       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Klassen in den Ordner `Logic.DataContext`. | 
+| ---     | ***Logic.Contracts*** |
+| 7       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Schnittstellen in den Ordner `Logic.Contracts`. | 
+| ---     | ***Logic.DataContext*** |
+| 13      | Generiert eine `partial class ProjectDbContext` mit dem Dateinamen 'ProjectDbContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften vom Typ `DbSet<T>`,  `EntitySet<T>`, `ViewSet<T>` und die <br > Methoden `void GetGeneratorDbSet<E>(...)`, `void GetGeneratorEntitySet<E>(...)`, `void GetGeneratorViewSet<E>(...)` <br > sowie die Methode `static partial void OnViewModelCreating(ModelBuilder modelBuilder)`. |
+| ---     | ***Logic.Contracts*** | 
+| 14      | Generiert eine `partial interface IContext` mit dem Dateinamen 'IContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften für den öffentlichen Zugriff auf die `EntitySet<T>`('s) und `ViewSet<T>`('s). |
+| ---     | ***WebApi.Models*** | 
+| 15      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `WebApi.Models`. | 
+| 16      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die `Edit`-Models in den Ordner `WebApi.Models`. <br > **INFO:** `Edit`-Models sind Models ohne **'Id'**. | 
+| ---     | ***WebApi.Controllers*** | 
+| 17      | Generiert zu allen **Entitäten** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `CRUD`-Operationen und können mit einer `partial`-Klasse beliebig erweitert werden. |
+| 18      | Generiert zu allen **Views** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `QUERY`-Operationen und können mit einer `partial`-Klasse erweitert werden. |
+| 19      | Generiert eine `partial class ContextAccessor` mit dem Dateinamen `ContextAccessorGeneration.cs`. <br > **INFO:**  Erstellt die Methoden `void GetEntitySetHandler<TEntity>(...)` und `void GetViewSetHandler<TView>(...)` für den Zugriff auf die entsprechenden Set's.  |
+| ---     | ***MVVM.Models*** | 
+| 20      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. | 
+| ---     | ***MVVM.ViewModels*** | 
+| 21      | Generiert zu allen **Entities** die `ViewModels` in den Ordner `MVVM.ViewModels`. <br > **INFO:** Zu jedem Entity wird ein `ViewModel` für die **List-Ansicht** und für die **Single-Ansicht** erstellt. | 
+| ---     | ***Angular*** | 
+| ---     | Die Code-Generierung für die **Angular**-Komponenten erfolgt zu einem späteren Zeitpunkt. |
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die `CodeGeneration`-App. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Beendet die Anwendung und zeigt das `Hauptmenü` an. |
+
+```bash
+==============  
+Template Tools  
+==============  
+
+Solution path: ...\SETemplate
+
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+---
+
+##### Menü: Synchronization
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 5       | Synchronization     | Synchronisiert ein bestehendes Domain-Projekt mit dem aktuellen Template. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Menü `Synchronization`-App.|
+
+```bash
+========================
+Template Synchronization
+========================
+
+Balance labels(s):
+  @BaseCode       => @CodeCopy
+  @BaseCode       => @BaseCode
+Source code path:    ...\SETemplate
+
+[-----] -----------------------------------------------------------------
+[    1] Path................Change the source solution path
+[    2] Add path............Add a target path
+[-----] -----------------------------------------------------------------
+[    3] Synchronize with   .\SEContactManager
+[    4] Synchronize with   .\SETranslator
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+*Menü-Auswahl: Pfad ändern*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Path                | Ändert das Verzeichnis (Pfad), in dem das aktuelle Template liegt. |
+|         |                     | *Change path:* ...\SETemplate zeigt den aktuellen Template-Pfad an. |
+
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl:Add path*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Add path            | Fügt einen neuen Pfad in die Synchron-Auflistung hinzu. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Aufforderung zur Eingabe des neuen Pfads.  |
+| 2       | Prüfung, ob das Verzeichnis existiert?     |
+| 3       | Wenn ja, dann wird die Änderung übernommen und in die Menü-Optionen gewechselt. |
+| 4       | Wenn nein, die Änderung wird ignoriert und in die Menü-Optionen gewechselt.    |
+
+*Menü-Auswahl: Synchronize with .\SETranslator*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 4       | Synchronize with    | Synchronisiert den Quellcode mit dem Projekt 'SETranslator'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Menü `PartialSynchronization`-App.|
+
+```bash
+================================
+Template Partial Synchronization
+================================
+
+Balance labels(s):
+  @BaseCode       =>             @CodeCopy
+  @BaseCode       =>             @BaseCode
+--------------------------------
+Source code path:                ...\SETemplate
+Target code path:                ...\SETranslator
+
+[-----] -----------------------------------------------------------------
+[    1] 1...................Change max sub path depth
+[-----] -----------------------------------------------------------------
+[    2] Synchronize with....\Diagrams
+[    3] Synchronize with....\SETranslator.CodeGenApp
+[    4] Synchronize with....\SETranslator.Common
+[    5] Synchronize with....\SETranslator.ConApp
+[    6] Synchronize with....\SETranslator.Logic
+[    7] Synchronize with....\SETranslator.MVVMApp
+[    8] Synchronize with....\SETranslator.WebApi
+[    9] Synchronize with....\TemplateTools.ConApp
+[   10] Synchronize with....\TemplateTools.Logic
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. Dazu muss nur die Nummer des Modules eingegeben werden. Die Eingabe 'a' | 'A' bewirkt, dass alle Module synchronisiert werden. 
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| a od. A | Synchronize         | Alle Module werden synchronisiert. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Im Zielpfad werden alle Dateien mit dem Label `@CodeCopy` ermittelt. |
+| 2       | Alle Dateien mit dem Label `@CodeCopy` werden aus dem Zielpfad entfernt. |
+| 3       | Im Quellpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
+| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@CodeCopy` ersetzt. | 
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die 'Synchronisation' von Modulen. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Untermenü 'Synchronisation-App'. |
+
+```bash
+========================
+Template Synchronization
+========================
+
+Balance labels(s):
+  @BaseCode       => @CodeCopy
+  @BaseCode       => @BaseCode
+Source code path:    ...\SETemplate
+
+[-----] -----------------------------------------------------------------
+[    1] Path................Change the source solution path
+[    2] Add path............Add a target path
+[-----] -----------------------------------------------------------------
+[    3] Synchronize with   .\SEContactManager
+[    4] Synchronize with   .\SETranslator
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die 'Synchronize-App'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Beendet die Anwendung und zeigt das `Hauptmenü` an. |
+
+```bash
+==============  
+Template Tools  
+==============  
+
+Solution path: ...\SETemplate
+
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+---
+
+##### Menü: Cleanup
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 6       | Cleanup             | Löscht temporäre Verzeichnisse und Dateien, die während der vorherigen Aktionen angelegt wurden. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Wechselt in das Untermenü 'Cleanup-App'.   |
+
+```bash
+============================
+Template Cleanup Directories
+============================
+
+Drop folders: \bin, \obj, \target
+Cleanup path: ...\repos
+
+[  ---] -----------------------------------------------------------------
+[    1] Path................Change drop path
+[  ---] -----------------------------------------------------------------
+[    2] Cleanup.............\SEBookStore
+[    3] Cleanup.............\SETranslator
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+*Menü-Auswahl: Pfad ändern*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 1       | Path                | Ändert das Verzeichnis (Pfad), in welchem die Ordner bereinigt werden sollen. |
+|         |                     | *Change path:* ...\repos zeigt den aktuellen Pfad an. |
+
+| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 3       | Prüfung, ob das Verzeichnis existiert?     |
+| 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Cleanup*
+
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| 2       | Cleanup             | Bereinigt das Verzeichnis 'SEBookStore'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Das Verzeichnis 'SEBookStore' wird rekursiv durchlaufen. |
+| 2       | Befindet sich ein Ordner mit dem Namen 'bin', dann wird dieser gelöscht. |
+| 3       | Befindet sich ein Ordner mit dem Namen 'obj', dann wird dieser gelöscht. |
+| 4       | Befindet sich ein Ordner mit dem Namen 'target', dann wird dieser gelöscht. |
+| 5       | Zurück in die Menü-Optionen.               |
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die 'Cleanup-App'. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Beendet die Anwendung und zeigt das `Hauptmenü` an. |
+
+```bash
+==============  
+Template Tools  
+==============  
+
+Solution path: ...\SETemplate
+
+[ ----] -----------------------------------------------------------------  
+[    1] Path................Change solution path  
+[ ----] -----------------------------------------------------------------  
+[    2] Copier..............Copy this solution to a domain solution  
+[    3] Preprocessor........Setting defines for project options  
+[    4] CodeGenerator.......Generate code for this solution  
+[    5] Synchronization.....Matches a project with the template  
+[    6] Cleanup.............Deletes the temporary directories  
+[-----] -----------------------------------------------------------------  
+[  x|X] Exit................Exits the application  
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+---
+
+*Menü-Auswahl: Exit*
+
+| Auswahl | Funktion            | Beschreibung |
+|---------|---------------------|--------------|
+| x od. X | Exit                | Beendet die 'TemplateTools'-App. |
+
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
+| 1       | Beendet die Anwendung.                     |
+
+## Beispiele
+
+Um das Arbeiten mit dem Tool zu erleichtern, sind hier einige Beispiele aufgeführt. Diese Beispiele sind einfach und sollen nur als Anregung dienen.
+
+> **Konvention:** Alle Beispiele welche mit dem `SETemplate` erstellt wurden, sind mit dem Präfix `SE` gekennzeichnet.
+
+### Beispiel 1: SEBookStore
+
+Bei diesem Beispiel wurde eine kleine Buchhandlung erstellt. Diese Buchhandlung verwaltet eine Liste von Büchern.
+
+Sie finden die Anleitung [hier](https://github.com/leoggehrer/SEBookStore).
 
