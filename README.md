@@ -389,7 +389,7 @@ Template Code Generator
 
 Solution path:                    ...\SETemplate
 ---------------------------------
-Write generated source into:      False
+Write generated source into:      Single files
 Write info header into source:    True
 Delete empty folders in the path: True
 Exclude generated files from GIT: True
@@ -487,7 +487,7 @@ Template Code Generator
 
 Solution path:                    ...\SETemplate
 ---------------------------------
-Write generated source into:      False
+Write generated source into:      Single files
 Write info header into source:    True
 Delete empty folders in the path: True
 Exclude generated files from GIT: True

@@ -183,7 +183,7 @@ namespace TemplateTools.ConApp.Apps
             [
                 new("Solution path:", CodeSolutionPath),
                 new(new string('-', 33), ""),
-                new("Write generated source into:", WriteToGroupFile),
+                new("Write generated source into:", WriteToGroupFile ? "Group files" : "Single files"),
                 new("Write info header into source:", WriteInfoHeader),
                 new("Delete empty folders in the path:", IncludeCleanDirectory),
                 new("Exclude generated files from GIT:", ExcludeGeneratedFilesFromGIT),
