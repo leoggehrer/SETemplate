@@ -104,14 +104,20 @@ namespace SETemplate.MVVMApp.ViewModels
         /// Must be implemented by derived classes.
         /// </summary>
         /// <returns>A new instance of a <see cref="Window"/>.</returns>
-        protected abstract Window CreateWindow();
+        protected virtual Window CreateWindow()
+        {
+            throw new NotImplementedException("CreateWindow must be implemented in derived classes.");
+        }
 
         /// <summary>
         /// Creates a new ViewModel for adding or editing an item.
         /// Must be implemented by derived classes.
         /// </summary>
         /// <returns>A new instance of <see cref="GenericItemViewModel{TModel}"/>.</returns>
-        protected abstract GenericItemViewModel<TModel> CreateViewModel();
+        protected virtual GenericItemViewModel<TModel> CreateViewModel()
+        {
+            throw new NotImplementedException("CreateViewModel must be implemented in derived classes.");
+        }
 
         #region commands
         /// <summary>
