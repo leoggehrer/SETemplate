@@ -1,4 +1,4 @@
-﻿//@BaseCode
+﻿//@CodeCopy
 namespace SETemplate.Logic.Contracts
 {
     /// <summary>
@@ -24,6 +24,7 @@ namespace SETemplate.Logic.Contracts
         /// </summary>
         /// <returns>The number of state entries reverted to their original state.</returns>
         int RejectChanges();
+
         /// <summary>
         /// Asynchronously rejects all changes made in this context, reverting entities to their original state.
         /// </summary>

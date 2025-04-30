@@ -127,6 +127,45 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
+        /// Discards all changes in the current context.
+        /// </summary>
+        /// <returns>Number of changed entities.</returns>
+        public int RejectChanges()
+        {
+            int count = 0;
+
+            foreach (var entry in ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged).ToList())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        count++;
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        count++;
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        count++;
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Discards all changes in the current context.
+        /// </summary>
+        /// <returns>Number of changed entities.</returns>
+        public Task<int> RejectChangesAsync()
+        {
+            return Task.Run(() => RejectChanges());
+        }
+
+        /// <summary>
         /// Configures the model for the database context.
         /// </summary>
         /// <param name="modelBuilder">The builder used to define the model for the context.</param>
