@@ -38,7 +38,7 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         protected virtual bool CanCreate(Type type)
         {
-            return true;// EntityProject.IsNotAGenerationEntity(type) == false;
+            return true;
         }
         /// <summary>
         /// Determines whether a property can be created.
@@ -432,6 +432,7 @@ namespace TemplateTools.Logic.Generation
             var itemNamespace = ItemProperties.CreateFullNamespace(type, StaticLiterals.ContractsFolder);
             var typeProperties = type.GetProperties().Where(pi => pi.DeclaringType == type);
             var filteredProperties = GetGenerationProperties(type).Where(filter ?? (p => true));
+            var generatedProperties = new List<PropertyInfo>();
 
             var result = new GeneratedItem(unitType, itemType)
             {
@@ -447,7 +448,8 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             foreach (var propertyInfo in filteredProperties)
             {
-                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.Generate, "True"))
+                if (CanCreate(propertyInfo)
+                    && QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyInfo.DeclaringName(), StaticLiterals.Generate, "True"))
                 {
                     var getAccessor = string.Empty;
                     var setAccessor = string.Empty;
@@ -464,14 +466,12 @@ namespace TemplateTools.Logic.Generation
                         setAccessor = "set;";
                     }
                     result.Add($"{propertyType} {propertyInfo.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
+                    generatedProperties.Add(propertyInfo);
                 }
             }
 
             // Added copy properties method
-            result.AddRange(CreateContractCopyProperties(type, itemName, pi => pi.Name == StaticLiterals.IdentityProperty
-                                                                            || (ItemProperties.IsEntityType(pi.PropertyType) == false
-                                                                                && ItemProperties.IsEntityListType(pi.PropertyType) == false
-                                                                                && ItemProperties.IsEntityArrayType(pi.PropertyType) == false)));
+            result.AddRange(CreateContractCopyProperties(type, itemName, pi => generatedProperties.Contains(pi)));
 
             result.Add("}");
             result.EnvelopeWithANamespace(itemNamespace);
@@ -623,7 +623,7 @@ namespace TemplateTools.Logic.Generation
 
                 foreach (var pi in generationProperties)
                 {
-                    if (pi.CanRead)
+                    if (pi.CanRead && CanCreate(pi) && pi.IsNavigationProperties() == false)
                     {
                         var codeLine = counter == 0 ? "result = base.Equals(other) && " : "    && ";
 

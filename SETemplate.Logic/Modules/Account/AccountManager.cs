@@ -411,7 +411,6 @@ namespace SETemplate.Logic.Modules.Account
 
                 var (Hash, Salt) = CreatePasswordHash(newPassword);
 
-                identity.Password = newPassword;
                 identity.PasswordHash = Hash;
                 identity.PasswordSalt = Salt;
 
@@ -461,7 +460,6 @@ namespace SETemplate.Logic.Modules.Account
             var (Hash, Salt) = CreatePasswordHash(newPassword);
 
             identity.AccessFailedCount = 0;
-            identity.Password = newPassword;
             identity.PasswordHash = Hash;
             identity.PasswordSalt = Salt;
 
@@ -713,7 +711,7 @@ namespace SETemplate.Logic.Modules.Account
 #if GENERATEDCODE_ON
                         using var context = new DataContext.ProjectDbContext();
                         var loginSessionSet = context.LoginSessionSet as DataContext.Account.LoginSessionSet
-                                        ?? throw new AuthorizationException(Error.InvalidEntitySet);
+                                           ?? throw new AuthorizationException(Error.InvalidEntitySet);
                         var saveChanges = false;
                         var dbSessions = await loginSessionSet.ExecuteAsQuerySet()
                                                               .Where(e => e.LogoutTime.HasValue == false)

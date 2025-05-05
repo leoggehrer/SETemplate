@@ -41,9 +41,6 @@ namespace SETemplate.Logic.Entities.Account
         /// <summary>
         /// Gets or sets the logout time.
         /// </summary>
-        /// <returns>
-        /// A nullable DateTime representing the logout time.
-        /// </returns>
         /// <remarks>
         /// If the logout time is being read, the OnLogoutTimeReading event will be triggered.
         /// If the logout time is being changed, the OnLogoutTimeChanging event will be triggered.
@@ -68,30 +65,6 @@ namespace SETemplate.Logic.Entities.Account
                 OnLogoutTimeChanged();
             }
         }
-        /// <summary>
-        /// This method is called when the logout time reading occurs.
-        /// </summary>
-        /// <remarks>
-        /// Implement this method to perform any additional actions when the logout time is being read.
-        /// This method is declared as "partial" so it can be implemented in different parts of the partial class.
-        /// </remarks>
-        partial void OnLogoutTimeReading();
-        /// <summary>
-        /// Event raised when the logout time is changing.
-        /// </summary>
-        /// <param name="handled">Reference to a boolean value indicating whether the event has been handled.</param>
-        /// <param name="value">The new value of the logout time.</param>
-        /// <param name="_logoutTime">Reference to the current value of the logout time.</param>
-        /// <remarks>
-        /// This event can be used to perform additional logic before the logout time is updated.
-        /// By setting the <paramref name="handled"/> parameter to <c>true</c>, the event is considered handled and
-        /// the default logic to update the logout time will be overridden.
-        /// </remarks>
-        partial void OnLogoutTimeChanging(ref bool handled, DateTime? value, ref DateTime? _logoutTime);
-        /// <summary>
-        /// This method is called when the logout time is changed.
-        /// </summary>
-        partial void OnLogoutTimeChanged();
         /// <summary>
         /// Gets or sets the optional information.
         /// </summary>
@@ -125,29 +98,7 @@ namespace SETemplate.Logic.Entities.Account
         [NotMapped]
         public byte[] PasswordSalt { get; set; } = [];
         /// <summary>
-        /// Gets or sets a value indicating whether the authentication is remote.
-        /// </summary>
-        /// <remarks>
-        /// Use this property to determine if the authentication method is remote or not.
-        /// </remarks>
-        /// <value>
-        ///   <c>true</c> if the authentication is remote; otherwise, <c>false</c>.
-        /// </value>
-        [NotMapped]
-        public bool IsRemoteAuth { get; set; }
-        /// <summary>
-        /// Gets or sets the origin of the property.
-        /// </summary>
-        /// <remarks>
-        /// This property is not mapped to the database.
-        /// </remarks>
-        /// <value>
-        /// The origin of the property.
-        /// </value>
-        [NotMapped]
-        public string Origin { get; set; } = string.Empty;
-        /// <summary>
-        /// Gets or sets the name of the object.
+        /// Gets or sets the name of the identity.
         /// </summary>
         /// <remarks>
         /// This property is not mapped to a database column.
@@ -192,7 +143,7 @@ namespace SETemplate.Logic.Entities.Account
             {
                 TimeSpan ts = DateTime.UtcNow - LastAccess;
                 
-                return LogoutTime.HasValue || ts.TotalSeconds > TimeOutInMinutes * 60;
+                return LogoutTime.HasValue || (TimeOutInMinutes > 0 && ts.TotalSeconds > TimeOutInMinutes * 60);
             }
         }
         /// <summary>
@@ -237,6 +188,33 @@ namespace SETemplate.Logic.Entities.Account
             }
             return result;
         }
+
+        #region partial methods
+        /// <summary>
+        /// This method is called when the logout time reading occurs.
+        /// </summary>
+        /// <remarks>
+        /// Implement this method to perform any additional actions when the logout time is being read.
+        /// This method is declared as "partial" so it can be implemented in different parts of the partial class.
+        /// </remarks>
+        partial void OnLogoutTimeReading();
+        /// <summary>
+        /// Event raised when the logout time is changing.
+        /// </summary>
+        /// <param name="handled">Reference to a boolean value indicating whether the event has been handled.</param>
+        /// <param name="value">The new value of the logout time.</param>
+        /// <param name="_logoutTime">Reference to the current value of the logout time.</param>
+        /// <remarks>
+        /// This event can be used to perform additional logic before the logout time is updated.
+        /// By setting the <paramref name="handled"/> parameter to <c>true</c>, the event is considered handled and
+        /// the default logic to update the logout time will be overridden.
+        /// </remarks>
+        partial void OnLogoutTimeChanging(ref bool handled, DateTime? value, ref DateTime? _logoutTime);
+        /// <summary>
+        /// This method is called when the logout time is changed.
+        /// </summary>
+        partial void OnLogoutTimeChanged();
+        #endregion partial methods
     }
 }
 #endif

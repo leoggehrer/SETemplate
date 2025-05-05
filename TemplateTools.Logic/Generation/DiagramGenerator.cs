@@ -38,7 +38,7 @@ namespace TemplateTools.Logic.Generation
             var entityProject = EntityProject.Create(SolutionProperties);
 
             // Create entity type diagrams
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.AllEntityTypes)
             {
                 result.Add(GenerateClassDiagram(type, UnitType.Logic, ItemType.EntityClassDiagram));
             }

@@ -2,21 +2,31 @@
 
 **Inhaltsverzeichnis:**
 
-1. [Einleitung](#einleitung)
-2. [Projektübersicht](#projektübersicht)
-3. [Voraussetzungen](#voraussetzungen)
-4. [Arbeitsweise von SETemplate](#arbeitsweise-von-setemplate)
-   - [Projekterstellung](#projekterstellung)
-5. [Verwendung der Vorlage SETemplate](#verwendung-der-vorlage-setemplate)
-   - [Repository klonen](#repository-klonen)
-   - [Bedienungsanleitung](#bedienungsanleitung)
-     - [Hauptmenü](#hauptmenu)
-     - [Menü: Copier](#menu-copier)
-     - [Menü: Preprocessor](#menu-preprocessor)
-     - [Menü: CodeGenerator](#menu-codegenerator)
-     - [Menü: Synchronization](#menu-synchronization)
-     - [Menü: Cleanup](#menu-cleanup)
-6. [Beispiele](#beispiele)
+- [SETemplate – Vorlage für SE-Architektur-Projekte](#setemplate--vorlage-für-se-architektur-projekte)
+  - [Einleitung](#einleitung)
+  - [Projektübersicht](#projektübersicht)
+  - [Voraussetzungen](#voraussetzungen)
+  - [Arbeitsweise von SETemplate](#arbeitsweise-von-setemplate)
+    - [Projekterstellung](#projekterstellung)
+  - [Verwendung der Vorlage SETemplate](#verwendung-der-vorlage-setemplate)
+    - [Repository klonen](#repository-klonen)
+    - [Bedienungsanleitung](#bedienungsanleitung)
+      - [Hauptmenü](#hauptmenü)
+        - [Menü-Option: Copier](#menü-option-copier)
+        - [Menü: Preprocessor](#menüpreprocessor)
+        - [Menü: CodeGenerator](#menü-codegenerator)
+        - [Menü: Synchronization](#menü-synchronization)
+        - [Menü: Cleanup](#menü-cleanup)
+  - [Beispiele](#beispiele)
+    - [Beispiel 1: SEBookStore](#beispiel-1-sebookstore)
+  - [Authentifizierung](#authentifizierung)
+    - [Rollenbasiertes Zugriffssytem](#rollenbasiertes-zugriffssytem)
+      - [Funktionsweise](#funktionsweise)
+        - [PasswordHash und PasswordSalt](#passwordhash-und-passwordsalt)
+          - [PasswordHash](#passwordhash)
+          - [PasswordSalt](#passwordsalt)
+        - [TimeOutInMinutes](#timeoutinminutes)
+      - [Anmeldung](#anmeldung)
 
 ---
 
@@ -106,9 +116,9 @@ Solution path: ...\SETemplate
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-**Menü‑Optionen im Detail**
+**Menü‑Optionen im Detail:**
 
-*Menü-Auswahl: Pfad ändern*
+*Menü-Auswahl:* `Pfad ändern`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -156,7 +166,7 @@ Template Copier
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-*Menü-Auswahl: 1*
+*Menü-Auswahl:* `1`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -166,7 +176,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Geben Sie eine Zahl >= 0 ein.              |
 
-*Menü-Auswahl: Source path*
+*Menü-Auswahl:* `Source path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -180,7 +190,7 @@ Choose [n|n,n|a...all|x|X]:
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Target path*
+*Menü-Auswahl:* `Target path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -194,7 +204,7 @@ Choose [n|n,n|a...all|x|X]:
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Target name*
+*Menü-Auswahl:* `Target name`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -204,7 +214,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Geben Sie den gewünschten Namen für das Domain-Projekt ein. |
 
-*Menü-Auswahl: Start*
+*Menü-Auswahl:* `Start`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -216,7 +226,7 @@ Choose [n|n,n|a...all|x|X]:
 | 2       | Nachdem die `Target-Solution` erstellt wurde, wird der Datei-Explorer geöffnet. <br > **INFO:** Gilt nur für Windows-Betriebssysteme. |
 | 3       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung                |
 |---------|---------------------|-----------------------------|
@@ -315,7 +325,7 @@ Erklärung der `Konstanten`:
 | DBOPERATION_ON   | Schaltet die Operationen `public static void CreateDatabase()` und `public static void InitDatabase()` ein. <br > **HINWEIS:** Zusätzlich müssen die `Defines` 'DEBUG' und 'DEVELOP_ON' eingeschaltet sein.
 | GENERATEDCODE_ON | Zeigt an, dass die Code-Generierung durchgeführt wurde. <br > **HINWEIS:** Diese `Konstante` wird automatisch vom Code-Generator gesetzt. |
 
-*Menü-Auswahl: Path*
+*Menü-Auswahl:* `Path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -329,7 +339,7 @@ Erklärung der `Konstanten`:
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: 2 bis 14*
+*Menü-Auswahl:* `2 bis 14`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -339,7 +349,7 @@ Erklärung der `Konstanten`:
 |---------|--------------------------------------------|
 | 2 - 14  | Ändert den Status des entsprechenden 'Define' <br > ON ==> OFF oder OFF ==> ON. |
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -411,7 +421,7 @@ Exclude generated files from GIT: True
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-*Menü-Auswahl: Generation file*
+*Menü-Auswahl:* `Generation file`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -421,7 +431,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Wechselt den Generierungsmode <br > **Single file ==> Group file** oder **Group file ==> Single file**. |
 
-*Menü-Auswahl: Add info header*
+*Menü-Auswahl:* `Add info header`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -431,7 +441,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Wechselt das Flag **Add info header** <br > **HINWEIS:** Diese Einstellung gilt nur für den **Single file**-Modus. |
 
-*Menü-Auswahl: Delete folders*
+*Menü-Auswahl:* `Delete folders`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -441,7 +451,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Wechselt die Option für das **Löschen** der leeren Ordner. |
 
-*Menü-Auswahl: Exclude files*
+*Menü-Auswahl:* `Exclude files`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -451,7 +461,7 @@ Choose [n|n,n|a...all|x|X]:
 |---------|--------------------------------------------|
 | 1       | Wechselt die Option für das **Ausschließen** von generierten Datein im GIT-Repository. |
 
-*Menü-Auswahl: Source path*
+*Menü-Auswahl:* `Source path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -465,7 +475,7 @@ Choose [n|n,n|a...all|x|X]:
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Compile*
+*Menü-Auswahl:* `Compile`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -478,7 +488,7 @@ Choose [n|n,n|a...all|x|X]:
 | 3       | Zeigt das Ergebnis des Kompilierens an. <br > **HINWEIS:** Falls Fehler vorhanden sind, korrigieren Sie diese. |
 | 4       | Bestätigen Sie das Ergebnis mit der **Enter-Taste**. |
 
-*Ausgabe: Compile*
+*Ausgabe:* `Compile`
 
 ```bash
 =======================
@@ -487,7 +497,7 @@ Template Code Generator
 
 Solution path:                    ...\SETemplate
 ---------------------------------
-Write generated source into:      Single files
+Write generated source into:      Singel files
 Write info header into source:    True
 Delete empty folders in the path: True
 Exclude generated files from GIT: True
@@ -504,7 +514,7 @@ Build succeeded in 4.4s
 Press enter...                                                                                                  
 ```
 
-*Menü-Auswahl: Delete files*
+*Menü-Auswahl:* `Delete files`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -516,7 +526,7 @@ Press enter...
 | 2       | Anschließend werden alle Dateien mit diesem Label gelöscht. |
 | 3       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Delete folders*
+*Menü-Auswahl:* `Delete folders`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -528,7 +538,7 @@ Press enter...
 | 2       | Wenn nein, dann wird der Ordner gelöscht, <br > *sonst* erfolgt keine Aktion. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Start*
+*Menü-Auswahl:* `Start`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -542,39 +552,39 @@ Press enter...
 | 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Entitäten** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
 | 4       | Generiert zu allen **Entitäten** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Entitäten** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a EntityObject`. |
 | ---     | ***Logic.Entities*** |
-| 5       | Generiert zu allen **Entitäten** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Entitäten** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'EntityNameGeneration.cs'.
+| 5       | Generiert zu allen **Entitäten** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Entitäten** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'EntityNameGeneration.cs'. |
 | ---     | ***Logic.DataContext*** |
-| 6       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Klassen in den Ordner `Logic.DataContext`. | 
+| 6       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Klassen in den Ordner `Logic.DataContext`. |
 | ---     | ***Logic.Contracts*** |
-| 7       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Schnittstellen in den Ordner `Logic.Contracts`. | 
+| 7       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Schnittstellen in den Ordner `Logic.Contracts`. |
 | ---     | ***Common.Contracts*** |
 | 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Views** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
 | 4       | Generiert zu allen **Views** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Views** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a ViewObject`. |
 | ---     | ***Logic.Entities*** |
-| 5       | Generiert zu allen **Views** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Views** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'ViewNameGeneration.cs'.
+| 5       | Generiert zu allen **Views** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Views** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'ViewNameGeneration.cs'. |
 | ---     | ***Logic.DataContext*** |
-| 6       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Klassen in den Ordner `Logic.DataContext`. | 
+| 6       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Klassen in den Ordner `Logic.DataContext`. |
 | ---     | ***Logic.Contracts*** |
-| 7       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Schnittstellen in den Ordner `Logic.Contracts`. | 
+| 7       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Schnittstellen in den Ordner `Logic.Contracts`. |
 | ---     | ***Logic.DataContext*** |
 | 13      | Generiert eine `partial class ProjectDbContext` mit dem Dateinamen 'ProjectDbContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften vom Typ `DbSet<T>`,  `EntitySet<T>`, `ViewSet<T>` und die <br > Methoden `void GetGeneratorDbSet<E>(...)`, `void GetGeneratorEntitySet<E>(...)`, `void GetGeneratorViewSet<E>(...)` <br > sowie die Methode `static partial void OnViewModelCreating(ModelBuilder modelBuilder)`. |
-| ---     | ***Logic.Contracts*** | 
+| ---     | ***Logic.Contracts*** |
 | 14      | Generiert eine `partial interface IContext` mit dem Dateinamen 'IContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften für den öffentlichen Zugriff auf die `EntitySet<T>`('s) und `ViewSet<T>`('s). |
-| ---     | ***WebApi.Models*** | 
-| 15      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `WebApi.Models`. | 
-| 16      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die `Edit`-Models in den Ordner `WebApi.Models`. <br > **INFO:** `Edit`-Models sind Models ohne **'Id'**. | 
-| ---     | ***WebApi.Controllers*** | 
+| ---     | ***WebApi.Models*** |
+| 15      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `WebApi.Models`. |
+| 16      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die `Edit`-Models in den Ordner `WebApi.Models`. <br > **INFO:** `Edit`-Models sind Models ohne **'Id'**. |
+| ---     | ***WebApi.Controllers*** |
 | 17      | Generiert zu allen **Entitäten** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `CRUD`-Operationen und können mit einer `partial`-Klasse beliebig erweitert werden. |
 | 18      | Generiert zu allen **Views** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `QUERY`-Operationen und können mit einer `partial`-Klasse erweitert werden. |
 | 19      | Generiert eine `partial class ContextAccessor` mit dem Dateinamen `ContextAccessorGeneration.cs`. <br > **INFO:**  Erstellt die Methoden `void GetEntitySetHandler<TEntity>(...)` und `void GetViewSetHandler<TView>(...)` für den Zugriff auf die entsprechenden Set's.  |
-| ---     | ***MVVM.Models*** | 
-| 20      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. | 
-| ---     | ***MVVM.ViewModels*** | 
-| 21      | Generiert zu allen **Entities** die `ViewModels` in den Ordner `MVVM.ViewModels`. <br > **INFO:** Zu jedem Entity wird ein `ViewModel` für die **List-Ansicht** und für die **Single-Ansicht** erstellt. | 
-| ---     | ***Angular*** | 
+| ---     | ***MVVM.Models*** |
+| 20      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. |
+| ---     | ***MVVM.ViewModels*** |
+| 21      | Generiert zu allen **Entities** die `ViewModels` in den Ordner `MVVM.ViewModels`. <br > **INFO:** Zu jedem Entity wird ein `ViewModel` für die **List-Ansicht** und für die **Single-Ansicht** erstellt. |
+| ---     | ***Angular*** |
 | ---     | Die Code-Generierung für die **Angular**-Komponenten erfolgt zu einem späteren Zeitpunkt. |
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -639,20 +649,22 @@ Source code path:    ...\SETemplate
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-*Menü-Auswahl: Pfad ändern*
+*Menü-Auswahl:* `Pfad ändern`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
 | 1       | Path                | Ändert das Verzeichnis (Pfad), in dem das aktuelle Template liegt. |
 |         |                     | *Change path:* ...\SETemplate zeigt den aktuellen Template-Pfad an. |
 
+| Ablauf  | Beschreibung                               |
+|---------|--------------------------------------------|
 | 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
 | 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
 | 3       | Prüfung, ob das Verzeichnis existiert?     |
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl:Add path*
+*Menü-Auswahl:* `Add path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -665,7 +677,7 @@ Choose [n|n,n|a...all|x|X]:
 | 3       | Wenn ja, dann wird die Änderung übernommen und in die Menü-Optionen gewechselt. |
 | 4       | Wenn nein, die Änderung wird ignoriert und in die Menü-Optionen gewechselt.    |
 
-*Menü-Auswahl: Synchronize with .\SETranslator*
+*Menü-Auswahl:* `Synchronize with .\SETranslator`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -707,7 +719,7 @@ Choose [n|n,n|a...all|x|X]:
 
 Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. Dazu muss nur die Nummer des Modules eingegeben werden. Die Eingabe 'a' | 'A' bewirkt, dass alle Module synchronisiert werden. 
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -720,7 +732,7 @@ Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. D
 | 3       | Im Quellpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
 | 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@CodeCopy` ersetzt. | 
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -752,7 +764,7 @@ Source code path:    ...\SETemplate
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -813,7 +825,8 @@ Cleanup path: ...\repos
 
 Choose [n|n,n|a...all|x|X]:  
 ```
-*Menü-Auswahl: Pfad ändern*
+
+*Menü-Auswahl:* `Pfad ändern`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -826,8 +839,7 @@ Choose [n|n,n|a...all|x|X]:
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Cleanup*
-
+*Menü-Auswahl:* `Cleanup`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -841,7 +853,7 @@ Choose [n|n,n|a...all|x|X]:
 | 4       | Befindet sich ein Ordner mit dem Namen 'target', dann wird dieser gelöscht. |
 | 5       | Zurück in die Menü-Optionen.               |
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -874,7 +886,7 @@ Choose [n|n,n|a...all|x|X]:
 
 ---
 
-*Menü-Auswahl: Exit*
+*Menü-Auswahl:* `Exit`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
@@ -896,3 +908,103 @@ Bei diesem Beispiel wurde eine kleine Buchhandlung erstellt. Diese Buchhandlung 
 
 Sie finden die Anleitung [hier](https://github.com/leoggehrer/SEBookStore).
 
+## Authentifizierung
+
+Das `SETemplate` enthält ein Authentifizierungsmodul, damit der Zugriff auf die Anwendung eingeschränkt werden kann. Um das Modul zu aktivieren, muss der `ACCOUNT`-Schalter auf `ON` gestellt werden. Die Einstellung kann im Abschnitt `Preprocessor` erfolgen:
+
+```bash
+========================
+Template Setting Defines
+========================
+
+Solution path: ...\SETemplate
+
+[  ---] -----------------------------------------------------------------
+[    1] Path................Change preprocessor solution path
+[  ---] -----------------------------------------------------------------
+[    2] Set definition ACCOUNT_ON                ==> ACCOUNT_OFF
+[  ---] -----------------------------------------------------------------
+[    3] Set definition IDINT_ON                  ==> IDINT_OFF
+[    4] Set definition IDLONG_OFF                ==> IDLONG_ON
+[    5] Set definition IDGUID_OFF                ==> IDGUID_ON
+[  ---] -----------------------------------------------------------------
+[    6] Set definition ROWVERSION_OFF            ==> ROWVERSION_ON
+[    7] Set definition EXTERNALGUID_OFF          ==> EXTERNALGUID_ON
+[  ---] -----------------------------------------------------------------
+[    8] Set definition POSTGRES_ON               ==> POSTGRES_OFF
+[    9] Set definition SQLSERVER_OFF             ==> SQLSERVER_ON
+[   10] Set definition SQLITE_OFF                ==> SQLITE_ON
+[  ---] -----------------------------------------------------------------
+[   11] Set definition DOCKER_OFF                ==> DOCKER_ON
+[   12] Set definition DEVELOP_ON                ==> DEVELOP_OFF
+[   13] Set definition DBOPERATION_ON            ==> DBOPERATION_OFF
+[   14] Set definition GENERATEDCODE_OFF         ==> GENERATEDCODE_ON
+[  ---] -----------------------------------------------------------------
+[   15] Start...............Start assignment process
+[-----] -----------------------------------------------------------------
+[  x|X] Exit................Exits the application
+
+Choose [n|n,n|a...all|x|X]:  
+```
+
+### Rollenbasiertes Zugriffssytem
+
+Das Authentifizierungssystem unterstützt ein rollenbasiertes Zugriffssystem, um den Zugriff auf verschiedene Bereiche und Funktionen der Anwendung zu steuern. Dieses System ermöglicht es, Benutzern spezifische Rollen zuzuweisen, die ihre Berechtigungen innerhalb der Anwendung definieren.
+
+#### Funktionsweise
+
+Das rollenbasierte Zugriffssystem basiert auf den folgenden Konzepten:
+
+1. **Rollen**: Eine Rolle ist eine Sammlung von Berechtigungen, die einem Benutzer zugewiesen werden können. Beispiele für Rollen sind `SysAdmin`, `AppAdmin`, `AppUser`, `Viewer` usw.
+2. **Berechtigungen**: Berechtigungen definieren, welche Aktionen ein Benutzer innerhalb der Anwendung ausführen darf, z. B. "Lesen", "Schreiben", "Löschen".
+3. **Benutzer**: Jeder Benutzer kann eine oder mehrere Rollen besitzen, die seine Berechtigungen bestimmen.
+
+**Datenmodell:**
+
+![Datenmodell](/img/account.png)
+
+Das zentrale Element in diesem Model ist das `Identity`-Objekt. Dies stellt eine Registrierung im System dar und kann mit beliebig vielen Rollen verknüpft sein. In einer Ableitung (`SecureIdentity`) von `Identity`, sind die beiden verschlüsselten Daten `PasswordHash` und `PasswordSalt` abgelegt.
+
+##### PasswordHash und PasswordSalt
+
+`PasswordHash` und `PasswordSalt` sind zwei zentrale Konzepte in der sicheren Speicherung von Passwörtern in Datenbanken. Sie helfen dabei, Passwörter vor Diebstahl und Missbrauch zu schützen.
+
+###### PasswordHash
+
+Ein PasswordHash ist ein kryptografisch erzeugter Wert, der aus einem Passwort berechnet wird – meist unter Einsatz eines Hash-Algorithmus wie SHA-256, bcrypt, scrypt oder Argon2.
+
+- **Nicht umkehrbar:** Aus dem Hash kann das ursprüngliche Passwort nicht mehr berechnet werden.
+- **Zweck:** Wird in der Datenbank gespeichert, um beim Login-Versuch das eingegebene Passwort zu verifizieren.
+- **Beispiel:**
+
+```bash
+Passwort: "meinGeheimesPasswort"
+Hash (z.B. mit SHA-256): "5e884898da280471..."
+```
+
+###### PasswordSalt
+
+Ein PasswordSalt ist eine zufällige Zeichenfolge (z. B. 16–32 Byte), die beim Hashen des Passworts mitverwendet wird.
+
+- **Zweck:** Verhindert, dass zwei gleiche Passwörter denselben Hash erzeugen.
+- **Schützt gegen:** Rainbow-Table-Angriffe (vorgefertigte Tabellen mit bekannten Passwort-Hashes).
+- **Funktionsweise:** Das Salt wird mit dem Passwort kombiniert, bevor gehasht wird:
+
+```bash
+saltedPassword = Salt + Passwort
+PasswordHash = Hash(saltedPassword)
+```
+
+##### TimeOutInMinutes
+
+Zu jedem `Identity`-Objekt wird ein `TimeOutInMinutes`-Wert hinterlegt. Dies bedeutet, dass die Anmeldung automatisch nach einer inaktiven Zeit in Minuten abgemeldet wird. Ausgenommen der Wert ist mit `0` definiert, dann erfolgt keine automatische Abmeldung.
+
+#### Anmeldung
+
+Die Anmeldung erfolgt mit der entsprechenden **Email**-Adresse und dem dazugehörigen **Kennwort**. Dabei wird überprüft, ob die **Email** mit dem **Kennwort** übereinstimmt. Wenn nicht, dann wird die Anmeldung abgewiesen, eine Ausnahme (`AuthorizationException(...)`) ausgelöst und der Zugriff auf das System verweigert. Findet eine Übereinstimmung statt, dann wird das dazugehörige `LoginSession`-Model zurückgegeben. In diesem Model befinden sich Daten für die zukünftigen Interaktionen mit dem System. Das wichtigste Datum ist der `SessionToken`. Für jede Operation bzw. Anweisung an die Anwendung muss der `SessionToken` übermittelt werden. Im nachfolgenden ein Beispiel:
+
+```csharp
+var login = await Logic.AccountAccess.LogonAsync(email, pwd, string.Empty);
+
+result = Logic.DataContext.Factory.CreateContext(login.SessionToken);
+```

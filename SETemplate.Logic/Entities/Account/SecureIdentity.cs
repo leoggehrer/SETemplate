@@ -31,16 +31,6 @@ namespace SETemplate.Logic.Entities.Account
         [Required]
         [MaxLength(512)]
         public byte[] PasswordSalt { get; set; } = [];
-        
-        #region Transient properties
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        /// <value>The password.</value>
-        /// <remarks>The password is not mapped to the database.</remarks>
-        [NotMapped]
-        public string Password { get; set; } = string.Empty;
-        #endregion Transient properties
     }
 }
 #endif

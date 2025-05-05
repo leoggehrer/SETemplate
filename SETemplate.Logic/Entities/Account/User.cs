@@ -27,7 +27,13 @@ namespace SETemplate.Logic.Entities.Account
         /// </summary>
         [MaxLength(64)]
         public string LastName { get; set; } = string.Empty;
+
+        #region Navigation properties
+        /// <summary>
+        /// Gets or sets the navigation property for the associated identity.
+        /// </summary>
+        internal Identity? Identity { get; set; }
+        #endregion Navigation properties
     }
 }
 #endif
-

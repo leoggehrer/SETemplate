@@ -24,18 +24,6 @@ namespace SETemplate.Logic.Entities.Account
         [MaxLength(128)]
         public string Email { get; set; } = string.Empty;
         /// <summary>
-        /// Gets or sets the confirmation code.
-        /// </summary>
-        public string? ConfirmationCode { get; set; } = null;
-        /// <summary>
-        /// Gets or sets the date and time until the confirmation code is valid.
-        /// </summary>
-        public DateTime? ConfirmationCodeValidUntil { get; set; }
-        /// <summary>
-        /// Gets or sets the date and time when the account was activated.
-        /// </summary>
-        public DateTime? ActivatedOn { get; set; }
-        /// <summary>
         /// Gets or sets the time-out value in minutes.
         /// </summary>
         public int TimeOutInMinutes { get; set; } = 30;

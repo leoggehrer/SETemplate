@@ -53,7 +53,7 @@ namespace TemplateTools.ConApp
         /// This method is called when the object is constructed.
         /// </summary>
         partial void Constructed();
-        #endregion Instance-Constructors 
+        #endregion Instance-Constructors
 
         #region Helpers
         protected static string ReposPath { get; set; } = SourcePath;
