@@ -172,7 +172,7 @@ namespace TemplateTools.Logic.Generation
                                                                     || e.PropertyType == typeof(string)));
             return generationProperties ?? [];
         }
-        #endregion get generation properties
+        #endregion create constructors
 
         #region create property
         /// <summary>
@@ -599,6 +599,7 @@ namespace TemplateTools.Logic.Generation
         }
         #endregion copy properties
 
+        #region create equals and hashcode
         /// <summary>
         /// Creates an XML documentation for the method <c>CreateEquals</c>.
         /// </summary>
@@ -704,6 +705,7 @@ namespace TemplateTools.Logic.Generation
             }
             return result;
         }
+        #endregion create equals and hashcode
 
         #region query settings
         /// <summary>

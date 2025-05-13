@@ -159,6 +159,8 @@ namespace TemplateTools.ConApp.Modules
             ,".cd"
             ,".razor"
             ,".razor.cs"
+            ,".html"
+            ,".ts"
         ];
         /// <summary>
         /// Gets or sets the list of extensions.
@@ -476,7 +478,7 @@ namespace TemplateTools.ConApp.Modules
             var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
 
             foreach (var sourceFile in new DirectoryInfo(sourceSolutionPath).GetFiles("*", SearchOption.TopDirectoryOnly)
-                                                                                 .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase))))
+                                                                            .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase))))
             {
                 var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionPath, targetSolutionPath);
 

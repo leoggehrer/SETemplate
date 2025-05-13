@@ -269,7 +269,7 @@ namespace TemplateTools.Logic.Generation
 
             while (runType != null && found == false)
             {
-                if (StaticLiterals.BaseClassMapping.TryGetValue(runType.Name, out string? value))
+                if (StaticLiterals.ModelBaseClassMapping.TryGetValue(runType.Name, out string? value))
                 {
                     found = true;
                     result = value;

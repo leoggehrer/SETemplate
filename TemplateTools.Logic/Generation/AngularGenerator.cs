@@ -33,7 +33,7 @@ namespace TemplateTools.Logic.Generation
         /// Gets or sets a value indicating whether services should be generated.
         ///</summary>
         public bool GenerateServices { get; set; }
-        
+
         #region AngularApp-Definitions
         public static string SourcePath => Path.Combine("src", "app");
         /// <summary>
@@ -222,9 +222,28 @@ namespace TemplateTools.Logic.Generation
         /// <returns>The generated TypeScript model.</returns>
         public IGeneratedItem CreateModelFromType(Type type, IEnumerable<Type> types)
         {
+            static string GetBaseClassByType(Type type)
+            {
+                var result = "object";
+                var found = false;
+                var runType = type.BaseType;
+
+                while (runType != null && found == false)
+                {
+                    if (StaticLiterals.AngularBaseClassMapping.TryGetValue(runType.Name, out string? value))
+                    {
+                        found = true;
+                        result = value;
+                    }
+                    runType = runType.BaseType;
+                }
+                return result;
+            }
+
             var subPath = ConvertFileItem(ItemProperties.CreateSubPathFromType(type));
             var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
             var modelName = ItemProperties.CreateTSModelName(type);
+            var modelBaseType = GetBaseClassByType(type);
             var fileName = $"{ConvertFileItem(modelName)}{StaticLiterals.TSFileExtension}";
             var typeProperties = type.GetAllPropertyInfos();
             var declarationTypeName = string.Empty;
@@ -236,7 +255,7 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateModel(type, result.Source);
-            result.Add($"export interface {modelName} extends IVersionEntity" + " {");
+            result.Add($"export interface {modelName} extends {modelBaseType}" + " {");
             
             foreach (var item in typeProperties)
             {
@@ -257,7 +276,7 @@ namespace TemplateTools.Logic.Generation
             var imports = new List<string>();
 #pragma warning restore IDE0028 // Simplify collection initialization
             
-            imports.Add("import { IVersionEntity } from '@app-models/i-version-entity';");
+            imports.Add("import { " + $"{modelBaseType}" + " } from '@app-models/" + $"{ConvertFileItem(modelBaseType)}';");
             imports.AddRange(CreateTypeImports(type, types));
             imports.AddRange(CreateModelToModelImports(type, types));
             imports.Add(StaticLiterals.CustomImportBeginLabel);
@@ -287,7 +306,8 @@ namespace TemplateTools.Logic.Generation
         /// This method is partially implemented and needs to be completed in another class file.
         /// </remarks>
         partial void FinishCreateModel(Type type, List<string> lines);
-        
+
+
         /// <summary>
         /// Creates a collection of generated items representing services.
         /// </summary>
@@ -365,62 +385,7 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The Type object representing the type of the service.</param>
         /// <param name="lines">A List of strings containing the lines of the service.</param>
         partial void FinishCreateService(Type type, List<string> lines);
-        
-        /// <summary>
-        /// Queries a setting value of type <typeparamref name="T"/> from a specific item type, using the specified value name and default value.
-        /// </summary>
-        /// <typeparam name="T">The type of the setting value to be queried.</typeparam>
-        /// <param name="itemType">The itemType of the setting.</param>
-        /// <param name="type">The type of the setting.</param>
-        /// <param name="valueName">The name of the setting value to be queried.</param>
-        /// <param name="defaultValue">The default value to be used if the queried setting value is not found or cannot be converted to type <typeparamref name="T"/>.</param>
-        /// <returns>The queried setting value of type <typeparamref name="T"/> or the default value if the queried setting value is not found or cannot be converted to type <typeparamref name="T"/>.</returns>
-        private T QuerySetting<T>(Common.ItemType itemType, Type type, string valueName, string defaultValue)
-        {
-            T result;
-            
-            try
-            {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.AngularApp, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
-            }
-            catch (Exception ex)
-            {
-                result = (T)Convert.ChangeType(defaultValue, typeof(T));
-                System.Diagnostics.Debug.WriteLine($"Error in {System.Reflection.MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
-            }
-            return result;
-        }
-        /// <summary>
-        ///   Queries a setting value and converts it to the specified type.
-        /// </summary>
-        /// <typeparam name="T">The type to which the setting value will be converted.</typeparam>
-        /// <param name="itemType">The type of item for which the setting is being queried.</param>
-        /// <param name="itemName">The name of the item for which the setting is being queried.</param>
-        /// <param name="valueName">The name of the setting being queried.</param>
-        /// <param name="defaultValue">The default value to be used if the setting value cannot be queried or converted.</param>
-        /// <returns>
-        ///   The queried setting value converted to the specified type, or the default value if an error occurs.
-        /// </returns>
-        /// <remarks>
-        ///   If querying or converting the setting value throws an exception, the default value will be used
-        ///   and an error message will be written to the debug output.
-        /// </remarks>
-        private T QuerySetting<T>(Common.ItemType itemType, string itemName, string valueName, string defaultValue)
-        {
-            T result;
-            
-            try
-            {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.AngularApp, itemType, itemName, valueName, defaultValue), typeof(T));
-            }
-            catch (Exception ex)
-            {
-                result = (T)Convert.ChangeType(defaultValue, typeof(T));
-                System.Diagnostics.Debug.WriteLine($"Error in {System.Reflection.MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
-            }
-            return result;
-        }
-        
+
         #region Helpers
         /// <summary>
         /// Reads the custom imports from a source file and returns them as a sequence of strings.
@@ -688,6 +653,61 @@ namespace TemplateTools.Logic.Generation
                 }
             }
             return result.Distinct();
+        }
+
+        /// <summary>
+        /// Queries a setting value of type <typeparamref name="T"/> from a specific item type, using the specified value name and default value.
+        /// </summary>
+        /// <typeparam name="T">The type of the setting value to be queried.</typeparam>
+        /// <param name="itemType">The itemType of the setting.</param>
+        /// <param name="type">The type of the setting.</param>
+        /// <param name="valueName">The name of the setting value to be queried.</param>
+        /// <param name="defaultValue">The default value to be used if the queried setting value is not found or cannot be converted to type <typeparamref name="T"/>.</param>
+        /// <returns>The queried setting value of type <typeparamref name="T"/> or the default value if the queried setting value is not found or cannot be converted to type <typeparamref name="T"/>.</returns>
+        private T QuerySetting<T>(Common.ItemType itemType, Type type, string valueName, string defaultValue)
+        {
+            T result;
+
+            try
+            {
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.AngularApp, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
+            }
+            catch (Exception ex)
+            {
+                result = (T)Convert.ChangeType(defaultValue, typeof(T));
+                System.Diagnostics.Debug.WriteLine($"Error in {System.Reflection.MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
+            }
+            return result;
+        }
+        /// <summary>
+        ///   Queries a setting value and converts it to the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type to which the setting value will be converted.</typeparam>
+        /// <param name="itemType">The type of item for which the setting is being queried.</param>
+        /// <param name="itemName">The name of the item for which the setting is being queried.</param>
+        /// <param name="valueName">The name of the setting being queried.</param>
+        /// <param name="defaultValue">The default value to be used if the setting value cannot be queried or converted.</param>
+        /// <returns>
+        ///   The queried setting value converted to the specified type, or the default value if an error occurs.
+        /// </returns>
+        /// <remarks>
+        ///   If querying or converting the setting value throws an exception, the default value will be used
+        ///   and an error message will be written to the debug output.
+        /// </remarks>
+        private T QuerySetting<T>(Common.ItemType itemType, string itemName, string valueName, string defaultValue)
+        {
+            T result;
+
+            try
+            {
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.AngularApp, itemType, itemName, valueName, defaultValue), typeof(T));
+            }
+            catch (Exception ex)
+            {
+                result = (T)Convert.ChangeType(defaultValue, typeof(T));
+                System.Diagnostics.Debug.WriteLine($"Error in {System.Reflection.MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
+            }
+            return result;
         }
         #endregion Helpers
     }

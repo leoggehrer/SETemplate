@@ -2,31 +2,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.Logic", "SETemplate.Logic\SETemplate.Logic.csproj", "{B9071805-DAFE-442C-9F34-E4DD315E1D8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.Logic", "SETemplate.Logic\SETemplate.Logic.csproj", "{B9071805-DAFE-442C-9F34-E4DD315E1D8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.ConApp", "SETemplate.ConApp\SETemplate.ConApp.csproj", "{9CD3496A-889C-4991-9274-8AEF097556E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.ConApp", "SETemplate.ConApp\SETemplate.ConApp.csproj", "{9CD3496A-889C-4991-9274-8AEF097556E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{A288F100-2A15-4E8F-B686-8ACD1EB87D9D}"
 	ProjectSection(SolutionItems) = preProject
 		CodeGeneration.csv = CodeGeneration.csv
 		README.md = README.md
-		sampleArtistEdit.html = sampleArtistEdit.html
-		sampleArtistEdit.ts = sampleArtistEdit.ts
-		sampleArtistList.html = sampleArtistList.html
-		sampleArtistList.ts = sampleArtistList.ts
+		sampleItemEdit.html = sampleItemEdit.html
+		sampleItemEdit.ts = sampleItemEdit.ts
+		sampleItemList.html = sampleItemList.html
+		sampleItemList.ts = sampleItemList.ts
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.WebApi", "SETemplate.WebApi\SETemplate.WebApi.csproj", "{BF70F327-1664-4BD7-AF5B-DAB306FFC3A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.WebApi", "SETemplate.WebApi\SETemplate.WebApi.csproj", "{BF70F327-1664-4BD7-AF5B-DAB306FFC3A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.Common", "SETemplate.Common\SETemplate.Common.csproj", "{D622D224-3200-4BFE-9757-9126B15EA861}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.Common", "SETemplate.Common\SETemplate.Common.csproj", "{D622D224-3200-4BFE-9757-9126B15EA861}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateTools.ConApp", "TemplateTools.ConApp\TemplateTools.ConApp.csproj", "{49C667A7-CBFD-4B5F-9EB4-942CF5EB0E05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateTools.ConApp", "TemplateTools.ConApp\TemplateTools.ConApp.csproj", "{49C667A7-CBFD-4B5F-9EB4-942CF5EB0E05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateTools.Logic", "TemplateTools.Logic\TemplateTools.Logic.csproj", "{D665E4F6-446C-45C5-A4E5-B0E7CDBEE7DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateTools.Logic", "TemplateTools.Logic\TemplateTools.Logic.csproj", "{D665E4F6-446C-45C5-A4E5-B0E7CDBEE7DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.CodeGenApp", "SETemplate.CodeGenApp\SETemplate.CodeGenApp.csproj", "{0D967C58-C9F9-4EBB-A958-F01E42C32A54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.CodeGenApp", "SETemplate.CodeGenApp\SETemplate.CodeGenApp.csproj", "{0D967C58-C9F9-4EBB-A958-F01E42C32A54}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SETemplate.MVVMApp", "SETemplate.MVVMApp\SETemplate.MVVMApp.csproj", "{787A7471-C70C-4EFB-976F-4FEFAA98E597}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SETemplate.MVVMApp", "SETemplate.MVVMApp\SETemplate.MVVMApp.csproj", "{787A7471-C70C-4EFB-976F-4FEFAA98E597}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "SETemplate.AngularApp", "SETemplate.AngularApp\SETemplate.AngularApp.esproj", "{809F8060-D733-E671-6EBC-62B3811C798E}"
 EndProject
