@@ -1,0 +1,27 @@
+<!--@BaseCode-->
+<div class="modal-header d-flex justify-content-between align-items-center">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" 
+        class="btn btn-sm btn-danger" 
+        aria-label="Schließen" 
+        (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    {{ message }}
+</div>
+<div class="modal-footer d-flex justify-content-center">
+    <button *ngIf="cancelText" 
+        type="button" 
+        class="btn btn-sm btn-secondary flex-fill me-2" 
+        (click)="dismiss()">
+        {{ cancelText }}
+    </button>
+    <button 
+        type="button" 
+        class="btn btn-sm btn-primary flex-fill" 
+        (click)="confirm()">
+        {{ okText }}
+    </button>
+</div>

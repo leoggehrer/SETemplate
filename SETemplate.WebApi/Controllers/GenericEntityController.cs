@@ -1,11 +1,10 @@
 ﻿//@BaseCode
-using SETemplate.Logic.Contracts;
-using SETemplate.WebApi.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SETemplate.Logic.Contracts;
+using SETemplate.WebApi.Contracts;
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.Exceptions;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace SETemplate.WebApi.Controllers
 {

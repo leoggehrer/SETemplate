@@ -36,7 +36,7 @@ namespace TemplateTools.Logic.Preprocessor
         public static void SetPreprocessorDefineCommentsInFiles(string path, string define, params string[] searchPatterns)
         {
             var files = searchPatterns.SelectMany(searchPattern => Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories))
-                                      .Where(f => CommonStaticLiterals.IgnoreFolderFiles.Any(i => f.Contains(i, StringComparison.CurrentCultureIgnoreCase)) == false)
+                                      .Where(f => CommonStaticLiterals.IgnoreSubFolders.Any(i => f.Contains(i, StringComparison.CurrentCultureIgnoreCase)) == false)
                                       .ToArray();
             var searchIfStart_1 = $"@*#if {define}*@@*{Environment.NewLine}";
             var searchIfEnd_1 = "*@@*#endif*@";
@@ -97,7 +97,7 @@ namespace TemplateTools.Logic.Preprocessor
         public static void SetPreprocessorDefineBlockCommentsInFiles(string path, string define, params string[] searchPatterns)
         {
             var files = searchPatterns.SelectMany(searchPattern => Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories))
-                                      .Where(f => CommonStaticLiterals.IgnoreFolderFiles.Any(i => f.Contains(i, StringComparison.CurrentCultureIgnoreCase)) == false)
+                                      .Where(f => CommonStaticLiterals.IgnoreSubFolders.Any(i => f.Contains(i, StringComparison.CurrentCultureIgnoreCase)) == false)
                                       .ToArray();
             
             var searchIfStart_1 = $"/*#if {define}*//*{Environment.NewLine}";

@@ -30,7 +30,7 @@ namespace SETemplate.Common
                 MVVMAppExtension,
                 AngularExtension,
             ];
-            GenerationIgnoreFolders = ["node_module"];
+            GenerationIgnoreFolders = IgnoreSubFolders;
             AfterClassInitialize();
         }
         /// <summary>
@@ -143,6 +143,11 @@ namespace SETemplate.Common
         /// <returns>The file extension for C# files, which is '.cs'.</returns>
         public static string CSharpFileExtension => ".cs";
         /// <summary>
+        /// Gets the file extension for typescript files.
+        /// </summary>
+        /// <returns>The file extension for C# files, which is '.cs'.</returns>
+        public static string TSFileExtension => ".ts";
+        /// <summary>
         /// Gets the file extension for razor page files.
         /// </summary>
         /// <returns>The file extension for razor page files, which is '.razor'.</returns>
@@ -184,24 +189,41 @@ namespace SETemplate.Common
             $"{Path.DirectorySeparatorChar}.angular{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}.vs",
             $"{Path.DirectorySeparatorChar}.vs{Path.DirectorySeparatorChar}",
-            $"{Path.DirectorySeparatorChar}.vscode",
-            $"{Path.DirectorySeparatorChar}.vscode{Path.DirectorySeparatorChar}",
+            //$"{Path.DirectorySeparatorChar}.vscode",
+            //$"{Path.DirectorySeparatorChar}.vscode{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}.git",
             $"{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}bin",
             $"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}obj",
             $"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}",
+            $"{Path.DirectorySeparatorChar}node_modules",
             $"{Path.DirectorySeparatorChar}node_modules{Path.DirectorySeparatorChar}",
+            $"{Path.DirectorySeparatorChar}Migrations",
+            $"{Path.DirectorySeparatorChar}Migrations{Path.DirectorySeparatorChar}",
         ];
         /// <summary>
         /// Array of folder file paths to be ignored.
         /// </summary>
-        public static string[] IgnoreFolderFiles { get; } =
+        public static string[] IgnoreFolderNames { get; } =
+        [
+            $".angular",
+            $".vs",
+            $".vscode",
+            $".git",
+            $"bin",
+            $"obj",
+            $"node_modules",
+            $"Migrations",
+        ];
+        /// <summary>
+        /// Array of folder file paths to be ignored.
+        /// </summary>
+        public static string[] IgnoreSubFolders { get; } =
         [
             $"{Path.DirectorySeparatorChar}.angular{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}.vs{Path.DirectorySeparatorChar}",
-            $"{Path.DirectorySeparatorChar}.vscode{Path.DirectorySeparatorChar}",
+            //$"{Path.DirectorySeparatorChar}.vscode{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}",
             $"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}",

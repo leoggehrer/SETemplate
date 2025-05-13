@@ -1,0 +1,24 @@
+<!--@BaseCode-->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">Login</div>
+        <div class="card-body">
+          <form (submit)="onLogin(); $event.preventDefault()">
+            <div class="mb-3">
+              <label for="username" class="form-label">Benutzername</label>
+              <input type="text" id="username" [(ngModel)]="username" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Passwort</label>
+              <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <div *ngIf="error" class="alert alert-danger mt-2">{{ error }}</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

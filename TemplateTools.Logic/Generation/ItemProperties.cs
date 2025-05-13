@@ -1,6 +1,7 @@
 ﻿//@BaseCode
 
 using System.Reflection;
+using System.Text;
 
 namespace TemplateTools.Logic.Generation
 {
@@ -61,6 +62,40 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The entity type.</param>
         /// <returns>The entity name.</returns>
         public static string CreateEntityName(Type type) => type.Name;
+        /// <summary>
+        /// Generates the typescript model name from the type.
+        /// </summary>
+        /// <param name="type">The entity type.</param>
+        /// <returns>The typescript model name.</returns>
+        public static string CreateTSModelName(Type type) => $"I{type.Name}";
+        /// <summary>
+        /// Generates the typescript property name from the property info.
+        /// </summary>
+        /// <param name="type">The property info object.</param>
+        /// <returns>The typescript property name.</returns>
+        public static string CreateTSPropertyName(PropertyInfo propertyInfo)
+        {
+            var sb = new StringBuilder();
+            var name = propertyInfo.Name;
+
+            for (int i = 0; i < name.Length; i++)
+            {
+                if (i == 0)
+                {
+                    sb.Append(char.ToLower(name[i]));
+                }
+                else if ((i + 1) < name.Length
+                         && char.IsUpper(name[i]) && char.IsUpper(name[i + 1]))
+                {
+                    sb.Append(char.ToLower(name[i]));
+                }
+                else
+                {
+                    sb.Append(name[i]);
+                }
+            }
+            return sb.ToString();
+        }
         /// <summary>
         /// Creates the contract name for a given type.
         /// </summary>

@@ -29,6 +29,10 @@ namespace TemplateTools.Logic
         /// </summary>
         public static string CSharpFileExtension => CommonStaticLiterals.CSharpFileExtension;
         /// <summary>
+        /// Gets the file extension for typescript files.
+        /// </summary>
+        public static string TSFileExtension => CommonStaticLiterals.TSFileExtension;
+        /// <summary>
         /// Gets the file extension for razor page files.
         /// </summary>
         public static string RazorFileExtension => CommonStaticLiterals.RazorFileExtension;

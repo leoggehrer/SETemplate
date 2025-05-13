@@ -1,0 +1,21 @@
+<div *ngIf="dataItem" class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3>{{ title }}</h3>
+        <button type="button"
+                class="btn btn-sm btn-danger"
+                aria-label="Schließen"
+                (click)="dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <form (ngSubmit)="submitForm()" #editForm="ngForm">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" [(ngModel)]="dataItem.name" name="name" required />
+            </div>
+            <button class="btn btn-success" type="submit">Speichern</button>
+            <button class="btn btn-secondary ms-2" type="button" (click)="cancelForm()">Abbrechen</button>
+        </form>
+    </div>
+</div>

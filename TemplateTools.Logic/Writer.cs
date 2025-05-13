@@ -33,7 +33,6 @@ namespace TemplateTools.Logic
         #region fields
         private static readonly string[] InfoText =
         [
-            $"//{StaticLiterals.GeneratedCodeLabel}",
             "/*****************************************************************************************",
             "  Please note that this file is regenerated each time it is generated",
             "  and all your changes will be overwritten in this file.",
@@ -472,6 +471,10 @@ namespace TemplateTools.Logic
                     sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
                     sourceLines.Add("@enduml");
                 }
+                else if (item.FileExtension == StaticLiterals.TSFileExtension)
+                {
+                    sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
+                }
                 else
                 {
                     if (WriteInfoHeader)
@@ -483,10 +486,7 @@ namespace TemplateTools.Logic
                             sourceLines.Insert(index++, info);
                         }
                     }
-                    else
-                    {
-                        sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
-                    }
+                    sourceLines.Insert(0, $"//{StaticLiterals.GeneratedCodeLabel}");
                 }
                 WriteCodeFile(filePath, sourceLines);
             }

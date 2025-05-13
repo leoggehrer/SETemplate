@@ -111,6 +111,22 @@ namespace TemplateTools.Logic
             }
             #endregion MVVMApp
 
+            #region AngularApp
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.AngularApp.ToString(), StaticLiterals.AllItems, StaticLiterals.AllItems, "Generate", "True"))
+            {
+                var generator = new Generation.AngularGenerator(solutionProperties);
+
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var generatedItems = new List<IGeneratedItem>();
+
+                    WriteLogging("Create Angular-Components...");
+                    generatedItems.AddRange(generator.GenerateAll());
+                    result.AddRangeSafe(generatedItems);
+                }));
+            }
+            #endregion AngularApp
+
             Task.WaitAll([.. tasks]);
             return result;
         }
@@ -207,7 +223,7 @@ namespace TemplateTools.Logic
             {
                 var lines = File.ReadAllLines(file, Encoding.Default);
 
-                if (lines.Length == 0 || labels.Any(l => lines.First().Contains(l)))
+                if (lines.Length > 0 && labels.Any(l => lines.First().Contains(l)))
                 {
                     result.Add(file);
                 }
