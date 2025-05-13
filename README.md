@@ -19,6 +19,7 @@
         - [Menü: Cleanup](#menü-cleanup)
   - [Beispiele](#beispiele)
     - [Beispiel 1: SEBookStore](#beispiel-1-sebookstore)
+    - [Beispiel 2: SEBookStoreAngular](#beispiel-2-sebookstoreangular)
   - [Authentifizierung](#authentifizierung)
     - [Rollenbasiertes Zugriffssytem](#rollenbasiertes-zugriffssytem)
       - [Funktionsweise](#funktionsweise)
@@ -48,7 +49,7 @@ Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzep
 |**SETemplate.WebApi**|In diesem Projekt ist die REST-Schnittstelle implementiert. Dieses Modul stellt eine API (Aplication Programming Interface) für den Zugriff auf das System über das Netzwerk zur Verfügung.| Host | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.ConApp**|Dieses Projekt dient als Initial-Anwendung zum Erstellen bzw. Abgleichen der Datenbank, das Anlegen von Konten falls die Authentifizierung aktiv ist und zum Importieren von bestehenden Daten. Nach der Initialisierung wird diese Anwendung kaum verwendet.| Console | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.MVVMApp**|Diese Projekt beinhaltet die Basisfunktionen für eine Wpf-Anwendung (Avalonia) und kann als Vorlage für die Entwicklung einer Wpf-Anwendung mit dem SETemplate Framework verwendet werden.|Host| SETemplate.Logic, SETemplate.Common |
-|**SETemplate.XxxYyy**|Es folgen noch weitere Vorlagen von Client-Anwendungen wie Angular, Blazor und mobile Apps. Zum jetzigen Zeitpunkt existiert nur die Wpf-Anwendung (Avalonia). Die Erstellung und Beschreibung weiterer Client-Anwendungen erfolgt zu einem späteren Zeitpunkt.| Host | SETemplate.Logic, SETTemplate.Common |
+|**SETemplate.AngularApp**|Diese Projekt beinhaltet die Vorlage für die Erstellung einer **Angular** Anwendung. Als Styling-Framework ist **Bootstrap** vorinstalliert. Zusätzlich ist noch das Package für den REST-Zugriff installiert.| Host | --- |
 
 ---
 
@@ -581,8 +582,15 @@ Press enter...
 | 20      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. |
 | ---     | ***MVVM.ViewModels*** |
 | 21      | Generiert zu allen **Entities** die `ViewModels` in den Ordner `MVVM.ViewModels`. <br > **INFO:** Zu jedem Entity wird ein `ViewModel` für die **List-Ansicht** und für die **Single-Ansicht** erstellt. |
-| ---     | ***Angular*** |
-| ---     | Die Code-Generierung für die **Angular**-Komponenten erfolgt zu einem späteren Zeitpunkt. |
+| ---     | ***AngularApp.src.app.models.entities*** |
+| 22      | Generiert zu allen **Entities** die Models für den REST-Zugriff im Ordner **AngularApp.src.app.models.entities**. |
+| ---     | ***AngularApp.src.app.models.entities*** |
+| 22      | Generiert zu allen **View-Entities** die Models für den REST-Zugriff im Ordner **AngularApp.src.app.models.entities**. |
+| ---     | ***AngularApp.src.app.services.http*** |
+| 23      | Generiert zu allen **Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
+| ---     | ***AngularApp.src.app.services.http*** |
+| 24      | Generiert zu allen **View-Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
+
 
 *Menü-Auswahl:* `Exit`
 
@@ -907,6 +915,12 @@ Um das Arbeiten mit dem Tool zu erleichtern, sind hier einige Beispiele aufgefü
 Bei diesem Beispiel wurde eine kleine Buchhandlung erstellt. Diese Buchhandlung verwaltet eine Liste von Büchern.
 
 Sie finden die Anleitung [hier](https://github.com/leoggehrer/SEBookStore).
+
+### Beispiel 2: SEBookStoreAngular
+
+Bei diesem Beispiel wurde eine kleine Buchhandlung erstellt. Diese Buchhandlung verwaltet eine Liste von Büchern mit einer Angular Web-Anwendung.
+
+Sie finden die Anleitung [hier](https://github.com/leoggehrer/SEBookStoreAngular).
 
 ## Authentifizierung
 
