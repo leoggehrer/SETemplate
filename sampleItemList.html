@@ -2,18 +2,16 @@
     <h3 class="mb-4">Items</h3>
 
     <div class="d-flex mb-3">
-        <button class="btn btn-primary me-2" 
-            (click)="addItem()">
+        <button class="btn btn-primary me-2"
+                (click)="addItem()">
             <i class="bi bi-plus"></i>
         </button>
-        <input
-            type="text"
-            class="form-control me-2"
-            [(ngModel)]="searchTerm"
-            placeholder="🔍 Suche nach Titel oder Autor"
-        />
+        <input type="text"
+               class="form-control me-2"
+               [(ngModel)]="searchTerm"
+               placeholder="🔍 Suche nach Titel oder Autor" />
         <button class="btn btn-success me-2"
-            (click)="reloadData()">
+                (click)="reloadData()">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
     </div>
@@ -22,21 +20,23 @@
         <thead class="table-dark">
             <tr>
                 <th>Name</th>
-                 <th>Aktion</th>
-           </tr>
+                <th style="white-space: nowrap; width: 1%;">Aktion</th>
+            </tr>
         </thead>
         <tbody>
             <tr *ngFor="let item of dataItems">
                 <td><strong>{{ item.name }}</strong></td>
                 <td>
-                    <button class="btn btn-sm btn-outline-secondary me-2" 
-                        (click)="editItem(item)">
-                        <i class="bi bi-pencil"></i>                      
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger"
-                        (click)="deleteItem(item)">
-                        <i class="bi bi-trash"></i>                      
-                    </button>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-sm btn-outline-secondary me-2"
+                                (click)="editItem(item)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger"
+                                (click)="deleteItem(item)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         </tbody>

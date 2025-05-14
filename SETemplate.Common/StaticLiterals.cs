@@ -117,26 +117,26 @@ namespace SETemplate.Common
         public static string[] GenerationIgnoreFolders { get; private set; }
         /// Gets the label for generated code.
         /// @returns The label for generated code.
-        public static string GeneratedCodeLabel => "@GeneratedCode";
+        public static string GeneratedCodeLabel => "@" + "GeneratedCode";
         /// <summary>
         /// Gets the label for customized and generated code.
         /// </summary>
         /// <returns>The label for customized and generated code.</returns>
-        public static string CustomizedAndGeneratedCodeLabel => "@CustomAndGeneratedCode";
+        public static string CustomizedAndGeneratedCodeLabel => "@" + "CustomAndGeneratedCode";
         /// <summary>
         /// Represents the label to ignore.
         /// </summary>
-        public static string IgnoreLabel => "@Ignore";
+        public static string IgnoreLabel => "@" + "Ignore";
         /// <summary>
         /// Gets the label for the base code.
         /// </summary>
         /// <value>A string representing the label for base code.</value>
-        public static string BaseCodeLabel => "@BaseCode";
+        public static string BaseCodeLabel => "@" + "BaseCode";
         /// <summary>
         /// Gets a label for code copy.
         /// </summary>
         /// <value>A string representing the label for code copy.</value>
-        public static string CodeCopyLabel => "@CodeCopy";
+        public static string CodeCopyLabel => "@" + "CodeCopy";
         /// <summary>
         /// Gets the file extension for C# files.
         /// </summary>

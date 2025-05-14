@@ -116,6 +116,9 @@ namespace TemplateTools.Logic.Generation
                     var entityType = ItemProperties.GetModuleSubType(type);
                     var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var entitySetName = ItemProperties.CreateEntitySetName(type);
+                    var contractSetName = ItemProperties.CreateContractSetName(type);
+                    var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
+                    var contractSetSubType = $"{contractSubNamespace}.{contractSetName}";
                     var dbSetName = $"Db{type.Name}Set";
                     var dbSetType = $"DbSet<{entityType}>";
 
@@ -123,7 +126,7 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"private {dbSetType} {dbSetName}" + "{ get; set; }");
 
                     result.AddRange(CreateComment(type));
-                    result.Add($"public {StaticLiterals.ContractsFolder}.{StaticLiterals.EntitySetContractName}<{entitySubType}> {entitySetName} => GetEntitySet<{entitySubType}>();");
+                    result.Add($"public {contractSetSubType} {entitySetName} => ({contractSetSubType})GetEntitySet<{entitySubType}>();");
                 }
             }
 
@@ -136,6 +139,9 @@ namespace TemplateTools.Logic.Generation
                     var entityType = ItemProperties.GetModuleSubType(type);
                     var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var viewSetName = ItemProperties.CreateViewSetName(type);
+                    var contractSetName = ItemProperties.CreateContractSetName(type);
+                    var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
+                    var contractSetSubType = $"{contractSubNamespace}.{contractSetName}";
                     var dbSetName = $"Db{type.Name}Set";
                     var dbSetType = $"DbSet<{entityType}>";
 
@@ -143,7 +149,7 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"private {dbSetType} {dbSetName}" + "{ get; set; }");
 
                     result.AddRange(CreateComment(type));
-                    result.Add($"public {StaticLiterals.ContractsFolder}.{StaticLiterals.ViewSetContractName}<{entitySubType}> {viewSetName} => GetViewSet<{entitySubType}>();");
+                    result.Add($"public {contractSetSubType} {viewSetName} => ({contractSetSubType})GetViewSet<{entitySubType}>();");
                 }
             }
 
@@ -422,11 +428,11 @@ namespace TemplateTools.Logic.Generation
         {
             var itemName = ItemProperties.CreateEntitySetName(type);
             var contractSetName = ItemProperties.CreateContractSetName(type);
+            var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
             var fileName = $"{itemName}{StaticLiterals.CSharpFileExtension}";
             var entitySetGenericType = QuerySetting<string>(itemType, StaticLiterals.AllItems, StaticLiterals.EntitySetGenericType, StaticLiterals.EntitySetName);
             var entityType = ItemProperties.GetModuleSubType(type);
             var contractType = ItemProperties.CreateFullContractType(type);
-            var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
             var dataContextSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.DataContextFolder);
             var dataContextNamespace = $"{ItemProperties.ProjectNamespace}.{dataContextSubNamespace}";
             var result = new GeneratedItem(unitType, itemType)
@@ -614,11 +620,14 @@ namespace TemplateTools.Logic.Generation
 
                 if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
-                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var entitySetName = ItemProperties.CreateEntitySetName(type);
+                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
+                    var contractSetName = ItemProperties.CreateContractSetName(type);
+                    var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
+                    var contractSetSubType = $"{contractSubNamespace}.{contractSetName}";
 
                     result.AddRange(CreateComment(type));
-                    result.Add($"{StaticLiterals.EntitySetContractName}<{entitySubType}> {entitySetName}" + "{ get; }");
+                    result.Add($"{contractSetSubType} {entitySetName}" + "{ get; }");
                 }
             }
 
@@ -630,9 +639,12 @@ namespace TemplateTools.Logic.Generation
                 {
                     var viewSubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var viewSetName = ItemProperties.CreateViewSetName(type);
+                    var contractSetName = ItemProperties.CreateContractSetName(type);
+                    var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
+                    var contractSetSubType = $"{contractSubNamespace}.{contractSetName}";
 
                     result.AddRange(CreateComment(type));
-                    result.Add($"{StaticLiterals.ViewSetContractName}<{viewSubType}> {viewSetName}" + "{ get; }");
+                    result.Add($"{contractSetSubType} {viewSetName}" + "{ get; }");
                 }
             }
 

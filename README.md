@@ -73,7 +73,7 @@ Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage bei
 - Alle Projektteile aus der Vorlage werden in das Zielverzeichnis kopiert.
 - Die Namen der Projekte und Komponenten werden entsprechend angepasst.
 - Alle Projekte mit dem Präfix **SETemplate** werden mit dem domainspezifischen Namen ersetzt.
-- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
+- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
 
 Nach dem der Erstellungsprozess ausgeführt wurde, haben Sie ein weiters Projekt (Solution) erhalten - ein Domain-Projekt.
 
@@ -641,7 +641,7 @@ Template Synchronization
 ========================
 
 Balance labels(s):
-  @BaseCode       => @CodeCopy
+  @BaseCode       => @BaseCode
   @BaseCode       => @BaseCode
 Source code path:    ...\SETemplate
 
@@ -701,7 +701,7 @@ Template Partial Synchronization
 ================================
 
 Balance labels(s):
-  @BaseCode       =>             @CodeCopy
+  @BaseCode       =>             @BaseCode
   @BaseCode       =>             @BaseCode
 --------------------------------
 Source code path:                ...\SETemplate
@@ -735,10 +735,10 @@ Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. D
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Im Zielpfad werden alle Dateien mit dem Label `@CodeCopy` ermittelt. |
-| 2       | Alle Dateien mit dem Label `@CodeCopy` werden aus dem Zielpfad entfernt. |
+| 1       | Im Zielpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
+| 2       | Alle Dateien mit dem Label `@BaseCode` werden aus dem Zielpfad entfernt. |
 | 3       | Im Quellpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
-| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@CodeCopy` ersetzt. | 
+| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@BaseCode` ersetzt. | 
 
 *Menü-Auswahl:* `Exit`
 
@@ -756,7 +756,7 @@ Template Synchronization
 ========================
 
 Balance labels(s):
-  @BaseCode       => @CodeCopy
+  @BaseCode       => @BaseCode
   @BaseCode       => @BaseCode
 Source code path:    ...\SETemplate
 

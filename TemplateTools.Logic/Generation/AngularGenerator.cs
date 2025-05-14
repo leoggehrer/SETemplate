@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 namespace TemplateTools.Logic.Generation
 {
     using System.IO;

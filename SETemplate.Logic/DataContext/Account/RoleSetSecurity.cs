@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 #if ACCOUNT_ON && GENERATEDCODE_ON
 
 namespace SETemplate.Logic.DataContext.Account
