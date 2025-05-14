@@ -313,6 +313,43 @@ namespace SETemplate.Common.Modules.Template
         }
 
         /// <summary>
+        /// Determines whether the specified path belongs to an Angular project.
+        /// </summary>
+        /// <param name="filePath">The file path to check.</param>
+        /// <returns><c>true</c> if the file path is part of an Angular project; otherwise, <c>false</c>.</returns>
+        public static bool IsAngularPath(string path)
+        {
+            var result = false;
+
+            if (path.HasContent())
+            {
+                var projectName = GetSolutionItemDataFromPath(path!, ".esproj").Name;
+
+                result = projectName.EndsWith(StaticLiterals.AngularExtension);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Determines whether the specified file path belongs to an Angular project.
+        /// </summary>
+        /// <param name="filePath">The file path to check.</param>
+        /// <returns><c>true</c> if the file path is part of an Angular project; otherwise, <c>false</c>.</returns>
+        public static bool IsAngularFilePath(string filePath)
+        {
+            var result = false;
+            var path = Path.GetDirectoryName(filePath);
+
+            if (path.HasContent())
+            {
+                var projectName = GetSolutionItemDataFromPath(path!, ".esproj").Name;
+
+                result = projectName.EndsWith(StaticLiterals.AngularExtension);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Gets the project name from the given path.
         /// </summary>
         /// <param name="path">The path of the file.</param>
@@ -330,7 +367,21 @@ namespace SETemplate.Common.Modules.Template
         /// <exception cref="ArgumentNullException">Thrown when the filePath is null.</exception>
         public static string GetProjectSubFilePath(string filePath)
         {
-            var subPath = GetSolutionItemDataFromPath(filePath, ".csproj").SubPath;
+            return GetProjectSubFilePath(filePath, ".csproj");
+        }
+
+        /// <summary>
+        /// Gets the sub file path by extracting the file path relative to the specified project file extension within the solution.
+        /// </summary>
+        /// <param name="filePath">The full file path.</param>
+        /// <param name="fileExtension">The file extension of the project file (e.g., ".csproj", ".esproj").</param>
+        /// <returns>
+        /// The sub file path relative to the project file within the solution.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="filePath"/> is null.</exception>
+        public static string GetProjectSubFilePath(string filePath, string fileExtension)
+        {
+            var subPath = GetSolutionItemDataFromPath(filePath, fileExtension).SubPath;
             var result = filePath!.Replace(subPath, string.Empty);
 
             if (result.StartsWith(Path.DirectorySeparatorChar))

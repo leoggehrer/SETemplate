@@ -135,6 +135,12 @@ namespace TemplateTools.ConApp.Modules
                     canCopy = false;
                 }
             }
+            else if (TemplatePath.IsAngularPath(targetPath) && TemplatePath.IsAngularFilePath(sourceFilePath))
+            {
+                var sourceSubFilePath = TemplatePath.GetProjectSubFilePath(sourceFilePath, ".esproj");
+
+                targetFilePath = Path.Combine(targetPath, sourceSubFilePath);
+            }
             else if (TemplatePath.IsSolutionFilePath(sourceFilePath))
             {
                 if (isProjectTargetPath)
@@ -161,9 +167,9 @@ namespace TemplateTools.ConApp.Modules
             else
             {
                 var fileName = Path.GetFileName(sourceFilePath);
-                
+
                 targetFilePath = Path.Combine(targetPath, fileName);
-                
+
                 if (Directory.Exists(targetPath) == false)
                 {
                     Directory.CreateDirectory(targetPath);
