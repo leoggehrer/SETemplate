@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { IdType, IKey } from '@app-models/i-key';
 import { IQueryParams } from '@app/models/base/i-query-params';

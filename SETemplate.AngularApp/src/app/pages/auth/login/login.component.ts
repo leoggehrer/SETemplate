@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { Component } from '@angular/core';
 import { environment } from '@environment/environment';
 import { AuthService } from '@app-services/auth.service';

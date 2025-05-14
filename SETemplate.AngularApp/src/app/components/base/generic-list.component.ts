@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { IQueryParams } from "@app/models/base/i-query-params";
 import { IKey } from "@app/models/i-key";
 import { MessageBoxService } from "@app/services/message-box-service.service";

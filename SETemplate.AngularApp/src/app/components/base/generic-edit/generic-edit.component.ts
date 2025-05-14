@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IKey } from '@app/models/i-key';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';

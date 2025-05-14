@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GenericEditComponent } from './generic-edit.component';

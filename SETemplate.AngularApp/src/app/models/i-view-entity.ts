@@ -1,3 +1,3 @@
-﻿//@CodeCopy
+//@BaseCode
 export interface IViewEntity {
 }
