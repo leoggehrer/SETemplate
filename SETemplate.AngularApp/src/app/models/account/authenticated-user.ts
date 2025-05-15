@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { IdType } from '@app-models/i-key';
 
 export interface AuthenticatedUser {

@@ -10,10 +10,27 @@
     </div>
     <div class="card-body">
         <form (ngSubmit)="submitForm()" #editForm="ngForm">
+            <!-- Fuegen Sie hier die Elemente nach den folgenden Schemata hinzu:-->
+            <!-- Schema: Text
             <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" [(ngModel)]="dataItem.name" name="name" required />
+                <label class="form-label">Album</label>
+                <input class="form-control" [(ngModel)]="dataItem.title" name="title" required />
             </div>
+            -->
+            <!-- Schema: Auswahl
+            <div class="mb-3">
+              <label for="artist" class="form-label">Artist</label>
+              <select id="artist" name="artistId" class="form-select" [(ngModel)]="dataItem.artistId" #artistId="ngModel"
+                required>
+                <option *ngFor="let item of artists" [ngValue]="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="artistId.invalid && artistId.touched">
+                Bitte wähle einen Artist.
+              </div>
+            </div>
+            -->
             <button class="btn btn-success" type="submit">Speichern</button>
             <button class="btn btn-secondary ms-2" type="button" (click)="cancelForm()">Abbrechen</button>
         </form>

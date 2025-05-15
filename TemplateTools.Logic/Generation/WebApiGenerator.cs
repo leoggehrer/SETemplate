@@ -184,7 +184,6 @@ namespace TemplateTools.Logic.Generation
             result.Add($"{visibility} sealed partial class {controllerName}(Contracts.IContextAccessor contextAccessor) : {genericType}<TModel, TEntity, TContract>(contextAccessor)");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(controllerName));
-//            result.AddRange(CreatePartialConstrutor("public", controllerName, $"{contractType} other", "base(other)", null, true));
             
             result.AddRange(CreateComment(type));
             result.Add($"protected override TModel ToModel(TEntity entity)");
@@ -196,12 +195,12 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             result.Add($"(result as TContract).CopyProperties(entity);");
             result.Add("}");
-            result.Add("AfterToModel(result);");
+            result.Add("AfterToModel(entity, result);");
             result.Add($"return result;");
             result.Add("}");
 
             result.Add($"partial void BeforeToModel(TEntity entity, ref TModel outModel, ref bool handled);");
-            result.Add($"partial void AfterToModel(TModel model);");
+            result.Add($"partial void AfterToModel(TEntity entity, TModel model);");
 
             result.AddRange(CreateComment(type));
             result.Add($"protected override TEntity ToEntity(TModel model, TEntity? entity)");
@@ -213,12 +212,12 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             result.Add($"(result as TContract).CopyProperties(model);");
             result.Add("}");
-            result.Add("AfterToEntity(result);");
+            result.Add("AfterToEntity(model, result);");
             result.Add($"return result;");
             result.Add("}");
 
             result.Add($"partial void BeforeToEntity(TModel model, ref TEntity outEntity, ref bool handled);");
-            result.Add($"partial void AfterToEntity(TEntity entity);");
+            result.Add($"partial void AfterToEntity(TModel model, TEntity entity);");
             
             result.Add("}");
             result.EnvelopeWithANamespace(ItemProperties.CreateControllerNamespace(type));
@@ -285,12 +284,12 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
             result.Add($"(result as TContract).CopyProperties(view);");
             result.Add("}");
-            result.Add("AfterToModel(result);");
+            result.Add("AfterToModel(view, result);");
             result.Add($"return result;");
             result.Add("}");
 
             result.Add($"partial void BeforeToModel(TView view, ref TModel outModel, ref bool handled);");
-            result.Add($"partial void AfterToModel(TModel model);");
+            result.Add($"partial void AfterToModel(TView view, TModel model);");
 
             result.Add("}");
             result.EnvelopeWithANamespace(ItemProperties.CreateControllerNamespace(type));

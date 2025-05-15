@@ -2,54 +2,68 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { IKey } from '@app/models/i-key';
 import { MessageBoxService } from '@app/services/message-box-service.service';
 import { GenericListComponent } from '@app/components/base/generic-list.component';
-import { IQueryParams } from '@app/models/base/i-query-params';
-import { Observable } from 'rxjs';
 
+/* Ersetzen Sie hier 'IKey' durch den gewuenschten 'Type' (z.B.: 'IAlbum') */
+interface IItem extends IKey {
+
+}
+/* Ersetzen Sie in Component 'item' durch den gewuenschten Namen (z.B.: album) */
 @Component({
-  selector: 'app-item-list',
-  imports: [CommonModule, FormsModule ],
-  templateUrl: './item-list.component.html',
-  styleUrl: './item-list.component.css'
+    selector: 'app-item-list',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './item-list.component.html',
+    styleUrl: './item-list.component.css'
 })
 export class ItemListComponent extends GenericListComponent<IItem> implements OnInit {
 
-  constructor(
-    protected override modal: NgbModal,
-    private dataAccessService: DataAccessService,
-    protected override messageBoxService: MessageBoxService) {
-      super(modal, messageBoxService);
-  }
+    constructor(
+        protected override modal: NgbModal,
+        protected dataAccessService: DataAccessService,
+        protected override messageBoxService: MessageBoxService) {
+        super(modal, dataAccessService, messageBoxService);
+    }
 
-  ngOnInit(): void {
-    this._queryParams.filter = 'name.Contains(@0)';
-    this.reloadData();
-  }
+    ngOnInit(): void {
+        // Passen Sie hier den Filter entsprechend an
+        this._queryParams.filter = 'name.Contains(@0)';
+        this.reloadData();
+    }
 
-  protected override sortData(items: IItem[]): IItem[] {
-    return items.sort((a, b) => a.name.localeCompare(b.name));
-  }
-  protected override getAllItems() {
-    return this.dataAccessService.getAll();
-  }
-  protected override queryItems(params: IQueryParams): Observable<IItem[]> {
-    return this.dataAccessService.query(params);
-  }
-  protected override getItemTitel(item: IItem): string {
-    return item.name;
-  }
-  protected override createAction(item: IItem): Observable<IItem> {
-    return this.dataAccessService.create(item);
-  }
-  protected override updateAction(item: IItem): Observable<IItem> {
-    return this.dataAccessService.update(item);
-  }
-  protected override deleteAction(item: IItem): Observable<any> {
-    return this.dataAccessService.delete(item);
-  }
-  protected override getEditComponent() {
-    return ItemEditComponent;
-  }
+    /* 
+    *  Passen Sie hier den Titel fuer die Ueberschtsseite an.
+    *  Default: Items
+    */
+    public override get pageTitle(): string {
+        return super.pageTitle;
+    }
+
+    /* 
+    *  Passen Sie hier den Titel fuer die Loeschbestaetigung an.
+    *  Default: id
+    */
+    public override getItemTitel(item: IItem): string {
+        return super.getItemTitel(item);
+    }
+
+    /* 
+    *  Hier können Sie die Sortierung der Anzeige anpassen
+    *  z.B.: return items.sort((a, b) => a.name.localeCompare(b.name));
+    *  Default: keine Sortierung
+    */
+    protected override sortData(items: IItem[]): IItem[] {
+        return super.sortData(items);
+    }
+
+    /*
+    *  Geben Sie hier die Komponente fuer das Bearbeiten eines Eintrages an.
+    *  (z.B.: AlbumEditComponent)
+    *  Default: keine Komponente
+    */
+    protected override getEditComponent() {
+        return ItemEditComponent;
+    }
 }
 

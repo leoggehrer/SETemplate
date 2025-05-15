@@ -1,4 +1,5 @@
 ﻿//@CodeCopy
+import { Directive } from "@angular/core";
 import { IQueryParams } from "@app/models/base/i-query-params";
 import { IKey } from "@app/models/i-key";
 import { MessageBoxService } from "@app/services/message-box-service.service";
@@ -11,6 +12,7 @@ import { Observable } from "rxjs";
  * 
  * @template T - A type that extends the IKey interface.
  */
+@Directive()
 export abstract class GenericListComponent<T extends IKey> {
     /**
      * The list of data items displayed in the component.

@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageBoxComponent } from '@app-components/base/message-box/message-box.component';
