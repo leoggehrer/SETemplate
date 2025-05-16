@@ -324,6 +324,13 @@ namespace TemplateTools.Logic.Generation
                     result.Add(CreateEntityServiceFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptService));
                 }
             }
+            foreach (var type in entityProject.AllViewTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptService, type, StaticLiterals.Generate, GenerateServices.ToString()))
+                {
+                    result.Add(CreateViewServiceFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptService));
+                }
+            }
             return result;
         }
         /// <summary>
@@ -350,7 +357,7 @@ namespace TemplateTools.Logic.Generation
             StartCreateService(type, result.Source);
             result.Add("import { Injectable } from '@angular/core';");
             result.Add("import { HttpClient } from '@angular/common/http';");
-            result.Add("import { ApiBaseService } from '@app-services/api-base.service';");
+            result.Add("import { ApiEntityBaseService } from '@app-services/api-entity-base.service';");
             result.Add("import { environment } from '@environment/environment';");
             result.Add(CreateImport("@app-models", modelName, subPath));
             
@@ -361,7 +368,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("@Injectable({");
             result.Add("  providedIn: 'root',");
             result.Add("})");
-            result.Add($"export class {entityName}Service extends ApiBaseService<{modelName}>" + " {");
+            result.Add($"export class {entityName}Service extends ApiEntityBaseService<{modelName}>" + " {");
             result.Add("  constructor(public override http: HttpClient) {");
             result.Add($"    super(http, environment.API_BASE_URL + '/{entityName.CreatePluralWord().ToLower()}');");
             result.Add("  }");
@@ -373,6 +380,55 @@ namespace TemplateTools.Logic.Generation
             FinishCreateService(type, result.Source);
             return result;
         }
+
+        /// <summary>
+        /// Creates a service from the specified type.
+        /// </summary>
+        /// <param name="type">The type from which the service is created.</param>
+        /// <param name="unitType">The unit type.</param>
+        /// <param name="itemType">The item type.</param>
+        /// <returns>The generated item representing the service.</returns>
+        private Models.GeneratedItem CreateViewServiceFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        {
+            var subPath = ConvertFileItem(ItemProperties.CreateSubPathFromType(type));
+            var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
+            var entityName = ItemProperties.CreateEntityName(type);
+            var modelName = ItemProperties.CreateTSModelName(type);
+            var fileName = $"{ConvertFileItem($"{entityName}Service")}{StaticLiterals.TSFileExtension}";
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateTypeScriptFullName(type),
+                FileExtension = StaticLiterals.TSFileExtension,
+                SubFilePath = Path.Combine(ServicesSubFolder, subPath, fileName),
+            };
+
+            StartCreateService(type, result.Source);
+            result.Add("import { Injectable } from '@angular/core';");
+            result.Add("import { HttpClient } from '@angular/common/http';");
+            result.Add("import { ApiViewBaseService } from '@app-services/api-view-base.service';");
+            result.Add("import { environment } from '@environment/environment';");
+            result.Add(CreateImport("@app-models", modelName, subPath));
+
+            result.Add(StaticLiterals.CustomImportBeginLabel);
+            result.AddRange(ReadCustomImports(projectPath, result));
+            result.Add(StaticLiterals.CustomImportEndLabel);
+
+            result.Add("@Injectable({");
+            result.Add("  providedIn: 'root',");
+            result.Add("})");
+            result.Add($"export class {entityName}Service extends ApiViewBaseService<{modelName}>" + " {");
+            result.Add("  constructor(public override http: HttpClient) {");
+            result.Add($"    super(http, environment.API_BASE_URL + '/{entityName.CreatePluralWord().ToLower()}');");
+            result.Add("  }");
+            result.Add("}");
+
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
+            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
+            FinishCreateService(type, result.Source);
+            return result;
+        }
+
         /// <summary>
         /// Starts the process of creating a service of the specified type, using the given list of lines.
         /// </summary>

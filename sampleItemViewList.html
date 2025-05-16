@@ -1,0 +1,39 @@
+﻿<div class="container mt-4">
+    <h3 class="mb-4">{{pageTitle}}</h3>
+
+    <div class="d-flex mb-3">
+        <!-- Suchtext -->
+        <input type="text"
+               class="form-control me-2"
+               [(ngModel)]="searchTerm"
+               placeholder="🔍 Suche nach..." />
+        <!-- Aktion: Daten neu Laden -->
+        <button class="btn btn-success me-2"
+                (click)="reloadData()">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <!-- Hier werden die Spalten-Bezeichner konfiguriert -->
+                <th>Name</th>
+                <!-- Spalte fuer Aktion (optional) -->
+                <th style="white-space: nowrap; width: 1%;">Aktion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of dataItems">
+                <!-- Hier werden die Spalten-Werte konfiguriert -->
+                <td><strong>{{ item.name }}</strong></td>
+                <!-- Aktion-Spalte: Bearbeiten und Loeschen -->
+                <td>
+                    <!-- Hier koenner Aktions-Button (z.B.: Details) konfiguriert werden -->
+                    <div class="d-flex gap-1">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

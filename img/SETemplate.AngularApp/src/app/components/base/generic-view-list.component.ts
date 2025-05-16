@@ -1,9 +1,9 @@
 ﻿//@CodeCopy
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Directive } from "@angular/core";
-import { IKey } from "@app/models/i-key";
+import { IViewEntity } from "@app/models/i-view-entity";
 import { IQueryParams } from "@app/models/base/i-query-params";
-import { IApiEntityBaseService } from "@app/services/i-api-entity-base.service";
+import { IApiViewBaseService } from "@app/services/i-api-view-base.service";
 import { MessageBoxService } from "@app/services/message-box-service.service";
 
 /**
@@ -13,7 +13,7 @@ import { MessageBoxService } from "@app/services/message-box-service.service";
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericListComponent<T extends IKey> {
+export abstract class GenericViewListComponent<T extends IViewEntity> {
   /**
    * The list of data items displayed in the component.
    */
@@ -40,7 +40,7 @@ export abstract class GenericListComponent<T extends IKey> {
    */
   constructor(
     protected modal: NgbModal,
-    protected entityService: IApiEntityBaseService<T>,
+    protected viewService: IApiViewBaseService<T>,
     protected messageBoxService: MessageBoxService) { }
 
   /**
@@ -73,12 +73,12 @@ export abstract class GenericListComponent<T extends IKey> {
    */
   protected reloadData() {
     if (this._queryParams.values.length === 0) {
-      this.entityService.getAll()
+      this.viewService.getAll()
         .subscribe(data => {
           this.dataItems = this.sortData(data);
         });
     } else {
-      this.entityService.query(this._queryParams)
+      this.viewService.query(this._queryParams)
         .subscribe(data => {
           this.dataItems = this.sortData(data);
         });
@@ -118,95 +118,4 @@ export abstract class GenericListComponent<T extends IKey> {
     return items;
   }
 
-  /**
-   * Opens a modal for adding a new item.
-   */
-  public addItem() {
-    const modalRef = this.modal.open(this.getEditComponent(), {
-      size: 'lg',
-      centered: true
-    });
-    const comp = modalRef.componentInstance;
-    comp.dataItem = { id: 0, name: '' };
-
-    comp.save.subscribe((item: T) => {
-      this.entityService.create(item)
-        .subscribe({
-          next: () => {
-            comp.close();
-            this.reloadData();
-          },
-          error: err => {
-            this.messageBoxService.show(
-              'Erstellung fehlgeschlagen:\n' + err.error,
-              'Fehler beim Erstellen',
-              'OK'
-            );
-          }
-        });
-    });
-  }
-
-  /**
-   * Opens a modal for editing an existing item.
-   * 
-   * @param item - The item to edit.
-   */
-  public editItem(item: T) {
-    const modalRef = this.modal.open(this.getEditComponent(), {
-      size: 'lg',
-      centered: true
-    });
-    const comp = modalRef.componentInstance;
-    comp.dataItem = { ...item };
-
-    comp.save.subscribe((updated: T) => {
-      this.entityService.update(updated)
-        .subscribe({
-          next: () => {
-            comp.close();
-            this.reloadData();
-          },
-          error: err => {
-            this.messageBoxService.show(
-              'Speichern fehlgeschlagen:\n' + err.error,
-              'Fehler beim Speichern',
-              'OK'
-            );
-          }
-        });
-    });
-  }
-
-  /**
-   * Deletes an item after confirming the action with the user.
-   * 
-   * @param item - The item to delete.
-   */
-  public async deleteItem(item: T) {
-    const confirmed = await this.messageBoxService.confirm(
-      `Möchten Sie den Eintrag '${this.getItemTitel(item)}' löschen?`,
-      'Löschen bestätigen'
-    );
-    if (confirmed) {
-      this.entityService.delete(item)
-        .subscribe({
-          next: () => this.reloadData(),
-          error: err => {
-            this.messageBoxService.show(
-              'Löschen fehlgeschlagen:\n' + err.error,
-              'Fehler beim Löschen',
-              'OK'
-            );
-          }
-        });
-    }
-  }
-
-  // 🧩 Abstract Members
-
-  /**
-   * Gets the component used for editing items. Must be implemented by subclasses.
-   */
-  protected abstract getEditComponent(): any;
 }

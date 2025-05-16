@@ -1,8 +1,8 @@
-﻿//@BaseCode
+﻿//@CodeCopy
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { IdType, IKey } from '@app-models/i-key';
 import { IQueryParams } from '@app/models/base/i-query-params';
-import { IAppBaseService } from './i-app-base.service';
+import { IApiEntityBaseService } from './i-api-entity-base.service';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { arrayToDate, stringToDate } from '@app/converter/date-converter';
@@ -12,7 +12,7 @@ import { arrayToDate, stringToDate } from '@app/converter/date-converter';
  * Provides common CRUD operations for entities implementing the IKey interface.
  * @template T - The type of the entity extending IKey.
  */
-export abstract class ApiBaseService<T extends IKey> implements IAppBaseService<T> {
+export abstract class ApiEntityBaseService<T extends IKey> implements IApiEntityBaseService<T> {
   /**
    * Constructor for ApiBaseService.
    * @param http - The HttpClient instance for making HTTP requests.
