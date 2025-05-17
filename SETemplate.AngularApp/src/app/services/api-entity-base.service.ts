@@ -1,6 +1,6 @@
-//@BaseCode
+﻿//@BaseCode
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { IdType, IKey } from '@app-models/i-key';
+import { IdType, IKeyModel } from '@app/models/i-key-model';
 import { IQueryParams } from '@app/models/base/i-query-params';
 import { IApiEntityBaseService } from './i-api-entity-base.service';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { arrayToDate, stringToDate } from '@app/converter/date-converter';
  * Provides common CRUD operations for entities implementing the IKey interface.
  * @template T - The type of the entity extending IKey.
  */
-export abstract class ApiEntityBaseService<T extends IKey> implements IApiEntityBaseService<T> {
+export abstract class ApiEntityBaseService<T extends IKeyModel> implements IApiEntityBaseService<T> {
   /**
    * Constructor for ApiBaseService.
    * @param http - The HttpClient instance for making HTTP requests.
@@ -91,7 +91,7 @@ export abstract class ApiEntityBaseService<T extends IKey> implements IApiEntity
    * @param dataItem - The entity to create.
    * @returns An Observable of the created entity.
    */
-  public create<T extends IKey>(dataItem: T): Observable<T> {
+  public create<T extends IKeyModel>(dataItem: T): Observable<T> {
     return this.http
       .post<T>(`${this.ENDPOINT_URL}`, dataItem)
       .pipe(
@@ -111,7 +111,7 @@ export abstract class ApiEntityBaseService<T extends IKey> implements IApiEntity
    * @param dataItem - The entity to update.
    * @returns An Observable of the updated entity.
    */
-  public update<T extends IKey>(dataItem: T): Observable<T> {
+  public update<T extends IKeyModel>(dataItem: T): Observable<T> {
     return this.http
       .put<T>(`${this.ENDPOINT_URL}/${dataItem.id}`, dataItem)
       .pipe(
@@ -131,7 +131,7 @@ export abstract class ApiEntityBaseService<T extends IKey> implements IApiEntity
    * @param dataItem - The entity to delete.
    * @returns An Observable of the HTTP response.
    */
-  public delete(dataItem: IKey) {
+  public delete(dataItem: IKeyModel) {
     const options = {
       headers: {},
       body: dataItem,

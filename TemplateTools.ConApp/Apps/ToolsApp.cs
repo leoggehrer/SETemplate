@@ -50,6 +50,18 @@ namespace TemplateTools.ConApp.Apps
         #endregion Instance-Constructors
 
         #region overrides
+        protected override void BeforeRun(string[] args)
+        {
+            foreach (var arg in args)
+            {
+                foreach (var item in arg.ToLower().Split(','))
+                {
+                    CommandQueue.Enqueue(item);
+                }
+            }
+
+            base.BeforeRun(args);
+        }
         /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>

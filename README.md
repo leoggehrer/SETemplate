@@ -26,16 +26,21 @@
         - [PasswordHash und PasswordSalt](#passwordhash-und-passwordsalt)
           - [PasswordHash](#passwordhash)
           - [PasswordSalt](#passwordsalt)
+        - [Kennwort Richtlinien](#kennwort-richtlinien)
         - [TimeOutInMinutes](#timeoutinminutes)
+      - [Erstellung von Konten](#erstellung-von-konten)
       - [Anmeldung](#anmeldung)
+      - [Implementierung der Zugriffsrechte](#implementierung-der-zugriffsrechte)
 
 ---
 
 ## Einleitung
 
-Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzept von [SEArchitecture](https://github.com/leoggehrer/SEArchitecture) basiert. Sie dient als technische Grundlage für Anwendungen, die einer strukturierten und wartbaren Software-Architektur folgen sollen und ermöglicht die schnelle und einheitliche Erstellung neuer Projekte.
+Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzept von [SEArchitecture](https://github.com/leoggehrer/SEArchitecture) basiert. Sie dient als technische Grundlage für Anwendungen, die einer strukturierten und wartbaren Software-Architektur folgen und ermöglicht die schnelle und einheitliche Erstellung neuer Projekte.
 
 **Zielgruppe:** Entwickler: innen, die auf Basis der definierten Architektur schnell Projekte **aufsetzen**, **anpassen** und **erweitern** wollen.
+
+> **Hinweis:** Diese Vorlage kann auch für die schnelle Entwicklung eines Prototypen verwendet werden.
 
 ---
 
@@ -73,9 +78,9 @@ Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage bei
 - Alle Projektteile aus der Vorlage werden in das Zielverzeichnis kopiert.
 - Die Namen der Projekte und Komponenten werden entsprechend angepasst.
 - Alle Projekte mit dem Präfix **SETemplate** werden mit dem domainspezifischen Namen ersetzt.
-- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
+- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
 
-Nach dem der Erstellungsprozess ausgeführt wurde, haben Sie ein weiters Projekt (Solution) erhalten - ein Domain-Projekt.
+Nachdem der Erstellungsprozess ausgeführt wurde, haben Sie ein weiters Projekt (Solution) erhalten - ein Domain-Projekt.
 
 ![Projekterstellung2](img/template_copier2.png)  
 
@@ -92,7 +97,7 @@ cd SETemplate
 
 ### Bedienungsanleitung
 
-Das Programm **Template Tools** bietet verschiedene Funktionen zum Verwalten und Bearbeiten von Software‑Projekten, welche mit dem `SETemplate` erstellt wurden. Das `Hauptmenü` zeigt alle verfügbaren Aktionen an, die durch Eingabe einer Ziffer, mehrerer Ziffern, des Buchstabens „a“ (für „all“) oder „x“/„X“ (zum Beenden) ausgewählt werden.
+Das Programm **TemplateTools** bietet verschiedene Funktionen zum Verwalten und Bearbeiten von Software‑Projekten, welche mit dem `SETemplate` erstellt wurden. Das `Hauptmenü` zeigt alle verfügbaren Aktionen an, die durch Eingabe einer Ziffer, mehrerer Ziffern, des Buchstabens „a“ (für „all“) oder „x“/„X“ (zum Beenden) ausgewählt werden.
 
 #### Hauptmenü
 
@@ -200,7 +205,7 @@ Choose [n|n,n|a...all|x|X]:
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus <br > oder geben Sie den Pfad ein: |
 | 3       | Prüfung, ob das Verzeichnis existiert?     |
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
@@ -213,7 +218,7 @@ Choose [n|n,n|a...all|x|X]:
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Geben Sie den gewünschten Namen für das Domain-Projekt ein. |
+| 1       | Geben Sie den gewünschten Namen (Länge > 0) für das Domain-Projekt ein. |
 
 *Menü-Auswahl:* `Start`
 
@@ -223,9 +228,12 @@ Choose [n|n,n|a...all|x|X]:
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Erstellt eine Kopie aus der Vorlage und berücksichtigt den `Target name`. |
-| 2       | Nachdem die `Target-Solution` erstellt wurde, wird der Datei-Explorer geöffnet. <br > **INFO:** Gilt nur für Windows-Betriebssysteme. |
-| 3       | Zurück in die Menü-Optionen.               |
+| 1       | Das Verzeichnis `Target path` und `Target name` wird erstellt. |
+| 2       | Alle Projekte die nicht den Präfix **SETemplate** haben, werden in das Verzeichnis `Target path` und `Target name` kopiert. |
+| 3       | Alle Projekte mit dem Präfix **SETemplate** werden in das Verzeichnis `Traget path` und `Target name` kopiert und der Präfix **SETemplate** wird durch den **Target name** erstezt. |
+| 4       | Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt. <br > **INFO:** Diese Labels werden für einen späteren Abgleich-Prozess verwendet. |
+| 5       | Nachdem der Kopierprozess fertig gestellt wurde, wird der Datei-Explorer geöffnet. <br > **INFO:** Gilt nur für Windows-Betriebssysteme. | 
+| 6       | Zurück in die Menü-Optionen.               |
 
 *Menü-Auswahl:* `Exit`
 
@@ -312,19 +320,19 @@ Erklärung der `Konstanten`:
 
 | Konstante        | Beschreibung                                            |
 |------------------|---------------------------------------------------------|
-| ACCOUNT_ON       | Schaltet die Authentifizierung ein. Ein Zugriff auf die App ist nur mit einem gültigen Konto möglich.
+| ACCOUNT_ON       | Schaltet die Authentifizierung ein. Ein Zugriff auf die App ist nur mit einem gültigen Konto möglich. |
 | IDINT_ON         | Als Identifizierung wird der Datentyp `int` verwendet.  |
 | IDLONG_ON        | Als Identifizierung wird der Datentyp `long` verwendet. |
 | IDGUID_ON        | Als Identifizierung wird der Datentyp `Guid` verwendet. |
 | ROWVERSION_ON    | Schaltet die `optimistische Nebenläufigkeitskontrolle` ein. <br > **INFO:** Wird nicht von der SQLITE-Datenbank unterstützt. |
-| EXTERNALGUID_ON  | Die Identifizierung der Entitäten erfolgt von extern über diese `Guid`. |
+| EXTERNALGUID_ON  | Die Identifizierung der Entitäten erfolgt von extern über diese `Guid`.  <br > **INFO:** Ein externer Zugriff auf die Entität über die `Id` ist nicht mehr möglich. |
 | POSTGRES_ON      | Schaltet die Verwendung der PostgreSQL-Datenbank ein. |
 | SQLSERVER_ON     | Schaltet die Verwendung der SQL-Server-Datenbank ein. |
 | SQLITE_ON        | Schaltet die Verwendung der SQLITE-Datenbank ein.     |
 | DOCKER_ON        | Zeigt an, dass `Docker` verwendet wird. <br > **HINWEIS:** Wird derzeit nicht verwendet.
-| DEVELOPER_ON     | Zeigt an, dass sich das Projekt im Entwicklerstatus befindet. <br > **HINWIES:** Mit diesem Schalter können Entwickler-Funktionen ein.- bzw. ausgeschaltet werden. |
-| DBOPERATION_ON   | Schaltet die Operationen `public static void CreateDatabase()` und `public static void InitDatabase()` ein. <br > **HINWEIS:** Zusätzlich müssen die `Defines` 'DEBUG' und 'DEVELOP_ON' eingeschaltet sein.
-| GENERATEDCODE_ON | Zeigt an, dass die Code-Generierung durchgeführt wurde. <br > **HINWEIS:** Diese `Konstante` wird automatisch vom Code-Generator gesetzt. |
+| DEVELOPER_ON     | Zeigt an, dass sich das Projekt im Entwicklerstatus befindet. <br > **HINWEIS:** Mit diesem Schalter können Entwickler-Funktionen ein.- bzw. ausgeschaltet werden. |
+| DBOPERATION_ON   | Schaltet die Operationen <br > `public static void CreateDatabase()` und <br > `public static void InitDatabase()` ein. <br > **HINWEIS:** Zusätzlich müssen die `Defines` 'DEBUG' und 'DEVELOP_ON' eingeschaltet sein.
+| GENERATEDCODE_ON | Zeigt an, dass die Code-Generierung durchgeführt wurde. <br > **HINWEIS:** Diese `Konstante` wird automatisch vom `Code-Generator` gesetzt. |
 
 *Menü-Auswahl:* `Path`
 
@@ -335,7 +343,7 @@ Erklärung der `Konstanten`:
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad ein. |
 | 3       | Prüfung, ob das Verzeichnis existiert?     |
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
@@ -344,11 +352,11 @@ Erklärung der `Konstanten`:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 2 - 14  | Define ändern       | Ändern des entsprechenden 'Define'. |
+| 2 - 14  | Define ändern       | Ändern des entsprechenden `Define`. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 2 - 14  | Ändert den Status des entsprechenden 'Define' <br > ON ==> OFF oder OFF ==> ON. |
+| 2 - 14  | Ändert den Status des entsprechenden `Define` <br > ON ==> OFF oder OFF ==> ON. |
 
 *Menü-Auswahl:* `Exit`
 
@@ -446,7 +454,7 @@ Choose [n|n,n|a...all|x|X]:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 3       | Delete folders      | Gibt an, ob bei der Code-Generierung die leeren Ordner gelöscht werden. |
+| 3       | Delete folders      | Gibt an, ob bei der `Code-Generierung` die leeren Ordner gelöscht werden. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
@@ -456,11 +464,11 @@ Choose [n|n,n|a...all|x|X]:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 4       | Exclude files       | Gibt an, ob bei der Code-Generierung die generierten Datein in das **'.gitignore'** eingetragen werden. |
+| 4       | Exclude files       | Gibt an, ob bei der `Code-Generierung` die generierten Datein in das **'.gitignore'** eingetragen werden. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Wechselt die Option für das **Ausschließen** von generierten Datein im GIT-Repository. |
+| 1       | Wechselt die Option für das **Ausschließen** von generierten Datein im **GIT-Repository**. |
 
 *Menü-Auswahl:* `Source path`
 
@@ -524,7 +532,7 @@ Press enter...
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | Sammelt alle Dateien welche mit dem Label `@GeneratedCode` gekennzeichnet sind. |
-| 2       | Anschließend werden alle Dateien mit diesem Label gelöscht. |
+| 2       | Löschen alle Dateien mit diesem `Label`.   |
 | 3       | Zurück in die Menü-Optionen.               |
 
 *Menü-Auswahl:* `Delete folders`
@@ -536,7 +544,7 @@ Press enter...
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | Alle Ordner innerhalb der `Solution` werden überprüft, ob Dateien enthalten sind. |
-| 2       | Wenn nein, dann wird der Ordner gelöscht, <br > *sonst* erfolgt keine Aktion. |
+| 2       | Wenn ein Ordner keine Dateien beinhaltet, dann wird der Ordner gelöscht, <br > *sonst* erfolgt keine Aktion. |
 | 5       | Zurück in die Menü-Optionen.               |
 
 *Menü-Auswahl:* `Start`
@@ -547,13 +555,14 @@ Press enter...
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
+| ---     | ***Kompilieren*** |
 | 1       | Kompiliert das `Solutionname.Common` Projekt und legt das Kompilat in einem temporären Ordner ab. |
 | 2       | Kompiliert das `Solutionname.Logic` Projekt und legt das Kompilat in einem temporären Ordner ab. |
 | ---     | ***Common.Contracts*** |
 | 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Entitäten** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
 | 4       | Generiert zu allen **Entitäten** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Entitäten** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a EntityObject`. |
 | ---     | ***Logic.Entities*** |
-| 5       | Generiert zu allen **Entitäten** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Entitäten** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'EntityNameGeneration.cs'. |
+| 5       | Generiert zu allen **Entitäten** die Verbindungen mit den generierten Schnittstellen in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Entitäten** müssen mit dem Modifier `partial` versehen sein. Die generierte Datei hat den Namen *EntityNameGeneration.cs*. |
 | ---     | ***Logic.DataContext*** |
 | 6       | Generiert zu allen **Entitäten** die entsprechenden `EntitySet`-Klassen in den Ordner `Logic.DataContext`. |
 | ---     | ***Logic.Contracts*** |
@@ -562,35 +571,34 @@ Press enter...
 | 3       | Ermittelt aus dem Projekt `Solutionname.Logic` alle **Views** per `Reflection`. <br > **Hinweis:** Aus diesem Grund muss das Projekt fehlerfrei kompiliert werden können. |
 | 4       | Generiert zu allen **Views** die `Schnittstellen` in den Ordner `Common.Contracts`. <br > **Hinweis:** **Views** sind **Klassen** im Ordner `Logic.Entities` und erfüllen die Beziehung `is a ViewObject`. |
 | ---     | ***Logic.Entities*** |
-| 5       | Generiert zu allen **Views** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Views** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen 'ViewNameGeneration.cs'. |
+| 5       | Generiert zu allen **Views** die **Verbindungen** mit den generierten `Schnittstellen` in `Common.Contracts` in den Ordner `Logic.Entities`. <br > **Hinweis:** **Views** müssen mit dem Modifier `partial` versehen sein und die generierte Datei hat den Namen *ViewNameGeneration.cs*. |
 | ---     | ***Logic.DataContext*** |
 | 6       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Klassen in den Ordner `Logic.DataContext`. |
 | ---     | ***Logic.Contracts*** |
 | 7       | Generiert zu allen **Views** die entsprechenden `ViewSet`-Schnittstellen in den Ordner `Logic.Contracts`. |
 | ---     | ***Logic.DataContext*** |
-| 13      | Generiert eine `partial class ProjectDbContext` mit dem Dateinamen 'ProjectDbContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften vom Typ `DbSet<T>`,  `EntitySet<T>`, `ViewSet<T>` und die <br > Methoden `void GetGeneratorDbSet<E>(...)`, `void GetGeneratorEntitySet<E>(...)`, `void GetGeneratorViewSet<E>(...)` <br > sowie die Methode `static partial void OnViewModelCreating(ModelBuilder modelBuilder)`. |
+| 13      | Generiert eine `partial class ProjectDbContext` mit dem Dateinamen *ProjectDbContextGeneration.cs*. <br > **INFO:** Erstellt alle Eigenschaften vom Typ `DbSet<T>`,  `EntitySet<T>`, `ViewSet<T>` und die <br > Methoden `void GetGeneratorDbSet<E>(...)`, `void GetGeneratorEntitySet<E>(...)`, `void GetGeneratorViewSet<E>(...)` <br > sowie die Methode `static partial void OnViewModelCreating(ModelBuilder modelBuilder)`. |
 | ---     | ***Logic.Contracts*** |
-| 14      | Generiert eine `partial interface IContext` mit dem Dateinamen 'IContextGeneration.cs'. <br > **INFO:** Erstellt alle Eigenschaften für den öffentlichen Zugriff auf die `EntitySet<T>`('s) und `ViewSet<T>`('s). |
+| 14      | Generiert eine `partial interface IContext` mit dem Dateinamen *IContextGeneration.cs*. <br > **INFO:** Erstellt alle Eigenschaften für den öffentlichen Zugriff auf die `EntitySet<T>`('s) und `ViewSet<T>`('s). |
 | ---     | ***WebApi.Models*** |
 | 15      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `WebApi.Models`. |
 | 16      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die `Edit`-Models in den Ordner `WebApi.Models`. <br > **INFO:** `Edit`-Models sind Models ohne **'Id'**. |
 | ---     | ***WebApi.Controllers*** |
 | 17      | Generiert zu allen **Entitäten** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `CRUD`-Operationen und können mit einer `partial`-Klasse beliebig erweitert werden. |
 | 18      | Generiert zu allen **Views** die entsprechenden `Controller`-Klassen in den Ordner `WebApi.Controllers`. <br > **INFO:** Die `Controller`-Klassen implementieren die `QUERY`-Operationen und können mit einer `partial`-Klasse erweitert werden. |
-| 19      | Generiert eine `partial class ContextAccessor` mit dem Dateinamen `ContextAccessorGeneration.cs`. <br > **INFO:**  Erstellt die Methoden `void GetEntitySetHandler<TEntity>(...)` und `void GetViewSetHandler<TView>(...)` für den Zugriff auf die entsprechenden Set's.  |
+| 19      | Generiert eine `partial class ContextAccessor` mit dem Dateinamen *ContextAccessorGeneration.cs*. <br > **INFO:** Erstellt die Methoden `void GetEntitySetHandler<TEntity>(...)` und `void GetViewSetHandler<TView>(...)` für den Zugriff auf die entsprechenden Set's.  |
 | ---     | ***MVVM.Models*** |
-| 20      | Generiert zu allen `Schnittstellen` im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. |
+| 20      | Generiert zu allen **Schnittstellen** im Ordner `Common.Contracts` die Models in den Ordner `MVVM.Models`. |
 | ---     | ***MVVM.ViewModels*** |
 | 21      | Generiert zu allen **Entities** die `ViewModels` in den Ordner `MVVM.ViewModels`. <br > **INFO:** Zu jedem Entity wird ein `ViewModel` für die **List-Ansicht** und für die **Single-Ansicht** erstellt. |
 | ---     | ***AngularApp.src.app.models.entities*** |
 | 22      | Generiert zu allen **Entities** die Models für den REST-Zugriff im Ordner **AngularApp.src.app.models.entities**. |
 | ---     | ***AngularApp.src.app.models.entities*** |
-| 22      | Generiert zu allen **View-Entities** die Models für den REST-Zugriff im Ordner **AngularApp.src.app.models.entities**. |
+| 23      | Generiert zu allen **View-Entities** die Models für den REST-Zugriff im Ordner **AngularApp.src.app.models.entities**. |
 | ---     | ***AngularApp.src.app.services.http*** |
-| 23      | Generiert zu allen **Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
+| 24      | Generiert zu allen **Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
 | ---     | ***AngularApp.src.app.services.http*** |
-| 24      | Generiert zu allen **View-Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
-
+| 25      | Generiert zu allen **View-Entities** die Services für den REST-Zugriff im Ordner **AngularApp.src.app.services.http**. |
 
 *Menü-Auswahl:* `Exit`
 
@@ -641,7 +649,7 @@ Template Synchronization
 ========================
 
 Balance labels(s):
-  @BaseCode       => @BaseCode
+  @BaseCode       => @CodeCopy
   @BaseCode       => @BaseCode
 Source code path:    ...\SETemplate
 
@@ -667,7 +675,7 @@ Choose [n|n,n|a...all|x|X]:
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad direkt ein. |
+| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus oder geben Sie den Pfad ein. |
 | 3       | Prüfung, ob das Verzeichnis existiert?     |
 | 4       | Wenn ja, dann wird die Änderung übernommen, <br > *sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
@@ -701,7 +709,7 @@ Template Partial Synchronization
 ================================
 
 Balance labels(s):
-  @BaseCode       =>             @BaseCode
+  @BaseCode       =>             @CodeCopy
   @BaseCode       =>             @BaseCode
 --------------------------------
 Source code path:                ...\SETemplate
@@ -711,21 +719,22 @@ Target code path:                ...\SETranslator
 [    1] 1...................Change max sub path depth
 [-----] -----------------------------------------------------------------
 [    2] Synchronize with....\Diagrams
-[    3] Synchronize with....\SETranslator.CodeGenApp
-[    4] Synchronize with....\SETranslator.Common
-[    5] Synchronize with....\SETranslator.ConApp
-[    6] Synchronize with....\SETranslator.Logic
-[    7] Synchronize with....\SETranslator.MVVMApp
-[    8] Synchronize with....\SETranslator.WebApi
-[    9] Synchronize with....\TemplateTools.ConApp
-[   10] Synchronize with....\TemplateTools.Logic
+[    3] Synchronize with....\SETranslator.AngularApp
+[    4] Synchronize with....\SETranslator.CodeGenApp
+[    5] Synchronize with....\SETranslator.Common
+[    6] Synchronize with....\SETranslator.ConApp
+[    7] Synchronize with....\SETranslator.Logic
+[    8] Synchronize with....\SETranslator.MVVMApp
+[    9] Synchronize with....\SETranslator.WebApi
+[   10] Synchronize with....\TemplateTools.ConApp
+[   11] Synchronize with....\TemplateTools.Logic
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. Dazu muss nur die Nummer des Modules eingegeben werden. Die Eingabe 'a' | 'A' bewirkt, dass alle Module synchronisiert werden. 
+Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. Dazu muss nur die Nummer des Modules eingegeben werden. Die Eingabe 'a' | 'A' bewirkt, dass alle Module synchronisiert werden.
 
 *Menü-Auswahl:* `Exit`
 
@@ -735,10 +744,10 @@ Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. D
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Im Zielpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
-| 2       | Alle Dateien mit dem Label `@BaseCode` werden aus dem Zielpfad entfernt. |
+| 1       | Im Zielpfad werden alle Dateien mit dem Label `@CodeCopy` ermittelt. |
+| 2       | Alle Dateien mit dem Label `@CodeCopy` werden aus dem Zielpfad entfernt. |
 | 3       | Im Quellpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
-| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@BaseCode` ersetzt. | 
+| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert. <br > Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@CodeCopy` ersetzt. |
 
 *Menü-Auswahl:* `Exit`
 
@@ -756,7 +765,7 @@ Template Synchronization
 ========================
 
 Balance labels(s):
-  @BaseCode       => @BaseCode
+  @BaseCode       => @CodeCopy
   @BaseCode       => @BaseCode
 Source code path:    ...\SETemplate
 
@@ -1009,9 +1018,212 @@ saltedPassword = Salt + Passwort
 PasswordHash = Hash(saltedPassword)
 ```
 
+##### Kennwort Richtlinien
+
+Die Kennwort-Richtlinien sind eine Sammlung von Regeln, die sicherstellen, dass Passwörter stark und schwer zu erraten sind. Diese Richtlinien helfen dabei, die Sicherheit der Anwendung zu erhöhen und unbefugten Zugriff zu verhindern.
+Die Kennwort-Richtlinien können im Module `Common.Modules.Security` eingestellt werdenumfassen:
+
+```bash
+  /// <summary>
+  /// Provides rules and settings for password validation.
+  /// </summary>
+  public static partial class PasswordRules
+  {
+      #region Class members
+      /// <summary>
+      /// Initializes the <see cref="PasswordRules"/> class.
+      /// </summary>
+      static PasswordRules()
+      {
+          ClassConstructing();
+          ClassConstructed();
+      }
+      /// <summary>
+      /// This is a partial method that is called before the constructor of the class is called.
+      /// </summary>
+      static partial void ClassConstructing();
+      /// <summary>
+      /// Represents a partial method that is called when a class is constructed.
+      /// </summary>
+      static partial void ClassConstructed();
+      #endregion Class members
+      
+      #region Rule definitions
+      /// <summary>
+      /// Gets the minimum length value.
+      /// </summary>
+      public static int MinimumLength => 6;
+      /// <summary>
+      /// Gets the maximum length of the property.
+      /// </summary>
+      public static int MaximumLength => 30;
+      ///<summary>
+      /// Gets the minimum letter count.
+      ///</summary>
+      ///<value>The minimum letter count.</value>
+      public static int MinLetterCount => MinLowerLetterCount + MinUpperLetterCount;
+      /// <summary>
+      /// Gets the minimum count of uppercase letters allowed.
+      /// </summary>
+      public static int MinUpperLetterCount => 1;
+      /// <summary>
+      /// Represents the minimum count of lowercase letters that a string must contain.
+      /// </summary>
+      public static int MinLowerLetterCount => 1;
+      /// <summary>
+      /// Gets the minimum count of special letters allowed.
+      /// </summary>
+      public static int MinSpecialCharCount => 0;
+      /// <summary>
+      /// Gets the minimum number of digits allowed.
+      /// </summary>
+      public static int MinDigitCount => 0;
+      
+      public const int MinLoginFails = 0;
+      public const int MaxLoginFails = 20;
+      
+      private static int allowedLoginFails = 10;
+      
+      /// <summary>
+      /// Gets or sets the maximum number of allowed login fails.
+      /// </summary>
+      public static int AllowedLoginFails
+      {
+          get => allowedLoginFails;
+          set
+          {
+              if (value >= MinLoginFails && value <= MaxLoginFails)
+              {
+                  allowedLoginFails = value;
+              }
+          }
+      }
+      
+      #endregion Rule definitions
+      /// <summary>
+      /// Gets the syntax roles for the property.
+      /// </summary>
+      public static string SyntaxRoles => $"{nameof(MinimumLength)}: {MinimumLength} "
+        + $"{nameof(MaximumLength)}: {MaximumLength} "
+        + Environment.NewLine
+        + $"{nameof(MinLetterCount)}: {MinLetterCount} "
+        + $"{nameof(MinDigitCount)}: {MinDigitCount} "
+        + Environment.NewLine
+        + $"{nameof(MinUpperLetterCount)}: {MinUpperLetterCount} "
+        + $"{nameof(MinLowerLetterCount)}: {MinLowerLetterCount} "
+        + Environment.NewLine
+        + $"{nameof(MinSpecialCharCount)}: {MinSpecialCharCount} ";
+} 
+```
+
+Mit der Klasse `PasswordRules` können Sie die **Kennwort**-Richtlinien anpassen. Diese Klasse enthält wichtige Eigenschaften für die Anpassung der Richtlinien:
+
+- `MinimumLength`: Die minimale Länge des Kennworts.
+- `MaximumLength`: Die maximale Länge des Kennworts.
+- `MinLetterCount`: Die minimale Anzahl an Buchstaben im Kennwort.
+- `MinUpperLetterCount`: Die minimale Anzahl an Großbuchstaben im Kennwort.
+- `MinLowerLetterCount`: Die minimale Anzahl an Kleinbuchstaben im Kennwort.
+- `MinSpecialCharCount`: Die minimale Anzahl an Sonderzeichen im Kennwort.
+- `MinDigitCount`: Die minimale Anzahl an Ziffern im Kennwort.
+- `MinLoginFails`: Die minimale Anzahl an fehlgeschlagenen Anmeldeversuchen.
+- `MaxLoginFails`: Die maximale Anzahl an fehlgeschlagenen Anmeldeversuchen.
+- `AllowedLoginFails`: Die Anzahl an erlaubten fehlgeschlagenen Anmeldeversuchen.
+- `SyntaxRoles`: Eine Zeichenfolge, die die Kennwort-Richtlinien beschreibt.
+
 ##### TimeOutInMinutes
 
-Zu jedem `Identity`-Objekt wird ein `TimeOutInMinutes`-Wert hinterlegt. Dies bedeutet, dass die Anmeldung automatisch nach einer inaktiven Zeit in Minuten abgemeldet wird. Ausgenommen der Wert ist mit `0` definiert, dann erfolgt keine automatische Abmeldung.
+Zu jedem `Identity`-Objekt wird ein `TimeOutInMinutes`-Wert hinterlegt. Dies bedeutet, dass die Anmeldung automatisch nach einer inaktiven Zeit in Minuten abgemeldet wird. Ausgenommen der Wert ist mit `0` definiert, dann erfolgt keine automatische Abmeldung (nicht empfohlen). Dieser Wert kann in der `Account`-Klasse gesetzt werden. Der Standardwert ist `30` Minuten.
+
+#### Erstellung von Konten
+
+Wenn das System initialisiert wird, dann wird ein **SysAdmin**-Benutzer angelegt. Dieses Konto kann nur in der Initialisierungsphase erstellt werden. Für alle weiteren Konten wird der **SysAdmin**-Benutzer benötigt. Es ist jedoch wichtig, dass dieses Konto sofort geändert wird. Dazu muss das Kennwort geändert werden. Dies geschieht über die Methode `ChangePasswordAsync(...)`. Diese Methode erwartet den alten und den neuen Wert des Kennwortes.
+Alternativ können vor der Initialisierung die Werte für den **SysAdmin**-Benutzer gesetzt werden. Im Projekt `SETemplate.ConApp` befindet sich die `partial`-Klasse `Program` in der Datei *ProgramAccount.cs*.
+
+```csharp
+partial class Program
+{
+    /// <summary>
+    /// Gets or sets the SA user.
+    /// </summary>
+    private static string SaUser => "LeoAdmin";
+    /// <summary>
+    /// Gets or sets the system administrator email address.
+    /// </summary>
+    private static string SaEmail => "LeoAdmin.SETemplate@gmx.at";
+    /// <summary>
+    /// Gets the password for Sa account.
+    /// </summary>
+    private static string SaPwd => "1234LeoAdmin";
+
+    /// <summary>
+    /// The username of the AppAdmin user.
+    /// </summary>
+    /// <value>The value is fixed as "AppAdmin".</value>
+    private static string AaUser => "AppAdmin";
+    /// <summary>
+    /// Gets the email address for the AppAdmin SETemplate.
+    /// </summary>
+    private static string AaEmail => "AppAdmin.SETemplate@gmx.at";
+    /// <summary>
+    /// Gets or sets the password for the AaPwd.
+    /// </summary>
+    private static string AaPwd => "1234AppAdmin";
+    /// <summary>
+    /// Gets the value "AppAdmin" representing the AA role.
+    /// </summary>
+    private static string AaRole => "AppAdmin";
+
+    /// <summary>
+    /// Gets the AppUser property.
+    /// </summary>
+    private static string AppUser => "AppUser";
+    /// <summary>
+    /// Represents the email address used by the application.
+    /// </summary>
+    private static string AppEmail => "AppUser.SETemplate@gmx.at";
+
+    /// <summary>
+    /// Gets or sets the application password.
+    /// </summary>
+    private static string AppPwd => "1234AppUser";
+    /// <summary>
+    /// Gets the application role.
+    /// </summary>
+    private static string AppRole => "AppUser";
+
+    static partial void CreateAccounts()
+    {
+        Task.Run(async () =>
+        {
+            await Logic.AccountAccess.InitAppAccessAsync(SaUser, SaEmail, SaPwd);
+            await AddAppAccessAsync(SaEmail, SaPwd, AaUser, AaEmail, AaPwd, 30, AaRole);
+            await AddAppAccessAsync(SaEmail, SaPwd, AppUser, AppEmail, AppPwd, 35, AppRole);
+            await AddAppAccessAsync(SaEmail, SaPwd, "g.gehrer", "   g.gehrer@htl-leonding.ac.at ", AppPwd, 35, AppRole);
+        }).Wait();
+    }
+
+    /// <summary>
+    /// Adds application access for a user.
+    /// </summary>
+    /// <param name="loginEmail">The email of the user logging in.</param>
+    /// <param name="loginPwd">The password of the user logging in.</param>
+    /// <param name="user">The username of the user being granted access.</param>
+    /// <param name="email">The email of the user being granted access.</param>
+    /// <param name="pwd">The password of the user being granted access.</param>
+    /// <param name="timeOutInMinutes">The timeout duration in minutes for the access.</param>
+    /// <param name="roles">A string array representing the roles for the user.</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
+    private static async Task AddAppAccessAsync(string loginEmail, string loginPwd, string user, string email, string pwd, int timeOutInMinutes, params string[] roles)
+    {
+        var login = await Logic.AccountAccess.LogonAsync(loginEmail, loginPwd, string.Empty);
+
+        await Logic.AccountAccess.AddAppAccessAsync(login!.SessionToken, user, email, pwd, timeOutInMinutes, roles);
+        await Logic.AccountAccess.LogoutAsync(login!.SessionToken);
+    }
+}
+```
+
+Die Erstellung der Konten erfolgt in der Methode `CreateAccounts()`.
 
 #### Anmeldung
 
@@ -1021,4 +1233,54 @@ Die Anmeldung erfolgt mit der entsprechenden **Email**-Adresse und dem dazugehö
 var login = await Logic.AccountAccess.LogonAsync(email, pwd, string.Empty);
 
 result = Logic.DataContext.Factory.CreateContext(login.SessionToken);
+```
+
+#### Implementierung der Zugriffsrechte
+
+Ist die Authentifizierung aktiviert (ACCOUNT_ON), dann sind die Klassen `ProjectDbContext`, `EntitySet` und `ViewSet` geschützt. Dieser Schutz wird durch das Attribut `Authorize` gewährleistet und ist in den `partial`-Klassen mit den Dateiendungen `XyyySecurity.cs` definiert. Das Attribut bietet unterschiedliche Parameter. Die Bedeutung der Parameter ist in der folgenden Tabelle angeführt:
+
+| Parameter |   Wert     | Bedeutung |
+|-----------|------------|-----------|
+| kein      |            | Der Zugriff ist nur mit einem gültigem Konto erlaubt. <br > **INFO:** Die Rolle ist nicht relevant. |
+| required  | false      | Kein Konto erforderlich - anonymer Zugriff erlaubt (Standardwert: true) |
+| roles     | "SysAdmin" | Der Zugriff ist nur mit einem Konto mit der Rolle 'SysAdmin' erlaubt. <br > **INFO:** Es können mehrere Rollen definiert werden. |
+
+Wenn das Attribut `Authorize` nicht gesetzt ist, dann ist der Zugriff auf die Klasse nicht geschützt. Dies bedeutet, dass jeder Benutzer (auch ohne Anmeldung9) auf die Klasse zugreifen kann. Dies ist in der Regel nicht gewünscht und sollte vermieden werden.
+
+Ist das Attribut `Authorize` gesetzt, dann ist der Zugriff auf die Klasse geschützt. Dies bedeutet, dass nur Benutzer mit einem gültigen Konto und der entsprechenden Rolle auf die Klasse zugreifen können. Ist kein Konto vorhanden, dann wird eine Ausnahme (`AuthorizationException(...)`) ausgelöst und der Zugriff auf die Klasse verweigert. Der Zugriff kann natürlich entsprechend angepasst werden:
+
+```csharp
+[Authorize]
+partial class EntitySet<TEntity>
+{
+    /// <summary>
+    /// Returns the element of type T with the identification of id.
+    /// </summary>
+    /// <param name="id">The identification.</param>
+    /// <returns>The element of the type T with the corresponding identification.</returns>
+    public virtual ValueTask<TEntity?> GetByIdAsync(IdType id)
+    {
+        BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+
+        return ExecuteGetByIdAsync(id);
+    }
+    /// <summary>
+    /// Adds the specified entity to the set.
+    /// </summary>
+    /// <param name="entity">The entity to add.</param>
+    /// <returns>The added entity.</returns>
+    public virtual TEntity Add(TEntity entity)
+    {
+        BeforeAccessing(MethodBase.GetCurrentMethod()!);
+
+        return ExecuteAdd(entity);
+    }
+    ...
+}
+```
+
+In der Klasse `EntitySet<TEntity>` ist der Zugriff auf die Methoden `GetByIdAsync(...)` und `Add(...)` geschützt. Dies bedeutet, dass nur Benutzer mit einem gültigen Anmeldung (ohne einer bestimmten Rolle) auf die Methode zugreifen können. Ist kein Anmeldung aktiv, dann wird eine Ausnahme (`AuthorizationException(...)`) ausgelöst und der Zugriff auf die Methode verweigert. Der Zugriff kann natürlich entsprechend angepasst werden. Eine Anpassung sollte in der abgeleiteten Klasse erfolgen:
+
+```csharp
+
 ```

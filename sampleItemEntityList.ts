@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IKey } from '@app/models/i-key';
+import { IKeyModel } from '@app/models/i-key-model';
 import { MessageBoxService } from '@app/services/message-box-service.service';
-import { GenericListComponent } from '@app/components/base/generic-list.component';
+import { GenericEntityListComponent } from '@app/components/base/generic-entity-list.component';
 
 /* Ersetzen Sie hier 'IKey' durch den gewuenschten 'Type' (z.B.: 'IAlbum') */
-interface IItem extends IKey {
+interface IItem extends IKeyModel {
 
 }
 /* Ersetzen Sie in Component 'item' durch den gewuenschten Namen (z.B.: album) */
@@ -17,7 +17,7 @@ interface IItem extends IKey {
     templateUrl: './item-list.component.html',
     styleUrl: './item-list.component.css'
 })
-export class ItemListComponent extends GenericListComponent<IItem> implements OnInit {
+export class ItemListComponent extends GenericEntityListComponent<IItem> implements OnInit {
 
     constructor(
         protected override modal: NgbModal,

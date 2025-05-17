@@ -29,40 +29,36 @@ namespace SETemplate.Logic.DataContext
         /// <param name="methodBase">The method being accessed.</param>
         partial void BeforeAccessing(MethodBase methodBase)
         {
-            bool handled;
-
-            handled = BeforeAccessingHandler(methodBase);
-            if (handled == false)
-            {
-                var methodAuthorize = Authorization.GetAuthorizeAttribute(methodBase);
-
-                if (methodAuthorize != null && methodAuthorize.Required)
-                {
-                    Authorization.CheckAuthorization(SessionToken, methodBase);
-                }
-                else
-                {
-                    var typeAuthorize = Authorization.GetAuthorizeAttribute(methodBase.DeclaringType!);
-
-                    if (typeAuthorize != null && typeAuthorize.Required)
-                    {
-                        Authorization.CheckAuthorization(SessionToken, methodBase.DeclaringType!);
-                    }
-                }
-                System.Diagnostics.Debug.WriteLine($"Before accessing {methodBase.Name}");
-            }
+            CheckAccessing(methodBase);
         }
         #endregion methods
 
         #region customize accessing
         /// <summary>
-        /// Customizable handler for logic before accessing a method.
+        /// Checks if the current session has access to the specified method or its declaring type.
+        /// Performs authorization checks based on the presence and requirements of the <see cref="AuthorizeAttribute"/>.
+        /// If the method has an <see cref="AuthorizeAttribute"/> with <c>Required = true</c>, authorization is checked for the method.
+        /// Otherwise, if the declaring type has an <see cref="AuthorizeAttribute"/> with <c>Required = true</c>, authorization is checked for the type.
+        /// Writes a debug message indicating the method being accessed.
         /// </summary>
-        /// <param name="methodBase">The method being accessed.</param>
-        /// <returns>True if the access is handled; otherwise, false.</returns>
-        protected virtual bool BeforeAccessingHandler(MethodBase methodBase)
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        protected virtual void CheckAccessing(MethodBase methodBase)
         {
-            return false;
+            var methodAuthorize = Authorization.GetAuthorizeAttribute(methodBase);
+
+            if (methodAuthorize != null && methodAuthorize.Required)
+            {
+                Authorization.CheckAuthorization(SessionToken, methodBase);
+            }
+            else
+            {
+                var typeAuthorize = Authorization.GetAuthorizeAttribute(methodBase.DeclaringType!);
+
+                if (typeAuthorize != null && typeAuthorize.Required)
+                {
+                    Authorization.CheckAuthorization(SessionToken, methodBase.DeclaringType!);
+                }
+            }
         }
         #endregion customize accessing
     }

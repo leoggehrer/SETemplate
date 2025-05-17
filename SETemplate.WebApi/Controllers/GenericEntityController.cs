@@ -119,8 +119,6 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual async Task<ActionResult<IEnumerable<TModel>>> GetAsync()
         {
-            var authHeader = HttpContext.Request.Headers.Authorization;
-
             var query = await QuerySet.AsNoTracking().Take(MaxCount).ToArrayAsync();
             var result = query.Select(e => ToModel(e));
 

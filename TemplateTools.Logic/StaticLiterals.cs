@@ -148,9 +148,9 @@ namespace TemplateTools.Logic
         public static readonly string VersionModelObjectName = "VersionModelObject";
         public static readonly string ViewModelObjectName = "ViewModelObject";
 
-        public static readonly string AngularModelObjectName = "IKey";
-        public static readonly string AngularVersionModelObjectName = "IVersionEntity";
-        public static readonly string AngularViewModelObjectName = "IViewEntity";
+        public static readonly string AngularModelObjectName = "IKeyModel";
+        public static readonly string AngularVersionModelObjectName = "IVersionModel";
+        public static readonly string AngularViewModelObjectName = "IViewModel";
         #endregion Model properties
 
         public static readonly Dictionary<string, string> ModelBaseClassMapping = new()

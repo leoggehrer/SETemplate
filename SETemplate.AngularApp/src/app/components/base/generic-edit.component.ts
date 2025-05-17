@@ -1,6 +1,6 @@
-//@BaseCode
+﻿//@BaseCode
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { IKey } from '@app/models/i-key';
+import { IKeyModel } from '@app/models/i-key-model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 /**
@@ -10,7 +10,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericEditComponent<T extends IKey> {
+export abstract class GenericEditComponent<T extends IKeyModel> {
   /**
    * The data item being edited or added.
    */

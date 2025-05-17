@@ -70,5 +70,28 @@ namespace SETemplate.WebApi.Controllers
         /// It represents a partial method without an implementation.
         /// </summary>
         partial void Constructed();
+
+        /// <summary>
+        /// Builds a detailed error message string from an exception and its inner exceptions.
+        /// </summary>
+        /// <param name="ex">The exception to extract messages from.</param>
+        /// <returns>
+        /// A string containing the type and message of the exception and all inner exceptions,
+        /// each prefixed with their depth in the exception chain.
+        /// </returns>
+        public static string GetErrorMessage(Exception? ex)
+        {
+            int depth = 0;
+            var messages = new List<string>();
+
+            while (ex != null)
+            {
+                messages.Add($"[{depth}] {ex.GetType().Name}: {ex.Message}");
+                ex = ex.InnerException;
+                depth++;
+            }
+
+            return string.Join(Environment.NewLine, messages);
+        }
     }
 }

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IViewEntity } from "@app/models/i-view-entity";
+import { IModel } from '@app/models/i-model';
 import { MessageBoxService } from '@app/services/message-box-service.service';
 import { GenericViewListComponent } from '@app/components/base/generic-view-list.component';
 
 /* Ersetzen Sie hier 'IViewEntity' durch den gewuenschten 'Type' (z.B.: 'IAlbum') */
-interface IItem extends IViewEntity {
+interface IItem extends IModel {
 
 }
 /* Ersetzen Sie in Component 'item-view' durch den gewuenschten Namen (z.B.: genre-statistics) */

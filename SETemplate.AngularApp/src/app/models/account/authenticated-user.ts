@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-import { IdType } from '@app-models/i-key';
+import { IdType } from '@app/models/i-key-model';
 
 export interface AuthenticatedUser {
   identityId: IdType;

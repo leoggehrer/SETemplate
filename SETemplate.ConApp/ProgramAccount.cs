@@ -53,6 +53,17 @@ namespace SETemplate.ConApp
         /// </summary>
         private static string AppRole => "AppUser";
 
+        static partial void CreateAccounts()
+        {
+            Task.Run(async () =>
+            {
+                await Logic.AccountAccess.InitAppAccessAsync(SaUser, SaEmail, SaPwd);
+                await AddAppAccessAsync(SaEmail, SaPwd, AaUser, AaEmail, AaPwd, 30, AaRole);
+                await AddAppAccessAsync(SaEmail, SaPwd, AppUser, AppEmail, AppPwd, 35, AppRole);
+                await AddAppAccessAsync(SaEmail, SaPwd, "g.gehrer", "   g.gehrer@htl-leonding.ac.at ", AppPwd, 35, AppRole);
+            }).Wait();
+        }
+
         /// <summary>
         /// Adds application access for a user.
         /// </summary>
@@ -70,17 +81,6 @@ namespace SETemplate.ConApp
 
             await Logic.AccountAccess.AddAppAccessAsync(login!.SessionToken, user, email, pwd, timeOutInMinutes, roles);
             await Logic.AccountAccess.LogoutAsync(login!.SessionToken);
-        }
-
-        static partial void CreateAccounts()
-        {
-            Task.Run(async () =>
-            {
-                await Logic.AccountAccess.InitAppAccessAsync(SaUser, SaEmail, SaPwd);
-                await AddAppAccessAsync(SaEmail, SaPwd, AaUser, AaEmail, AaPwd, 30, AaRole);
-                await AddAppAccessAsync(SaEmail, SaPwd, AppUser, AppEmail, AppPwd, 35, AppRole);
-                await AddAppAccessAsync(SaEmail, SaPwd, "g.gehrer", "   g.gehrer@htl-leonding.ac.at ", AppPwd, 35, AppRole);
-            }).Wait();
         }
     }
 }

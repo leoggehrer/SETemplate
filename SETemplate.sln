@@ -12,8 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 		sampleItemEdit.html = sampleItemEdit.html
 		sampleItemEdit.ts = sampleItemEdit.ts
-		sampleItemList.html = sampleItemList.html
-		sampleItemList.ts = sampleItemList.ts
+		sampleItemEntityList.html = sampleItemEntityList.html
+		sampleItemEntityList.ts = sampleItemEntityList.ts
 		sampleItemViewList.html = sampleItemViewList.html
 		sampleItemViewList.ts = sampleItemViewList.ts
 	EndProjectSection

@@ -1,10 +1,6 @@
-//@BaseCode
-import { IViewEntity } from "../models/i-view-entity";
-import { IQueryParams } from "@app/models/base/i-query-params";
-import { Observable } from "rxjs";
+﻿//@BaseCode
+import { IViewModel } from "../models/i-view-model";
+import { IApiQueryBaseService } from "./i-api-query-base.service";
 
-export interface IApiViewBaseService<T extends IViewEntity> {
-  getCount(): Observable<number>;
-  getAll(): Observable<T[]>;
-  query(params: IQueryParams): Observable<T[]>;
+export interface IApiViewBaseService<T extends IViewModel> extends IApiQueryBaseService<T> {
 }

@@ -1,7 +1,5 @@
 ﻿//@BaseCode
-
 #if ACCOUNT_ON
-
 namespace SETemplate.Logic.Modules.Security
 {
     /// <summary>
@@ -19,14 +17,7 @@ namespace SETemplate.Logic.Modules.Security
         /// Gets a value indicating whether this property is required.
         /// </summary>
         /// <value><c>true</c> if this property is required; otherwise, <c>false</c>.</value>
-        public bool Required { get; }
-        /// <summary>
-        /// Gets or sets a value indicating whether modification is allowed.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if modification is allowed; otherwise, <c>false</c>.
-        /// </value>
-        public bool AllowModify { get; set; } = false;
+        public bool Required { get; set; }
         /// <summary>
         /// Gets the roles associated with the user.
         /// </summary>

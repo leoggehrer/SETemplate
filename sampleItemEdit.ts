@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IKey } from '@app/models/i-key';
+import { IKeyModel } from '@app/models/i-key-model';
 import { GenericEditComponent } from '@app/components/base/generic-edit.component';
 
 /* Ersetzen Sie hier 'IKey' durch den gewuenschten 'Type' (z.B.: 'IAlbum') */
-interface IItem extends IKey {
+interface IItem extends IKeyModel {
 
 }
 /* Ersetzen Sie in Component 'item' durch den gewuenschten Namen (z.B.: album) */

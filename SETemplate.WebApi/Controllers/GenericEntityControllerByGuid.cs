@@ -44,7 +44,7 @@ namespace SETemplate.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(GetErrorMessage(ex));
             }
         }
 
@@ -74,7 +74,7 @@ namespace SETemplate.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(GetErrorMessage(ex));
             }
         }
         /// <summary>
@@ -106,7 +106,7 @@ namespace SETemplate.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(GetErrorMessage(ex));
             }
         }
 
@@ -134,7 +134,7 @@ namespace SETemplate.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(GetErrorMessage(ex));
             }
         }
     }

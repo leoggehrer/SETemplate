@@ -15,7 +15,7 @@ namespace SETemplate.Logic.Modules.Security
         /// Initializes a new instance of the <see cref="AllowAnonymousAttribute"/> class.
         /// </summary>
         public AllowAnonymousAttribute()
-        : base(false)
+            : base(false)
         {
             
         }

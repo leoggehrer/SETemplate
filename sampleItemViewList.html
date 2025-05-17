@@ -2,13 +2,21 @@
     <h3 class="mb-4">{{pageTitle}}</h3>
 
     <div class="d-flex mb-3">
+        <!-- Aktion: Neues Element hinzufuegen -->
+        <button *ngIf="canAdd"
+                class="btn btn-primary me-2"
+                (click)="addCommand()">
+            <i class="bi bi-plus"></i>
+        </button>
         <!-- Suchtext -->
-        <input type="text"
+        <input *ngIf="canSearch"
+               type="text"
                class="form-control me-2"
                [(ngModel)]="searchTerm"
                placeholder="🔍 Suche nach..." />
         <!-- Aktion: Daten neu Laden -->
-        <button class="btn btn-success me-2"
+        <button *ngIf="canRefresh"
+                class="btn btn-success me-2"
                 (click)="reloadData()">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -19,8 +27,10 @@
             <tr>
                 <!-- Hier werden die Spalten-Bezeichner konfiguriert -->
                 <th>Name</th>
-                <!-- Spalte fuer Aktion (optional) -->
-                <th style="white-space: nowrap; width: 1%;">Aktion</th>
+                <th *ngIf="canEdit || canDelete"
+                    style="white-space: nowrap; width: 1%;">
+                    Aktion
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -28,9 +38,18 @@
                 <!-- Hier werden die Spalten-Werte konfiguriert -->
                 <td><strong>{{ item.name }}</strong></td>
                 <!-- Aktion-Spalte: Bearbeiten und Loeschen -->
-                <td>
-                    <!-- Hier koenner Aktions-Button (z.B.: Details) konfiguriert werden -->
+                <td *ngIf="canEdit || canDelete">
                     <div class="d-flex gap-1">
+                        <button *ngIf="canEdit"
+                                class="btn btn-sm btn-outline-secondary me-2"
+                                (click)="editCommand(item)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button *ngIf="canDelete"
+                                class="btn btn-sm btn-outline-danger"
+                                (click)="deleteCommand(item)">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                 </td>
             </tr>
