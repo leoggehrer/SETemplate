@@ -1,4 +1,5 @@
-﻿namespace SETemplate.Common.Contracts
+﻿//@BaseCode
+namespace SETemplate.Common.Contracts
 {
     /// <summary>
     /// An interface representing versionable entities.
