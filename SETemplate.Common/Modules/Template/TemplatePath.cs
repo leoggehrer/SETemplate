@@ -235,24 +235,18 @@ namespace SETemplate.Common.Modules.Template
         /// <returns>The full path of the solution file if found; otherwise, an empty string.</returns>
         public static string FindSolutionFilePath(string directory)
         {
+            List<string> solutionFiles = new();
+
             // Traverse through all directories upwards until the root folder is reached
             while (directory.HasContent())
             {
                 // Search for a .sln file in the current directory
-                string[] slnFiles = Directory.GetFiles(directory, "*.sln");
-
-                if (slnFiles.Length > 0)
-                {
-                    // If a .sln file is found, return the path
-                    return slnFiles[0];
-                }
+                solutionFiles.AddRange(Directory.GetFiles(directory, "*.sln"));
 
                 // Move to the parent directory
                 directory = Directory.GetParent(directory)?.FullName!;
             }
-
-            // No .sln file found
-            return string.Empty;
+            return solutionFiles.Count > 0 ? solutionFiles.Last() : string.Empty;
         }
         /// <summary>
         /// Retrieves the solution name from the given file path.

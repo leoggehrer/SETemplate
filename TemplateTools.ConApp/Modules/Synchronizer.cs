@@ -94,6 +94,9 @@ namespace TemplateTools.ConApp.Modules
             var isSolutionTargetPath = isProjectTargetPath == false && targetPath == TemplatePath.GetDirectoryFromPath(targetPath, ".sln");
             var isSolutionTargetSubPath = isSolutionTargetPath == false && TemplatePath.IsSolutionPath(targetPath);
             var sourcePath = Path.GetDirectoryName(sourceFilePath) ?? string.Empty;
+
+            var sourceSN = TemplatePath.GetSolutionName(sourcePath); 
+
             var sourceSolutionFilePath = TemplatePath.FindSolutionFilePath(sourcePath);
             var sourceSolutionName = Path.GetFileNameWithoutExtension(sourceSolutionFilePath);
             var targetSolutionFilePath = TemplatePath.FindSolutionFilePath(targetPath);
