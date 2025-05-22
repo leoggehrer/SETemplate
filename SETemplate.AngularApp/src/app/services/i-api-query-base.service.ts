@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { IModel } from "../models/i-model";
 import { IQueryParams } from "@app/models/base/i-query-params";
 import { Observable } from "rxjs";

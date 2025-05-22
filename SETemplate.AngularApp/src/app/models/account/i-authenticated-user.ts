@@ -1,13 +1,10 @@
-﻿//@BaseCode
+﻿//@CodeCopy
 import { IdType } from '@app/models/i-key-model';
 
-export interface AuthenticatedUser {
+export interface IAuthenticatedUser {
   identityId: IdType;
   sessionToken: string;
-  jsonWebToken: string;
   name: string;
   email: string;
   roles: any[];
-  roleLevel: number;
-  contentLanguage: string;
 }

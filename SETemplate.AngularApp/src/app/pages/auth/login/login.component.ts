@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { environment } from '@environment/environment';
 import { AuthService } from '@app-services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -11,15 +12,15 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username = '';
-  password = '';
-  error = '';
-  returnUrl = '/';
+  public email = '';
+  public password = '';
+  public error = '';
+  public returnUrl = '/';
 
   constructor(
-    private auth: AuthService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private authService: AuthService) {
 
   }
 
@@ -31,12 +32,26 @@ export class LoginComponent {
     }
   }
 
-  public onLogin() {
-    if (this.auth.login(this.username, this.password)) {
-      localStorage.setItem('auth', 'true');
-      this.router.navigateByUrl(this.returnUrl);
-    } else {
-      this.error = 'Login fehlgeschlagen';
+  public async onLogin() {
+
+    try {
+      const user = await this.authService.login(this.email, this.password);
+
+      if (user) {
+        localStorage.setItem('auth', 'true');
+        this.router.navigateByUrl(this.returnUrl);
+      }
+      else {
+        this.error = 'Login fehlgeschlagen';
+      }
+    }
+    catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        this.error = `Login error: ${error.status} ${error.statusText}\n${error.message}`;
+      }
+      else {
+        this.error = 'Login error: An unknown error occurred.';
+      }
     }
   }
 }

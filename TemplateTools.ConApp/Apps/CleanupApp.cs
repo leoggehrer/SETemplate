@@ -1,5 +1,7 @@
 ﻿//@BaseCode
 
+using System.IO;
+
 namespace TemplateTools.ConApp.Apps
 {
     /// <summary>
@@ -34,6 +36,7 @@ namespace TemplateTools.ConApp.Apps
         public CleanupApp()
         {
             Constructing();
+            PageSize = 15;
             Constructed();
         }
         /// <summary>
@@ -50,15 +53,20 @@ namespace TemplateTools.ConApp.Apps
         /// <summary>
         /// The folders to be dropped during cleanup.
         /// </summary>
-        private static readonly string[] DropFolders = [
-            $"{Path.DirectorySeparatorChar}bin",
-            $"{Path.DirectorySeparatorChar}obj",
-            $"{Path.DirectorySeparatorChar}target"
+        private static readonly string[] DropFolderNames = [
+            "bin",
+            "obj",
+            "target",
+            "node_modules",
         ];
+        /// <summary>
+        /// The folders to be dropped during cleanup.
+        /// </summary>
+        private static readonly string[] DropFolders = DropFolderNames.Select(n => $"{Path.DirectorySeparatorChar}{n}").ToArray();
         /// <summary>
         /// Gets or sets the path where the drop will be performed.
         /// </summary>
-        public string CleanupPath { get; private set; } = ReposPath;
+        public string CleanupPath { get; private set; } = SolutionPath;
         #endregion properties
 
         #region overrides
@@ -83,7 +91,12 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = $"{++mnuIdx}",
                     Text = ToLabelText("Path", "Change drop path"),
-                    Action = (self) => CleanupPath = SelectOrChangeToSubPath(CleanupPath, MaxSubPathDepth, ReposPath),
+                    Action = (self) =>
+                    {
+                        var parentPath = Directory.GetParent(CleanupPath)?.FullName!;
+
+                        CleanupPath = SelectOrChangeToSubPath(parentPath, MaxSubPathDepth);
+                    },
                 },
 
                 new()
@@ -95,15 +108,21 @@ namespace TemplateTools.ConApp.Apps
                 },
             };
 
-            var subPaths = TemplatePath.GetSubPaths(CleanupPath);
+            var executionPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var subPaths = TemplatePath.GetSubPaths(CleanupPath, 1)
+                                       .Where(p => DropFolderNames.Any(x => ContainsFolder(p, x))
+                                                && executionPath!.StartsWith(p) == false)
+                                       .ToArray();
 
             menuItems.AddRange(CreatePageMenuItems(ref mnuIdx, subPaths, (item, menuItem) => 
-            { 
-                menuItem.Text = ToLabelText("Cleanup", $"{item}");
+            {
+                menuItem.OptionalKey = "a";
+                menuItem.Text = ToLabelText("Cleanup", $"{item.Replace(CleanupPath, ".")}");
                 menuItem.Action = (self) => 
                 {
                     var path = self.Params["path"]?.ToString() ?? string.Empty;
 
+                    StartProgressBar();
                     TemplatePath.CleanDirectories(path, DropFolders);
                 };
                 menuItem.Params = new() { { "path", item } };
@@ -118,7 +137,7 @@ namespace TemplateTools.ConApp.Apps
         {
             List<KeyValuePair<string, object>> headerParams =
             [
-                new("Drop folders:", string.Join(", ", DropFolders)),
+                new("Drop folders:", string.Join(", ", DropFolderNames)),
                 new("Cleanup path:", CleanupPath),
             ];
 
@@ -127,6 +146,15 @@ namespace TemplateTools.ConApp.Apps
         #endregion overrides
 
         #region app methods
+        public static bool ContainsFolder(string directoryPath, string folderName)
+        {
+            if (!Directory.Exists(directoryPath))
+                return false;
+
+            string checkPath = Path.Combine(directoryPath, folderName);
+
+            return Directory.Exists(checkPath);
+        }
         /// <summary>
         /// Cleans the specified directories by deleting all files and subdirectories within them.
         /// </summary>

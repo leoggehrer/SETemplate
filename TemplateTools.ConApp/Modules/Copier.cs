@@ -70,29 +70,28 @@ namespace TemplateTools.ConApp.Modules
         /// </value>
         private static string[] ReplaceExtensions { get; } =
         [
-            ".asax"
-            ,".xaml"
-            ,".axaml"
-            ,".config"
-            ,".cs"
-            ,".ts"
-            ,".cshtml"
-            ,".csproj"
-            ,".esproj"
-            ,".css"
-            ,".html"
-            ,".js"
-            //,".json"
-            ,".less"
-            ,".sln"
-            ,".tt"
-            ,".txt"
-            ,".csv"
-            ,".xml"
-            ,".razor"
-            ,".manifest"
-            ,".md"
-            ,".template"
+            ".asax",
+            ".axaml",
+            ".config",
+            ".cs",
+            ".cshtml",
+            ".csproj",
+            ".csv",
+            ".css",
+            ".esproj",
+            ".html",
+            ".js",
+            ".less",
+            ".manifest",
+            ".md",
+            ".razor",
+            ".sln",
+            ".template",
+            ".tt",
+            ".ts",
+            ".txt",
+            ".xaml",
+            ".xml",
         ];
         /// <summary>
         /// Gets the array of files to be replaced.
@@ -102,40 +101,41 @@ namespace TemplateTools.ConApp.Modules
         /// </value>
         private static string[] ReplaceFiles { get; } =
         [
-            "appsettings.json"
-            ,"appsettings.Development.json"
-            ,"launchSettings.json"
+            "appsettings.json",
+            "appsettings.Development.json",
+            "launchSettings.json",
         ];
         /// <summary>
         /// Array of file extensions for project files.
         /// </summary>
         private static string[] ProjectExtensions { get; } =
         [
-            ".asax"
-            ,".xaml"
-            ,".axaml"
-            ,".config"
-            ,".cs"
-            ,".ts"
-            ,".cshtml"
-            ,".csproj"
-            ,".esproj"
-            ,".css"
-            ,".html"
-            ,".js"
-            ,".json"
-            ,".less"
-            ,".scss"
-            ,".tt"
-            ,".txt"
-            ,".xml"
-            ,".razor"
-            ,".manifest"
-            ,".md"
-            ,".template"
-            ,".ico"
-            ,".jpg"
-            ,".png"
+            ".asax",
+            ".axaml",
+            ".config",
+            ".cs",
+            ".cshtml",
+            ".csproj",
+            ".csv",
+            ".css",
+            ".esproj",
+            ".html",
+            ".ico",
+            ".jpg",
+            ".js",
+            ".json",
+            ".less",
+            ".manifest",
+            ".md",
+            ".png",
+            ".razor",
+            ".scss",
+            ".template",
+            ".tt",
+            ".ts",
+            ".txt",
+            ".xaml",
+            ".xml",
         ];
         /// <summary>
         /// Gets the array of supported file extensions for the solution.
@@ -145,22 +145,23 @@ namespace TemplateTools.ConApp.Modules
         /// </value>
         private static string[] SolutionExtenions { get; } =
         [
-            ".jpg"
-            ,".png"
-            ,".drawio"
-            ,".md"
-            ,".txt"
-            ,".csv"
-            ,".json"
-            ,".xlsx"
-            ,".docx"
-            ,".pdf"
-            ,".yml"
-            ,".cd"
-            ,".razor"
-            ,".razor.cs"
-            ,".html"
-            ,".ts"
+            ".cd",
+            ".cmd",
+            ".csv",
+            ".docx",
+            ".drawio",
+            ".html",
+            ".jpg",
+            ".json",
+            ".md",
+            ".pdf",
+            ".png",
+            ".razor",
+            ".razor.cs",
+            ".ts",
+            ".txt",
+            ".xlsx",
+            ".yml",
         ];
         /// <summary>
         /// Gets or sets the list of extensions.
@@ -246,7 +247,7 @@ namespace TemplateTools.ConApp.Modules
                 var subFolder = directory.Replace(sourceSolutionPath, string.Empty);
 
                 if (CommonStaticLiterals.IgnoreFolders.Any(i => subFolder.EndsWith(i) || subFolder.Contains(i)) == false
-                && sourceProjets.Any(i => subFolder.EndsWith(i)))
+                                                             && sourceProjets.Any(i => subFolder.EndsWith(i)))
                 {
                     subFolder = subFolder.Replace(sourceFolderName, targetFolderName);
 

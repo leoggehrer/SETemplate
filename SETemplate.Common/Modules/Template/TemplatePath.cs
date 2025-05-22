@@ -39,7 +39,7 @@ namespace SETemplate.Common.Modules.Template
         /// <returns>An array of sub-paths.</returns>
         public static string[] GetSubPaths(string startPath)
         {
-            return QueryDirectoryStructure(startPath, n => n.Contains('.') == false, "bin", "obj", "node_modules");
+            return QueryDirectoryStructure(startPath, n => n.Contains('.') == false, StaticLiterals.IgnoreFolderNames);
         }
         /// <summary>
         /// Retrieves an array of sub-paths within the specified start path, up to the specified maximum depth.
@@ -49,7 +49,7 @@ namespace SETemplate.Common.Modules.Template
         /// <returns>An array of sub-paths within the specified start path.</returns>
         public static string[] GetSubPaths(string startPath, int maxDepth)
         {
-            return QueryDirectoryStructure(startPath, n => n.StartsWith($"{Path.DirectorySeparatorChar}.") == false, maxDepth, "bin", "obj", "node_modules");
+            return QueryDirectoryStructure(startPath, n => n.StartsWith($"{Path.DirectorySeparatorChar}.") == false, maxDepth, StaticLiterals.IgnoreFolderNames);
         }
         /// <summary>
         /// Retrieves an array of quick template projects from the specified starting path.

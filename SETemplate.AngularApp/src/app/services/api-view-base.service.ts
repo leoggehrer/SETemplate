@@ -5,7 +5,7 @@ import { IViewModel } from '../models/i-view-model';
 import { IApiViewBaseService } from './i-api-view-base.service';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { arrayToDate, stringToDate } from '@app/converter/date-converter';
+import { arrayToDate } from '@app/converter/date-converter';
 
 /**
  * Abstract base service for API operations.

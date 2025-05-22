@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { IModel } from "./i-model";
 
 export type IdType = number;

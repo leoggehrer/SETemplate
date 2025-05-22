@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Directive } from "@angular/core";
 import { IdType, IKeyModel } from "@app/models/i-key-model";

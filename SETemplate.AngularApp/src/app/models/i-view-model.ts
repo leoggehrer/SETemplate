@@ -1,3 +1,3 @@
-//@BaseCode
+﻿//@BaseCode
 export interface IViewModel {
 }

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environment/environment';
-import { Logon } from '@app-models/account/logon';
-import { AuthenticatedUser } from '@app-models/account/authenticated-user';
+import { ILogon as ILogon } from '@app-models/account/i-logon';
+import { IAuthenticatedUser as IAuthenticatedUser } from '@app-models/account/i-authenticated-user';
 import { stringToDate } from '@app/converter/date-converter';
 import { firstValueFrom } from 'rxjs';
 
@@ -15,9 +15,9 @@ export class AccountService {
   constructor(private httpClient: HttpClient) {
   }
 
-  async login(logonData: Logon): Promise<AuthenticatedUser> {
+  async login(logonData: ILogon): Promise<IAuthenticatedUser> {
     return firstValueFrom(
-      this.httpClient.post<AuthenticatedUser>(
+      this.httpClient.post<IAuthenticatedUser>(
         this.BASE_URL + '/logon',
         logonData
       )
@@ -31,9 +31,9 @@ export class AccountService {
     });
   }
 
-  async refreshLogin(): Promise<AuthenticatedUser> {
+  async refreshLogin(): Promise<IAuthenticatedUser> {
     return firstValueFrom(
-      this.httpClient.post<AuthenticatedUser>(
+      this.httpClient.post<IAuthenticatedUser>(
         this.BASE_URL + '/refreshLogin',
         null
       )
@@ -59,7 +59,7 @@ export class AccountService {
 
   async changePassword(oldPassword: string, newPassword: string): Promise<any> {
     return firstValueFrom(
-      this.httpClient.post<AuthenticatedUser>(
+      this.httpClient.post<IAuthenticatedUser>(
         this.BASE_URL + '/changePassword',
         {
           oldPassword: oldPassword,
