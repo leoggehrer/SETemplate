@@ -77,7 +77,7 @@ namespace SETemplate.ConApp
         /// <returns>A Task representing the asynchronous operation.</returns>
         private static async Task AddAppAccessAsync(string loginEmail, string loginPwd, string user, string email, string pwd, int timeOutInMinutes, params string[] roles)
         {
-            var login = await Logic.AccountAccess.LogonAsync(loginEmail, loginPwd, string.Empty);
+            var login = await Logic.AccountAccess.LoginAsync(loginEmail, loginPwd, string.Empty);
 
             await Logic.AccountAccess.AddAppAccessAsync(login!.SessionToken, user, email, pwd, timeOutInMinutes, roles);
             await Logic.AccountAccess.LogoutAsync(login!.SessionToken);

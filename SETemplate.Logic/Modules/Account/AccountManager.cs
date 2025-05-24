@@ -236,9 +236,9 @@ namespace SETemplate.Logic.Modules.Account
         /// <param name="email">The email of the user.</param>
         /// <param name="password">The password of the user.</param>
         /// <returns>A task that represents the asynchronous logon operation. The task result contains a LoginSession object representing the logged-in session.</returns>
-        internal static Task<LoginSession> LogonAsync(string email, string password)
+        internal static Task<LoginSession> LoginAsync(string email, string password)
         {
-            return LogonAsync(email, password, string.Empty);
+            return LoginAsync(email, password, string.Empty);
         }
         /// <summary>
         /// Logs in a user asynchronously using the provided email, password, and optional information.
@@ -248,7 +248,7 @@ namespace SETemplate.Logic.Modules.Account
         /// <param name="optionalInfo">Optional information provided during login.</param>
         /// <returns>Returns a task representing the asynchronous operation with the logged in session.</returns>
         /// <exception cref="AuthorizationException">Thrown when the account is invalid.</exception>
-        internal static async Task<LoginSession> LogonAsync(string email, string password, string optionalInfo)
+        internal static async Task<LoginSession> LoginAsync(string email, string password, string optionalInfo)
         {
             email = email.RemoveLeftAndRight(' ').ToLower();
 

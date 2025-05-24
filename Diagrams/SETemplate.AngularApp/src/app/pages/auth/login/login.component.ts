@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { environment } from '@environment/environment';
 import { AuthService } from '@app-services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse, HttpHeaderResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',

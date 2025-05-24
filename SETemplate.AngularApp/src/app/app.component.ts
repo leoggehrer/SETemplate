@@ -4,23 +4,28 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
   standalone: false,
+  templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'SETemplate-Developer';
+  public title = 'SEMusicStoreAngular-Developer';
 
-    constructor(
-      private authService: AuthService, 
-      private router: Router) { 
+  public get isLoginRequired(): boolean {
+    return this.authService.isLoginRequired;
+  }
+  public get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn;
+  }
 
-    }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
+  constructor(
+    private router: Router,
+    private authService: AuthService) {
 
   }
 
+  public logout() {
+    this.authService.logout();
+    this.router.navigate(['/dashboard']);
+  }
 }

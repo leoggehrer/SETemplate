@@ -1,8 +1,9 @@
 ﻿//@CodeCopy
 import { Injectable } from '@angular/core';
+import { environment } from '@environment/environment';
 import { ILogon } from '@app-models/account/i-logon';
 import { IAuthenticatedUser } from '@app-models/account/i-authenticated-user';
-import { AccountService } from '@app-services/http/account.service';
+import { AccountService } from '@app-services/http/base/account.service';
 import { StorageService } from '@app-services/storage.service';
 import { StorageLiterals } from '@app/literals/storage-literals';
 import { BehaviorSubject } from 'rxjs';
@@ -11,11 +12,23 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  public user?: IAuthenticatedUser;
+  private _user?: IAuthenticatedUser;
+  public authenticatedUserChanged = new BehaviorSubject(this._user);
 
-  authenticatedUserChanged = new BehaviorSubject(this.user);
-  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    this.user != null
+  public get user(): IAuthenticatedUser | undefined {
+    return this._user;
+  }
+
+  public get isLoginRequired(): boolean {
+    return environment.loginRequired;
+  }
+
+  public get isLoggedIn(): boolean {
+    return this._user != null;
+  }
+
+  public isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    this._user != null
   );
 
   constructor(
@@ -30,12 +43,32 @@ export class AuthService {
       password: password,
     } as ILogon;
 
-    this.user = await this.accountService.login(logonData);
-    if (this.user) {
-      this.updateUserInStorage(this.user);
+    this._user = await this.accountService.login(logonData);
+    if (this._user) {
+      this.updateUserInStorage(this._user);
       this.notifyForUserChanged();
     }
-    return this.user;
+    return this._user;
+  }
+
+  public async logout() {
+    try {
+      if (this._user) {
+        await this.accountService.logout(this._user.sessionToken);
+      }
+    }
+    finally {
+      this.removeUserFromStorage();
+      this._user = undefined;
+      this.notifyForUserChanged();
+    }
+  }
+
+  public async isSessionAlive(): Promise<boolean> {
+    if (this._user) {
+      return this.accountService.isSessionAlive(this._user.sessionToken);
+    }
+    return false;
   }
 
   public async requestPassword(email: string): Promise<any> {
@@ -53,21 +86,19 @@ export class AuthService {
     return res;
   }
 
-  public async logout() {
+  public resetUser() {
+    this._user = undefined;
     this.removeUserFromStorage();
-    this.user = undefined;
     this.notifyForUserChanged();
   }
 
   private notifyForUserChanged() {
-    this.authenticatedUserChanged.next(this.user);
-    this.isAuthenticated.next(!!this.user);
+    this.authenticatedUserChanged.next(this._user);
+    this.isAuthenticated.next(!!this._user);
   }
 
   private loadUserFromStorage() {
-    this.user = this.storageService.getData(
-      StorageLiterals.USER
-    ) as IAuthenticatedUser;
+    this._user = this.storageService.getData(StorageLiterals.USER) as IAuthenticatedUser;
     this.notifyForUserChanged();
   }
 

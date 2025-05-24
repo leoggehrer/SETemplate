@@ -65,7 +65,7 @@ namespace SETemplate.WebApi.Controllers
                     var seperatorIndex = useridPassword.IndexOf(':');
                     var userid = useridPassword[..seperatorIndex];
                     var password = useridPassword[(seperatorIndex + 1)..];
-                    var login = await Logic.AccountAccess.LogonAsync(userid, password, string.Empty).ConfigureAwait(false);
+                    var login = await Logic.AccountAccess.LoginAsync(userid, password, string.Empty).ConfigureAwait(false);
 
                     result = login.SessionToken;
                 }

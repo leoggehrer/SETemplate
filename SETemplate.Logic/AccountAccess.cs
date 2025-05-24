@@ -57,7 +57,7 @@ namespace SETemplate.Logic
         /// <returns>A task that represents the asynchronous logon operation. The task result contains a <see cref="LoginSession"/> object.</returns>
         public static async Task<LoginSession> LogonAsync(string email, string password)
         {
-            var result = await AccountManager.LogonAsync(email, password).ConfigureAwait(false);
+            var result = await AccountManager.LoginAsync(email, password).ConfigureAwait(false);
             
             return LoginSession.CloneFrom(result);
         }
@@ -68,9 +68,9 @@ namespace SETemplate.Logic
         /// <param name="password">The password of the user.</param>
         /// <param name="optionalInfo">Optional information related to the user.</param>
         /// <returns>The login session object.</returns>
-        public static async Task<LoginSession> LogonAsync(string email, string password, string optionalInfo)
+        public static async Task<LoginSession> LoginAsync(string email, string password, string optionalInfo)
         {
-            var result = await AccountManager.LogonAsync(email, password, optionalInfo).ConfigureAwait(false);
+            var result = await AccountManager.LoginAsync(email, password, optionalInfo).ConfigureAwait(false);
 
             return LoginSession.CloneFrom(result);
         }

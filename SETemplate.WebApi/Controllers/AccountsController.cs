@@ -15,37 +15,45 @@ namespace SETemplate.WebApi.Controllers
         /// </summary>
         /// <param name="logonModel">The logon data.</param>
         /// <returns>The logon session object.</returns>
-        [HttpPost("logon")]
+        [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Models.Account.LoginSession>> LogonByAsync([FromBody] Models.Account.LogonModel logonModel)
+        public async Task<ActionResult<Models.Account.LoginSession>> LoginByAsync([FromBody] Models.Account.LogonModel logonModel)
         {
-            var result = await Logic.AccountAccess.LogonAsync(logonModel.Email, logonModel.Password, logonModel.Info ?? string.Empty);
+            var result = await Logic.AccountAccess.LoginAsync(logonModel.Email, logonModel.Password, logonModel.Info ?? string.Empty);
             
             return Ok(result);
         }
-        
+
         /// <summary>
         /// This method performs a logout with the appropriate token.
         /// </summary>
         /// <param name="sessionToken">The session token.</param>
         /// <returns></returns>
-        [HttpPut("logout")]
-        public Task LogoutByAsync([FromBody] string sessionToken)
+        [HttpDelete("{sessionToken}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> LogoutByAsync(string sessionToken)
         {
-            return Logic.AccountAccess.LogoutAsync(sessionToken);
+            await Logic.AccountAccess.LogoutAsync(sessionToken).ConfigureAwait(false);
+
+            return NoContent();
         }
-        
+
         /// <summary>
-        /// This method checks whether the session token is still valid.
+        /// Checks whether the session token is still valid.
         /// </summary>
-        /// <param name="sessionToken">The session token that is checked.</param>
-        /// <returns>True if the token is still valid, false otherwise.</returns>
-        [HttpGet("issessionalive/{sessionToken}")]
+        /// <param name="sessionToken">The session token to validate.</param>
+        /// <returns>True if valid, otherwise false.</returns>
+        [HttpPost("issessionalive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<bool>> IsSessionAliveAsync(string sessionToken)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<bool>> IsSessionAliveAsync([FromBody] Models.Account.SessionRequest sessionRequest)
         {
-            var result = await Logic.AccountAccess.IsSessionAliveAsync(sessionToken);
-            
+            if (sessionRequest == null || string.IsNullOrWhiteSpace(sessionRequest.SessionToken))
+                return BadRequest("Session token is required.");
+
+            var result = await Logic.AccountAccess.IsSessionAliveAsync(sessionRequest.SessionToken);
+
             return Ok(result);
         }
     }

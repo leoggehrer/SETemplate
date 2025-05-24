@@ -1,7 +1,6 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { AuthService } from '@app-services/auth.service';
-import { environment } from '@environment/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,23 +9,29 @@ import { environment } from '@environment/environment';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  public cards = [
-    { title: 'Item1', text: 'Ein Text für das Item1', type: '/items1', bg: 'bg-primary text-white' },
-    { title: 'Item2', text: 'Ein Text für das Item2', type: '/items2', bg: 'bg-success text-white' },
+
+  public publicCards = [
+    { title: 'Dashboard', text: 'Übersicht', type: '/dashboard', bg: 'bg-primary text-white' },
+  ];
+
+  public authCards = [
   ];
 
   constructor(
-    private auth: AuthService, 
+    private authService: AuthService,
     private router: Router) {
 
   }
 
-  public get requireLogin(): boolean {
-    return environment.requireLogin;
+  public get isLoginReqired(): boolean {
+    return this.authService.isLoginRequired;
+  }
+
+  public get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn;
   }
 
   public logout() {
-    this.auth.logout();
-    this.router.navigate(['/auth/login']);
+    this.authService.logout();
   }
 }

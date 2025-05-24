@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+//@BaseCode
 import { IdType } from '@app/models/i-key-model';
 
 export interface IAuthenticatedUser {
