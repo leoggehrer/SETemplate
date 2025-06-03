@@ -68,6 +68,7 @@ namespace SETemplate.WebApi.Controllers
                 {
                     model.Guid = guid;
                     entity = ToEntity(model, entity);
+                    EntitySet.Update(guid, entity);
                     await Context.SaveChangesAsync();
                 }
                 return entity == null ? NotFound() : Ok(ToModel(entity));
@@ -100,6 +101,7 @@ namespace SETemplate.WebApi.Controllers
                     patchModel.ApplyTo(model);
 
                     entity = ToEntity(model, entity);
+                    EntitySet.Update(guid, entity);
                     await Context.SaveChangesAsync();
                 }
                 return entity == null ? NotFound() : Ok(ToModel(entity));

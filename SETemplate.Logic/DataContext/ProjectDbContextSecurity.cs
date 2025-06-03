@@ -58,11 +58,12 @@ namespace SETemplate.Logic.DataContext
                 }
                 else
                 {
-                    var typeAuthorize = Authorization.GetAuthorizeAttribute(methodBase.DeclaringType!);
+                    var type = GetType();
+                    var typeAuthorize = Authorization.GetAuthorizeAttribute(type);
 
                     if (typeAuthorize != null && typeAuthorize.Required)
                     {
-                        Authorization.CheckAuthorization(SessionToken, methodBase.DeclaringType!);
+                        Authorization.CheckAuthorization(SessionToken, type);
                     }
                 }
                 System.Diagnostics.Debug.WriteLine($"Before accessing {methodBase.Name}");

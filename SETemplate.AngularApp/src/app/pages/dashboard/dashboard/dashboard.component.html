@@ -4,6 +4,7 @@
   <div class="container-fluid mt-4">
 
     <!-- Oeffentliche Karten -->
+    <h2>Öffentlicher Zugang</h2>
     <div class="row">
       <div class="col-md-3 mb-4" *ngFor="let card of publicCards">
         <a [routerLink]="[card.type]" class="text-decoration-none">
@@ -17,9 +18,27 @@
       </div>
     </div>
 
+    <!-- Geschuetzte Karten -->
     <hr />
+    <h2>Geschützter Bereich</h2>
 
-    <!-- Geschuetzter Karten -->
+    <div style="margin: 20px;" *ngIf="isLoginReqired">
+      <div class="text-end">
+        <div *ngIf="isLoggedIn">
+          <button class="btn btn-danger mt-2 d-inline-flex align-items-center" (click)="logout()">
+            <i class="bi bi-arrow-left-square" style="margin-right: 10px;"></i>
+            Logout
+          </button>
+        </div>
+        <div *ngIf="!isLoggedIn">
+          <a class="btn btn-primary mt-2 d-inline-flex align-items-center" [routerLink]="['/auth/login']">
+            Login
+            <i class="bi bi-arrow-right-square" style="margin-left: 10px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-md-3 mb-4" *ngFor="let card of authCards">
         <a [routerLink]="[card.type]" class="text-decoration-none">
@@ -33,13 +52,19 @@
       </div>
     </div>
 
-    <div *ngIf="isLoginReqired">
-      <hr />
-      <div *ngIf="isLoggedIn">
-        <button class="btn btn-danger mt-2" (click)="logout()">Logout</button>
-      </div>
-      <div *ngIf="!isLoggedIn">
-        <a class="btn btn-primary mt-2" [routerLink]="['/auth/login']">Login</a>
+    <hr />
+    <!-- Statistik Karten -->
+    <h2>Statistiken</h2>
+    <div class="row">
+      <div class="col-md-3 mb-4" *ngFor="let card of statisticCards">
+        <a [routerLink]="[card.type]" class="text-decoration-none">
+          <div class="card shadow-sm h-100" [ngClass]="card.bg">
+            <div class="card-body">
+              <h5 class="card-title">{{ card.title }}</h5>
+              <p class="card-text">{{ card.text }}</p>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
 

@@ -64,6 +64,29 @@ export class AuthService {
     }
   }
 
+  /**
+   * Prüft, ob der Nutzer genau die übergebene Rolle (als string) besitzt.
+   */
+  public hasRole(role: string): boolean {
+    if (!this._user || !Array.isArray(this._user.roles)) {
+      return false;
+    }
+
+    return this._user.roles
+      .some(r => r.designation.toLowerCase() === role.toLowerCase());
+  }
+
+  /**
+   * Prüft, ob der Nutzer mindestens eine der übergebenen Rollen besitzt.
+   * Erwartet, dass jede Rolle als eigener String übergeben wird:
+   *   hasAnyRole('Admin', 'Moderator')
+   * Wenn du stattdessen schon ein Array hast, dann rufe es so auf:
+   *   hasAnyRole(...meinArrayVonRollen)
+   */
+  public hasAnyRole(...roles: string[]): boolean {
+    return roles.some(role => this.hasRole(role));
+  }
+
   public async isSessionAlive(): Promise<boolean> {
     if (this._user) {
       return this.accountService.isSessionAlive(this._user.sessionToken);

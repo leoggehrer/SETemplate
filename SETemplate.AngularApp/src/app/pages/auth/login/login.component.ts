@@ -1,4 +1,4 @@
-//@BaseCode
+﻿//@BaseCode
 import { Component } from '@angular/core';
 import { AuthService } from '@app-services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';

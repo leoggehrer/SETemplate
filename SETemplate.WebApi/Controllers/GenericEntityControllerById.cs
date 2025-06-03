@@ -18,7 +18,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<TModel?>> GetByIdAsync(IdType id)
         {
-            var result = await QuerySet.FirstOrDefaultAsync(e => e.Id == id);
+            var result = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
 
             return result == null ? NotFound() : Ok(ToModel(result));
         }
@@ -62,12 +62,13 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await QuerySet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
 
                 if (entity != null)
                 {
                     model.Id = id;
                     entity = ToEntity(model, entity);
+                    EntitySet.Update(id, entity);
                     await Context.SaveChangesAsync();
                 }
                 return entity == null ? NotFound() : Ok(ToModel(entity));
@@ -92,7 +93,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await QuerySet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
 
                 if (entity != null)
                 {
@@ -101,6 +102,7 @@ namespace SETemplate.WebApi.Controllers
                     patchModel.ApplyTo(model);
 
                     entity = ToEntity(model, entity);
+                    EntitySet.Update(id, entity);
                     await Context.SaveChangesAsync();
                 }
                 return entity == null ? NotFound() : Ok(ToModel(entity));
@@ -124,7 +126,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await QuerySet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
 
                 if (entity != null)
                 {

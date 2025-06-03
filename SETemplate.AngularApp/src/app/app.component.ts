@@ -17,6 +17,9 @@ export class AppComponent {
   public get isLoggedIn(): boolean {
     return this.authService.isLoggedIn;
   }
+  public get userName(): string {
+    return this.authService.user?.name || '';
+  }
 
   constructor(
     private router: Router,

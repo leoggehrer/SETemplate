@@ -53,7 +53,7 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>
-        protected virtual IQueryable<TEntity> QuerySet => EntitySet.AsQuerySet();
+        protected virtual IQueryable<TEntity> NoTrackingSet => EntitySet.AsNoTrackingSet();
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericEntityController{TModel, TEntity, TContract}"/> class.
         /// </summary>
@@ -119,7 +119,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual async Task<ActionResult<IEnumerable<TModel>>> GetAsync()
         {
-            var query = await QuerySet.AsNoTracking().Take(MaxCount).ToArrayAsync();
+            var query = await NoTrackingSet.Take(MaxCount).ToArrayAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);
@@ -139,10 +139,9 @@ namespace SETemplate.WebApi.Controllers
 
             try
             {
-                var query = await QuerySet.AsNoTracking()
-                                          .Where(ParsingConfig, queryParams.Filter, queryParams.Values)
-                                          .Take(MaxCount)
-                                          .ToArrayAsync();
+                var query = await NoTrackingSet.Where(ParsingConfig, queryParams.Filter, queryParams.Values)
+                                               .Take(MaxCount)
+                                               .ToArrayAsync();
                 var result = query.Select(e => ToModel(e)).ToArray();
 
                 return Ok(result);

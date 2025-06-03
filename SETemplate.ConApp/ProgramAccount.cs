@@ -1,5 +1,4 @@
-﻿//@BaseCode
-#if ACCOUNT_ON
+﻿#if ACCOUNT_ON
 namespace SETemplate.ConApp
 {
     partial class Program
@@ -7,60 +6,60 @@ namespace SETemplate.ConApp
         /// <summary>
         /// Gets or sets the SA user.
         /// </summary>
-        private static string SaUser => "LeoAdmin";
+        private static string SAUser => "SysAdmin";
         /// <summary>
         /// Gets or sets the system administrator email address.
         /// </summary>
-        private static string SaEmail => "LeoAdmin.SETemplate@gmx.at";
+        private static string SAEmail => "SysAdmin@gmx.at";
         /// <summary>
         /// Gets the password for Sa account.
         /// </summary>
-        private static string SaPwd => "1234LeoAdmin";
+        private static string SAPwd => "1234SysAdmin";
 
         /// <summary>
         /// The username of the AppAdmin user.
         /// </summary>
         /// <value>The value is fixed as "AppAdmin".</value>
-        private static string AaUser => "AppAdmin";
+        private static string AAUser => "AppAdmin";
         /// <summary>
         /// Gets the email address for the AppAdmin SETemplate.
         /// </summary>
-        private static string AaEmail => "AppAdmin.SETemplate@gmx.at";
+        private static string AAEmail => "AppAdmin@gmx.at";
         /// <summary>
         /// Gets or sets the password for the AaPwd.
         /// </summary>
-        private static string AaPwd => "1234AppAdmin";
+        private static string AAPwd => "1234AppAdmin";
         /// <summary>
         /// Gets the value "AppAdmin" representing the AA role.
         /// </summary>
-        private static string AaRole => "AppAdmin";
+        private static string AARole => "AppAdmin";
 
         /// <summary>
         /// Gets the AppUser property.
         /// </summary>
-        private static string AppUser => "AppUser";
+        private static string AUUser => "AppUser";
         /// <summary>
         /// Represents the email address used by the application.
         /// </summary>
-        private static string AppEmail => "AppUser.SETemplate@gmx.at";
+        private static string AUEmail => "AppUser@gmx.at";
 
         /// <summary>
         /// Gets or sets the application password.
         /// </summary>
-        private static string AppPwd => "1234AppUser";
+        private static string AUPwd => "1234AppUser";
         /// <summary>
         /// Gets the application role.
         /// </summary>
-        private static string AppRole => "AppUser";
+        private static string AURole => "AppUser";
 
         static partial void CreateAccounts()
         {
             Task.Run(async () =>
             {
-                await Logic.AccountAccess.InitAppAccessAsync(SaUser, SaEmail, SaPwd);
-                await AddAppAccessAsync(SaEmail, SaPwd, AaUser, AaEmail, AaPwd, 30, AaRole);
-                await AddAppAccessAsync(SaEmail, SaPwd, AppUser, AppEmail, AppPwd, 35, AppRole);
-                await AddAppAccessAsync(SaEmail, SaPwd, "g.gehrer", "   g.gehrer@htl-leonding.ac.at ", AppPwd, 35, AppRole);
+                await Logic.AccountAccess.InitAppAccessAsync(SAUser, SAEmail, SAPwd);
+                await AddAppAccessAsync(SAEmail, SAPwd, AAUser, AAEmail, AAPwd, 30, AARole);
+                await AddAppAccessAsync(SAEmail, SAPwd, AUUser, AUEmail, AUPwd, 35, AURole);
+                await AddAppAccessAsync(SAEmail, SAPwd, "g.gehrer", "   g.gehrer@htl-leonding.ac.at ", AUPwd, 35, AURole);
             }).Wait();
         }
 

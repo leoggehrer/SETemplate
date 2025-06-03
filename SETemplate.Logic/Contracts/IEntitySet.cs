@@ -28,12 +28,6 @@ namespace SETemplate.Logic.Contracts
         Task<int> CountAsync();
 
         /// <summary>
-        /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.
-        /// </summary>
-        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
-        IQueryable<TEntity> AsQuerySet();
-
-        /// <summary>
         /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.
         /// </summary>
         /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.</returns>

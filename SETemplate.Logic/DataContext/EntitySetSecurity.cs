@@ -24,41 +24,108 @@ namespace SETemplate.Logic.DataContext
 
         #region methods
         /// <summary>
-        /// Executes logic before accessing a method, including authorization checks.
+        /// Executes logic before accessing a method for read, including authorization checks.
         /// </summary>
-        /// <param name="methodBase">The method being accessed.</param>
-        partial void BeforeAccessing(MethodBase methodBase)
+        /// <param name="methodBase">The method being accessed for read.</param>
+        partial void BeforeReadAccessing(MethodBase methodBase)
         {
-            CheckAccessing(methodBase);
+            CheckReadAccessing(methodBase);
         }
-        #endregion methods
-
-        #region customize accessing
         /// <summary>
-        /// Checks if the current session has access to the specified method or its declaring type.
-        /// Performs authorization checks based on the presence and requirements of the <see cref="AuthorizeAttribute"/>.
-        /// If the method has an <see cref="AuthorizeAttribute"/> with <c>Required = true</c>, authorization is checked for the method.
-        /// Otherwise, if the declaring type has an <see cref="AuthorizeAttribute"/> with <c>Required = true</c>, authorization is checked for the type.
-        /// Writes a debug message indicating the method being accessed.
+        /// Executes logic before accessing a method for create, including authorization checks.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed for create.</param>
+        partial void BeforeCreateAccessing(MethodBase methodBase)
+        {
+            CheckCreateAccessing(methodBase);
+        }
+        /// <summary>
+        /// Executes logic before accessing a method for update, including authorization checks.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed for update.</param>
+        partial void BeforeUpdateAccessing(MethodBase methodBase)
+        {
+            CheckUpdateAccessing(methodBase);
+        }
+        /// <summary>
+        /// Executes logic before accessing a method for delete, including authorization checks.
+        /// </summary>
+        /// <param name="methodBase">The method being accessed for delete.</param>
+        partial void BeforeDeleteAccessing(MethodBase methodBase)
+        {
+            CheckDeleteAccessing(methodBase);
+        }
+        /// <summary>
+        /// Checks if the current session has access to the specified method or type.
+        /// First checks for an <see cref="AuthorizeAttribute"/> on the method. If present and required, 
+        /// authorization is enforced for the method. If not present, checks for the attribute on the type.
+        /// If the type-level attribute is present and required, authorization is enforced for the type.
         /// </summary>
         /// <param name="methodBase">The method for which access is being checked.</param>
         protected virtual void CheckAccessing(MethodBase methodBase)
         {
             var methodAuthorize = Authorization.GetAuthorizeAttribute(methodBase);
 
-            if (methodAuthorize != null && methodAuthorize.Required)
+            if (methodAuthorize != null)
             {
-                Authorization.CheckAuthorization(SessionToken, methodBase);
+                if (methodAuthorize.Required)
+                {
+                    Authorization.CheckAuthorization(SessionToken, methodBase);
+                }
             }
             else
             {
-                var typeAuthorize = Authorization.GetAuthorizeAttribute(methodBase.DeclaringType!);
+                var type = GetType();
+                var typeAuthorize = Authorization.GetAuthorizeAttribute(type);
 
-                if (typeAuthorize != null && typeAuthorize.Required)
+                if (typeAuthorize != null)
                 {
-                    Authorization.CheckAuthorization(SessionToken, methodBase.DeclaringType!);
+                    if (typeAuthorize.Required)
+                    {
+                        Authorization.CheckAuthorization(SessionToken, type);
+                    }
                 }
             }
+        }
+        /// <summary>
+        /// Checks if the current session has read access to the specified method.
+        /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom read-access logic.
+        /// </summary>
+        /// <param name="methodBase">The method for which read access is being checked.</param>
+        protected virtual void CheckReadAccessing(MethodBase methodBase)
+        {
+            CheckAccessing(methodBase);
+        }
+        /// <summary>
+        /// Checks if the current session has create access to the specified method.
+        /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom create-access logic.
+        /// </summary>
+        /// <param name="methodBase">The method for which create access is being checked.</param>
+        protected virtual void CheckCreateAccessing(MethodBase methodBase)
+        {
+            CheckAccessing(methodBase);
+        }
+        /// <summary>
+        /// Checks if the current session has update access to the specified method.
+        /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom update-access logic.
+        /// </summary>
+        /// <param name="methodBase">The method for which update access is being checked.</param>
+        protected virtual void CheckUpdateAccessing(MethodBase methodBase)
+        {
+            CheckAccessing(methodBase);
+        }
+        /// <summary>
+        /// Checks if the current session has delete access to the specified method.
+        /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom delete-access logic.
+        /// </summary>
+        /// <param name="methodBase">The method for which delete access is being checked.</param>
+        protected virtual void CheckDeleteAccessing(MethodBase methodBase)
+        {
+            CheckAccessing(methodBase);
         }
         #endregion customize accessing
     }

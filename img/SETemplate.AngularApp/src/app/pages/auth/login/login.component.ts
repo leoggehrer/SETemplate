@@ -1,6 +1,5 @@
 ﻿//@CodeCopy
 import { Component } from '@angular/core';
-import { environment } from '@environment/environment';
 import { AuthService } from '@app-services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -27,7 +26,7 @@ export class LoginComponent {
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    if (!environment.requireLogin) {
+    if (!this.authService.isLoginRequired) {
       this.router.navigateByUrl(this.returnUrl);
     }
   }

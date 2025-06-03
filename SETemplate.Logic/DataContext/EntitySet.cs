@@ -36,7 +36,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A new instance of the entity.</returns>
         public virtual TEntity Create()
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeCreateAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteCreate();
         }
@@ -47,7 +47,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The count of entities.</returns>
         public virtual int Count()
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteCount();
         }
@@ -58,20 +58,9 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the count of entities.</returns>
         public virtual Task<int> CountAsync()
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteCountAsync();
-        }
-
-        /// <summary>
-        /// Gets the queryable set of entities.
-        /// </summary>
-        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities.</returns>
-        public virtual IQueryable<TEntity> AsQuerySet()
-        {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
-
-            return ExecuteAsQuerySet();
         }
 
         /// <summary>
@@ -80,7 +69,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.</returns>
         public virtual IQueryable<TEntity> AsNoTrackingSet()
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteAsNoTrackingSet();
         }
@@ -92,7 +81,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The element of the type T with the corresponding identification.</returns>
         public virtual ValueTask<TEntity?> GetByIdAsync(IdType id)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteGetByIdAsync(id);
         }
@@ -104,7 +93,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entity.</returns>
         public virtual TEntity Add(TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeCreateAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteAdd(entity);
         }
@@ -116,7 +105,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The added entities.</returns>
         public virtual IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeCreateAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteAddRange(entities);
         }
@@ -128,7 +117,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         public virtual Task<TEntity> AddAsync(TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeCreateAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteAddAsync(entity);
         }
@@ -140,7 +129,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entities.</returns>
         public virtual Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeCreateAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteAddRangeAsync(entities);
         }
@@ -153,7 +142,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public virtual TEntity? Update(IdType id, TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeUpdateAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteUpdate(id, entity);
         }
@@ -166,7 +155,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
         public virtual Task<TEntity?> UpdateAsync(IdType id, TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeUpdateAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteUpdateAsync(id, entity);
         }
@@ -178,7 +167,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The removed entity, or null if the entity was not found.</returns>
         public virtual TEntity? Remove(TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeDeleteAccessing(MethodBase.GetCurrentMethod()!);
 
             return Remove(entity.Id);
         }
@@ -190,7 +179,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The removed entity, or null if the entity was not found.</returns>
         public virtual TEntity? Remove(IdType id)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeDeleteAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteRemove(id);
         }
@@ -208,10 +197,25 @@ namespace SETemplate.Logic.DataContext
 
         #region partial methods
         /// <summary>
-        /// Method that is called before accessing any method in the EntitySet class.
+        /// Method that is called before accessing any read operation in the EntitySet class.
         /// </summary>
         /// <param name="methodBase">The method that is being accessed.</param>
-        partial void BeforeAccessing(MethodBase methodBase);
+        partial void BeforeReadAccessing(MethodBase methodBase);
+        /// <summary>
+        /// Method that is called before accessing any create operation in the EntitySet class.
+        /// </summary>
+        /// <param name="methodBase">The method that is being accessed.</param>
+        partial void BeforeCreateAccessing(MethodBase methodBase);
+        /// <summary>
+        /// Method that is called before accessing any update operation in the EntitySet class.
+        /// </summary>
+        /// <param name="methodBase">The method that is being accessed.</param>
+        partial void BeforeUpdateAccessing(MethodBase methodBase);
+        /// <summary>
+        /// Method that is called before accessing any delete operation in the EntitySet class.
+        /// </summary>
+        /// <param name="methodBase">The method that is being accessed.</param>
+        partial void BeforeDeleteAccessing(MethodBase methodBase);
         #endregion partial methods
     }
 }

@@ -2,6 +2,19 @@ import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { AuthService } from '@app-services/auth.service';
 
+export class DashboardCard {
+  title: string;
+  text: string;
+  type: string;
+  bg: string;
+  constructor(title: string, text: string, type: string, bg: string) {
+    this.title = title;
+    this.text = text;
+    this.type = type;
+    this.bg = bg;
+  }
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: false,
@@ -10,11 +23,14 @@ import { AuthService } from '@app-services/auth.service';
 })
 export class DashboardComponent {
 
-  public publicCards = [
+  public publicCards: DashboardCard[] = [
     { title: 'Dashboard', text: 'Übersicht', type: '/dashboard', bg: 'bg-primary text-white' },
   ];
 
-  public authCards = [
+  public authCards: DashboardCard[] = [
+  ];
+
+  public statisticCards: DashboardCard[] = [
   ];
 
   constructor(
