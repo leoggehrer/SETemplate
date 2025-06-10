@@ -1,4 +1,4 @@
-﻿//@BaseCode
+//@BaseCode
 import { Injectable } from '@angular/core';
 import { environment } from '@environment/environment';
 import { ILogon } from '@app-models/account/i-logon';
@@ -175,7 +175,18 @@ export class AuthService {
    */
   private async loadUserFromStorage() {
     this._user = this.storageService.getData(StorageLiterals.USER) as IAuthenticatedUser;
-    await this.isSessionAlive();
+
+    if (this._user != null) {
+      try {
+        const sessionAlive = await this.accountService.isSessionAlive(this._user.sessionToken);
+        if (!sessionAlive) {
+          this.resetUser();
+        }
+      } catch (error) {
+        console.error('Fehler beim Überprüfen der Session:', error);
+        this.resetUser();
+      }
+    }
     this.notifyForUserChanged();
   }
 
