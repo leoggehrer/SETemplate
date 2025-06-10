@@ -56,6 +56,8 @@ namespace TemplateTools.ConApp.Apps
         /// <returns>An array of MenuItem objects representing the menu items.</returns>
         protected override MenuItem[] CreateMenuItems()
         {
+            var targetSolutionPath = Path.Combine(TargetSolutionSubPath, TargetSolutionName);
+            var targetSolutionPathExists = Directory.Exists(targetSolutionPath);
             var mnuIdx = 0;
             var menuItems = new List<MenuItem>
             {
@@ -76,22 +78,24 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = $"{++mnuIdx}",
+                    OptionalKey = "sourcepath",
                     Text = ToLabelText("Source path", "Change the source solution path"),
                     Action = (self) => SourceSolutionPath = ChangeTemplateSolutionPath(SourceSolutionPath, MaxSubPathDepth, ReposPath),
                 },
                 new()
                 {
                     Key = $"{++mnuIdx}",
+                    OptionalKey = "targetpath",
                     Text = ToLabelText("Target path", "Change the target solution path"),
                     Action = (self) => TargetSolutionSubPath = SelectOrChangeToSubPath(TargetSolutionSubPath, MaxSubPathDepth, ReposPath),
                 },
                 new()
                 {
                     Key = $"{++mnuIdx}",
+                    OptionalKey = "targetname",
                     Text = ToLabelText("Target name", "Change the target solution name"),
                     Action = (self) => ChangeTargetSolutionName(),
                 },
-
                 new()
                 {
                     Key = "---",
@@ -99,17 +103,32 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
+            };
 
-                new()
+            if (targetSolutionPathExists == false || (targetSolutionPathExists && Force))
+            {
+                menuItems.Add(new()
                 {
                     Key = $"{++mnuIdx}",
+                    OptionalKey = "start",
                     Text = ToLabelText("Start", "Start copy process"),
                     Action = (self) => CopySolution(),
-                },
-            };
+                });
+            }
+            else
+            {
+                menuItems.Add(new()
+                {
+                    Key = $"{++mnuIdx}",
+                    OptionalKey = "start",
+                    Text = ToLabelText("Start", "Cannot be started because the path already exists."),
+                    Action = (self) => { },
+                    ForegroundColor = ConsoleColor.Red,
+                });
+            }
+
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
-
         /// <summary>
         /// Prints the header for the PlantUML application.
         /// </summary>
@@ -118,11 +137,13 @@ namespace TemplateTools.ConApp.Apps
         {
             var solutionProperties = SolutionProperties.Create(SourceSolutionPath);
             var sourceSolutionName = solutionProperties.SolutionName;
+            var forceLabel = "Force:";
             var sourceLabel = $"'{sourceSolutionName}' from:";
             var targetLabel = $"'{TargetSolutionName}' to:";
 
             List<KeyValuePair<string, object>> headerParams =
             [
+                new(forceLabel, $"{Force}"),
                 new(sourceLabel, SourceSolutionPath),
                 new("  -> copy ->  ", string.Empty),
                 new(targetLabel, Path.Combine(TargetSolutionSubPath, TargetSolutionName)),
@@ -136,8 +157,43 @@ namespace TemplateTools.ConApp.Apps
         /// <param name="args">The command-line arguments passed to the application.</param>
         protected override void BeforeRun(string[] args)
         {
-            TargetSolutionName = "TargetSolution";
-            base.BeforeRun(args);
+            var convertedArgs = ConvertArgs(args);
+            var appArgs = new List<string>();
+
+            foreach (var arg in convertedArgs)
+            {
+                if (arg.Key.Equals(nameof(Force), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bool.TryParse(arg.Value, out bool result))
+                    {
+                        Force = result;
+                    }
+                }
+                if (arg.Key.Equals(nameof(TargetSolutionName), StringComparison.OrdinalIgnoreCase))
+                {
+                    TargetSolutionName = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(SourceSolutionPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    SourceSolutionPath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(TargetSolutionSubPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    TargetSolutionSubPath = arg.Value;
+                }
+                else if (arg.Key.Equals("AppArg", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var item in arg.Value.ToLower().Split(','))
+                    {
+                        CommandQueue.Enqueue(item);
+                    }
+                }
+                else
+                {
+                    appArgs.Add($"{arg.Key}={arg.Value}");
+                }
+            }
+            base.BeforeRun([.. appArgs]);
         }
         #endregion overrides
 

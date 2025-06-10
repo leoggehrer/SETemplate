@@ -67,7 +67,7 @@ namespace TemplateTools.ConApp.Apps
         /// <summary>
         /// Gets or sets a value indicating whether the empty folders in the source path will be deleted.
         /// </summary>
-        private bool IncludeCleanDirectory { get; set; } = true;
+        private bool IncludeDeleteEmptyFolders { get; set; } = true;
         /// <summary>
         /// Gets or sets a value indicating whether generated files should be excluded from GIT.
         /// </summary>
@@ -118,7 +118,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     Text = ToLabelText("Delete folders", "Change delete empty folders option"),
-                    Action = (self) => IncludeCleanDirectory = !IncludeCleanDirectory
+                    Action = (self) => IncludeDeleteEmptyFolders = !IncludeDeleteEmptyFolders
                 },
                 new()
                 {
@@ -130,7 +130,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     Text = ToLabelText("Source path", "Change the source solution path"),
-                    Action = (self) => 
+                    Action = (self) =>
                     {
                         var result = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath);
 
@@ -150,24 +150,28 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "compile",
                     Text = ToLabelText("Compile", "Compile logic project"),
                     Action = (self) => CompileProject(),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "del_gen_files",
                     Text =  ToLabelText("Delete files", "Delete generated files"),
                     Action = (self) => DeleteGeneratedFiles(),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "del_emp_folders",
                     Text =  ToLabelText("Delete folders", "Delete empty folders in the path"),
                     Action = (self) => DeleteEmptyFolders(),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "start",
                     Text =  ToLabelText("Start", "Start code generation"),
                     Action = (self) => StartCodeGeneration(),
                 },
@@ -185,11 +189,68 @@ namespace TemplateTools.ConApp.Apps
                 new(new string('-', 33), ""),
                 new("Write generated source into:", WriteToGroupFile ? "Group files" : "Single files"),
                 new("Write info header into source:", WriteInfoHeader),
-                new("Delete empty folders in the path:", IncludeCleanDirectory),
+                new("Delete empty folders in the path:", IncludeDeleteEmptyFolders),
                 new("Exclude generated files from GIT:", ExcludeGeneratedFilesFromGIT),
             ];
 
             base.PrintHeader("Template Code Generator", [.. headerParams]);
+        }
+        /// <summary>
+        /// Performs any necessary setup or initialization before running the application.
+        /// </summary>
+        /// <param name="args">The command-line arguments passed to the application.</param>
+        protected override void BeforeRun(string[] args)
+        {
+            var convertedArgs = ConvertArgs(args);
+            var appArgs = new List<string>();
+
+            foreach (var arg in convertedArgs)
+            {
+                if (arg.Key.Equals(nameof(WriteToGroupFile), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bool.TryParse(arg.Value, out bool result))
+                    {
+                        WriteToGroupFile = result;
+                    }
+                }
+                else if (arg.Key.Equals(nameof(WriteInfoHeader), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bool.TryParse(arg.Value, out bool result))
+                    {
+                        WriteInfoHeader = result;
+                    }
+                }
+                else if (arg.Key.Equals(nameof(IncludeDeleteEmptyFolders), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bool.TryParse(arg.Value, out bool result))
+                    {
+                        IncludeDeleteEmptyFolders = result;
+                    }
+                }
+                else if (arg.Key.Equals(nameof(ExcludeGeneratedFilesFromGIT), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bool.TryParse(arg.Value, out bool result))
+                    {
+                        ExcludeGeneratedFilesFromGIT = result;
+                    }
+                }
+                else if (arg.Key.Equals(nameof(CodeSolutionPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    CodeSolutionPath = arg.Value;
+                }
+                else if (arg.Key.Equals("AppArg", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var item in arg.Value.ToLower().Split(','))
+                    {
+                        CommandQueue.Enqueue(item);
+                    }
+                }
+                else
+                {
+                    appArgs.Add($"{arg.Key}={arg.Value}");
+                }
+            }
+            base.BeforeRun([.. appArgs]);
         }
         #endregion overrides
 
@@ -213,7 +274,6 @@ namespace TemplateTools.ConApp.Apps
             Print("Press enter...");
             ReadLine();
         }
-
         /// <summary>
         /// Deletes all generated files and directories from the solution path.
         /// </summary>
@@ -223,7 +283,7 @@ namespace TemplateTools.ConApp.Apps
             StartProgressBar();
             PrintLine("Delete all generated files...");
             Generator.DeleteGeneratedFiles(CodeSolutionPath);
-            if (IncludeCleanDirectory)
+            if (IncludeDeleteEmptyFolders)
             {
                 PrintLine("Delete all empty folders...");
                 Generator.CleanDirectories(CodeSolutionPath);
@@ -232,7 +292,6 @@ namespace TemplateTools.ConApp.Apps
             GitIgnoreManager.DeleteIgnoreEntries(CodeSolutionPath);
             StopProgressBar();
         }
-
         /// <summary>
         /// Deletes all empty folders within the specified solution path.
         /// </summary>
@@ -249,7 +308,6 @@ namespace TemplateTools.ConApp.Apps
             Generator.CleanDirectories(CodeSolutionPath);
             StopProgressBar();
         }
-
         /// <summary>
         /// Starts the code generation process.
         /// </summary>
@@ -277,7 +335,7 @@ namespace TemplateTools.ConApp.Apps
                 command = "2 " + command;
             }
 
-            if (IncludeCleanDirectory == false)
+            if (IncludeDeleteEmptyFolders == false)
             {
                 command = "3 " + command;
             }
@@ -291,6 +349,7 @@ namespace TemplateTools.ConApp.Apps
             ExecuteRunProject(SolutionProperties.Create(CodeSolutionPath), command + "7"); // Start code generation 7
         }
         #endregion app methods
+
         /// <summary>
         /// Executes the build process for the specified solution.
         /// </summary>

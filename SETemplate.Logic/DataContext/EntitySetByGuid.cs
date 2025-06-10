@@ -13,7 +13,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The element of the type T with the corresponding identification.</returns>
         public virtual Task<TEntity?> GetByGuidAsync(Guid guid)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteGetByGuidAsync(guid);
         }
@@ -26,7 +26,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public virtual TEntity? UpdateByGuid(Guid guid, TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeUpdateAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteUpdateByGuid(guid, entity);
         }
@@ -39,7 +39,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public virtual Task<TEntity?> UpdateByGuidAsync(Guid guid, TEntity entity)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+            BeforeUpdateAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteUpdateByGuidAsync(guid, entity);
         }
@@ -51,7 +51,7 @@ namespace SETemplate.Logic.DataContext
         /// <returns>The removed entity, or null if the entity was not found.</returns>
         public virtual TEntity? RemoveByGuid(Guid guid)
         {
-            BeforeAccessing(MethodBase.GetCurrentMethod()!);
+            BeforeDeleteAccessing(MethodBase.GetCurrentMethod()!);
 
             return ExecuteRemoveByGuid(guid);
         }

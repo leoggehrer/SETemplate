@@ -158,6 +158,7 @@ namespace TemplateTools.ConApp.Modules
             ".png",
             ".razor",
             ".razor.cs",
+            ".sql",
             ".ts",
             ".txt",
             ".xlsx",

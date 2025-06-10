@@ -53,7 +53,7 @@ namespace TemplateTools.ConApp.Apps
         /// <summary>
         /// The folders to be dropped during cleanup.
         /// </summary>
-        private static readonly string[] DropFolderNames = [
+        private static string[] DropFolderNames = [
             "bin",
             "obj",
             "target",
@@ -62,7 +62,10 @@ namespace TemplateTools.ConApp.Apps
         /// <summary>
         /// The folders to be dropped during cleanup.
         /// </summary>
-        private static readonly string[] DropFolders = DropFolderNames.Select(n => $"{Path.DirectorySeparatorChar}{n}").ToArray();
+        private static string[] DropFolders
+        {
+            get => [.. DropFolderNames.Select(n => $"{Path.DirectorySeparatorChar}{n}")];
+        }
         /// <summary>
         /// Gets or sets the path where the drop will be performed.
         /// </summary>
@@ -142,6 +145,39 @@ namespace TemplateTools.ConApp.Apps
             ];
 
             base.PrintHeader("Template Cleanup Directories", [.. headerParams]);
+        }
+        /// <summary>
+        /// Performs any necessary setup or initialization before running the application.
+        /// </summary>
+        /// <param name="args">The command-line arguments passed to the application.</param>
+        protected override void BeforeRun(string[] args)
+        {
+            var convertedArgs = ConvertArgs(args);
+            var appArgs = new List<string>();
+
+            foreach (var arg in convertedArgs)
+            {
+                if (arg.Key.Equals(nameof(CleanupPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    CleanupPath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(DropFolderNames), StringComparison.OrdinalIgnoreCase))
+                {
+                    DropFolderNames = arg.Value.Split('|');
+                }
+                else if (arg.Key.Equals("AppArg", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var item in arg.Value.ToLower().Split(','))
+                    {
+                        CommandQueue.Enqueue(item);
+                    }
+                }
+                else
+                {
+                    appArgs.Add($"{arg.Key}={arg.Value}");
+                }
+            }
+            base.BeforeRun([.. appArgs]);
         }
         #endregion overrides
 

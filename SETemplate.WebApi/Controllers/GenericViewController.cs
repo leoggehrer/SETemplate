@@ -53,7 +53,7 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>
-        protected virtual IQueryable<TView> QuerySet => ViewSet.AsQuerySet();
+        protected virtual IQueryable<TView> NoTrackingSet => ViewSet.AsNoTrackingSet();
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericEntityController{TModel, TEntity, TContract}"/> class.
         /// </summary>
@@ -113,7 +113,7 @@ namespace SETemplate.WebApi.Controllers
         {
             var authHeader = HttpContext.Request.Headers.Authorization;
 
-            var query = await QuerySet.AsNoTracking().Take(MaxCount).ToArrayAsync();
+            var query = await NoTrackingSet.AsNoTracking().Take(MaxCount).ToArrayAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);
@@ -133,7 +133,7 @@ namespace SETemplate.WebApi.Controllers
 
             try
             {
-                var query = await QuerySet.AsNoTracking()
+                var query = await NoTrackingSet.AsNoTracking()
                                           .Where(ParsingConfig, queryParams.Filter, queryParams.Values)
                                           .Take(MaxCount)
                                           .ToArrayAsync();

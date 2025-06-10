@@ -1,5 +1,6 @@
 ﻿//@BaseCode
 
+using System.Collections.Generic;
 using TemplateTools.Logic;
 using TemplateTools.Logic.Git;
 
@@ -49,19 +50,11 @@ namespace TemplateTools.ConApp.Apps
         partial void Constructed();
         #endregion Instance-Constructors
 
-        #region overrides
-        protected override void BeforeRun(string[] args)
-        {
-            foreach (var arg in args)
-            {
-                foreach (var item in arg.ToLower().Split(','))
-                {
-                    CommandQueue.Enqueue(item);
-                }
-            }
+        #region properties
+        private string[] AppArgs { get; set; } = [];
+        #endregion properties
 
-            base.BeforeRun(args);
-        }
+        #region overrides
         /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>
@@ -97,32 +90,53 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "copier",
                     Text = ToLabelText("Copier", "Copy this solution to a domain solution"),
-                    Action = (self) => new CopierApp().Run([]),
+                    Action = (self) => new CopierApp().Run(AppArgs),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "preprocessor",
                     Text = ToLabelText("Preprocessor", "Setting defines for project options"),
-                    Action = (self) => new PreprocessorApp().Run([]),
+                    Action = (self) => new PreprocessorApp().Run(AppArgs),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "codegenerator",
                     Text = ToLabelText("CodeGenerator", "Generate code for this solution"),
-                    Action = (self) => new CodeGeneratorApp().Run([]),
+                    Action = (self) => new CodeGeneratorApp().Run(AppArgs),
+                },
+                new()
+                {
+                    Key = string.Empty,
+                    OptionalKey = "codemanager",
+                    IsDisplayed = false,
+                    Text = string.Empty,
+                    Action = (self) => new CodeManagerApp().Run(AppArgs),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "synchronizer",
                     Text = ToLabelText("Synchronization", "Matches a project with the template"),
-                    Action = (self) => new SynchronizationApp().Run([]),
+                    Action = (self) => new SynchronizationApp().Run(AppArgs),
+                },
+                new()
+                {
+                    Key = string.Empty,
+                    OptionalKey = "partialsynchronizer",
+                    IsDisplayed = false,
+                    Text = string.Empty,
+                    Action = (self) => new PartialSynchronizationApp(SolutionPath, SourcePath).Run(AppArgs),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "cleanup",
                     Text = ToLabelText("Cleanup", "Deletes the temporary directories"),
-                    Action = (self) => new CleanupApp().Run([]),
+                    Action = (self) => new CleanupApp().Run(AppArgs),
                 },
             };
             return [.. menuItems.Union(CreateExitMenuItems())];
@@ -137,6 +151,63 @@ namespace TemplateTools.ConApp.Apps
             List<KeyValuePair<string, object>> headerParams = [new("Solution path:", SolutionPath)];
 
             base.PrintHeader("Template Tools", [.. headerParams]);
+        }
+        /// <summary>
+        /// Performs any necessary setup or initialization before running the application.
+        /// </summary>
+        /// <param name="args">The command-line arguments passed to the application.</param>
+        protected override void BeforeRun(string[] args)
+        {
+            var convertedArgs = ConvertArgs(args);
+            var appArgs = new List<string>();
+
+            foreach (var arg in convertedArgs)
+            {
+                if (arg.Key.Equals(nameof(HomePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    HomePath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(UserPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    UserPath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(ReposPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    ReposPath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(SourcePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    SourcePath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(SolutionPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    SolutionPath = arg.Value;
+                }
+                else if (arg.Key.Equals("AppArg", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var item in arg.Value.ToLower().Split(','))
+                    {
+                        CommandQueue.Enqueue(item);
+                    }
+                }
+                else
+                {
+                    appArgs.Add($"{arg.Key}={arg.Value}");
+                }
+            }
+            AppArgs = [.. appArgs];
+            base.BeforeRun(AppArgs);
+        }
+        protected override void AfterRun()
+        {
+            PrintHeader();
+
+            ConsoleColor foregroundColor = ForegroundColor;
+            ForegroundColor = ConsoleColor.Green;
+            PrintLine("Application finished successfully.");
+            ForegroundColor = foregroundColor;
+
+            base.AfterRun();
         }
         #endregion overrides
 

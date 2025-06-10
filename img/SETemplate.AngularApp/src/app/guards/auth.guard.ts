@@ -1,5 +1,6 @@
 ﻿//@CodeCopy
 import { Injectable } from '@angular/core';
+import { environment } from '@environment/environment';
 import { AuthService } from '@app-services/auth.service';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 
@@ -8,25 +9,28 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    private authService: AuthService) {
+    private authService: AuthService
+  ) { }
 
-  }
-
-  canActivate(
+  async canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-    return this.authService.isSessionAlive().then((isAlive) => {
-      if (!isAlive) {
-        this.authService.resetUser();
+    state: RouterStateSnapshot
+  ): Promise<boolean | UrlTree> {
 
-        const returnUrl = route.routeConfig?.path ?? '/auth/login';
-
-        return this.router.createUrlTree(['/auth/login'], {
-          queryParams: { returnUrl }
-        });
-      }
-
+    if (environment.loginRequired === false) {
       return true;
-    });
+    }
+
+    const isAlive = await this.authService.isSessionAlive();
+
+    if (!isAlive) {
+      this.authService.resetUser();
+
+      return this.router.createUrlTree(['/auth/login'], {
+        queryParams: { returnUrl: state.url }
+      });
+    }
+
+    return true;
   }
 }

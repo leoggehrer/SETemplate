@@ -55,15 +55,21 @@ namespace TemplateTools.ConApp
         partial void Constructed();
         #endregion Instance-Constructors
 
-        #region Helpers
+        #region overrides
+        #endregion overrides
+
+        #region properties
         protected static string ReposPath { get; set; } = SourcePath;
+        #endregion properties
+
+        #region Helpers
         /// <summary>
         /// Retrieves a collection of source code files from a given directory path.
         /// </summary>
         /// <param name="path">The root directory path where the search will begin.</param>
         /// <param name="searchPattern">The search pattern used to filter the files.</param>
         /// <returns>A collection of file paths that match the search pattern and contain the specified label.</returns>
-        protected static List<string> GetFilesByExtension(string path, string searchPattern)
+        public static List<string> GetFilesByExtension(string path, string searchPattern)
         {
             var result = new List<string>();
             var files = Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories)
@@ -73,6 +79,23 @@ namespace TemplateTools.ConApp
             result.AddRange(files);
             return result;
         }
-        #endregion Helpers
+        /// <summary>
+        /// Converts an array of command-line arguments into an array of key-value pairs.
+        /// </summary>
+        /// <param name="args">The array of command-line arguments, typically in the form "key=value".</param>
+        /// <returns>
+        /// An array of <see cref="KeyValuePair{TKey, TValue}"/> where each key is the argument name and each value is the argument value.
+        /// Only arguments containing an '=' character are included.
+        /// </returns>
+        public static KeyValuePair<string, string>[] ConvertArgs(string[] args)
+        {
+            var argsLine = string.Join(" ", args);
+
+            return [.. argsLine.Split(' ')
+                .Select(pair => pair.Split('='))
+                .Where(arr => arr.Length == 2)
+                .Select(arr => new KeyValuePair<string, string>(arr[0], arr[1]))];
+        }
+        #endregion helpers
     }
 }

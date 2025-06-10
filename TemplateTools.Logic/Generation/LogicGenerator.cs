@@ -557,7 +557,7 @@ namespace TemplateTools.Logic.Generation
 
             foreach (var type in entityProject.AllEntityTypes)
             {
-                var itemType = Common.ItemType.EntitySet;
+                var itemType = Common.ItemType.EntitySetContract;
                 var defaultValue = (GenerateEntitySetContracts && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type) && QuerySetting<bool>(itemType, type, StaticLiterals.Generate, defaultValue))
@@ -621,7 +621,6 @@ namespace TemplateTools.Logic.Generation
                 if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
                     var entitySetName = ItemProperties.CreateEntitySetName(type);
-                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var contractSetName = ItemProperties.CreateContractSetName(type);
                     var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);
                     var contractSetSubType = $"{contractSubNamespace}.{contractSetName}";
@@ -637,7 +636,6 @@ namespace TemplateTools.Logic.Generation
 
                 if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
-                    var viewSubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
                     var viewSetName = ItemProperties.CreateViewSetName(type);
                     var contractSetName = ItemProperties.CreateContractSetName(type);
                     var contractSubNamespace = ItemProperties.CreateSubNamespaceFromEntity(type, StaticLiterals.ContractsFolder);

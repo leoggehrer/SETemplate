@@ -90,6 +90,43 @@ namespace TemplateTools.ConApp.Apps
         #endregion Properties
 
         #region overrides
+        protected override void BeforeRun(string[] args)
+        {
+            var convertedArgs = ConvertArgs(args);
+            var appArgs = new List<string>();
+
+            foreach (var arg in convertedArgs)
+            {
+                if (arg.Key.Equals(nameof(SourceCodePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    SourceCodePath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(TargetCodePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    TargetCodePath = arg.Value;
+                }
+                else if (arg.Key.Equals(nameof(SourceLabels), StringComparison.OrdinalIgnoreCase))
+                {
+                    SourceLabels = arg.Value.Split('|');
+                }
+                else if (arg.Key.Equals(nameof(TargetLabels), StringComparison.OrdinalIgnoreCase))
+                {
+                    TargetLabels = arg.Value.Split('|');
+                }
+                else if (arg.Key.Equals("AppArg", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var item in arg.Value.ToLower().Split(','))
+                    {
+                        CommandQueue.Enqueue(item);
+                    }
+                }
+                else
+                {
+                    appArgs.Add($"{arg.Key}={arg.Value}");
+                }
+            }
+            base.BeforeRun([.. appArgs]);
+        }
         /// <summary>
         /// Executes the necessary actions before the main execution of the program.
         /// </summary>

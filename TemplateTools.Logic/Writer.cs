@@ -238,9 +238,20 @@ namespace TemplateTools.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && (e.ItemType == ItemType.WebApiModel || e.ItemType == ItemType.WebApiEditModel));
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.WebApiModel);
 
                     WriteLogging("Write WebApi-Models...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && e.ItemType == ItemType.WebApiEditModel);
+
+                    WriteLogging("Write WebApi-Edit-Models...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
                 }
             }));
@@ -371,7 +382,12 @@ namespace TemplateTools.Logic
         {
             if (writeToGroupFile)
             {
-                WriteGeneratedCodeFile(projectPath, StaticLiterals.GeneratedCodeFileName, generatedItems);
+                if (generatedItems.Any())
+                {
+                    var fileName = $"_{generatedItems.First().ItemType}GeneratedCode.cs";
+
+                    WriteGeneratedCodeFile(projectPath, fileName, generatedItems);
+                }
             }
             else
             {
