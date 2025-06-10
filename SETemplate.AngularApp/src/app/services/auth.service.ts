@@ -176,17 +176,17 @@ export class AuthService {
   private async loadUserFromStorage() {
     this._user = this.storageService.getData(StorageLiterals.USER) as IAuthenticatedUser;
 
-    if (this._user != null) {
-      try {
-        const sessionAlive = await this.accountService.isSessionAlive(this._user.sessionToken);
-        if (!sessionAlive) {
-          this.resetUser();
-        }
-      } catch (error) {
-        console.error('Fehler beim Überprüfen der Session:', error);
-        this.resetUser();
-      }
-    }
+    //if (this._user != null) {
+    //  try {
+    //    const sessionAlive = await this.accountService.isSessionAlive(this._user.sessionToken);
+    //    if (!sessionAlive) {
+    //      this.resetUser();
+    //    }
+    //  } catch (error) {
+    //    console.error('Fehler beim Überprüfen der Session:', error);
+    //    this.resetUser();
+    //  }
+    //}
     this.notifyForUserChanged();
   }
 
