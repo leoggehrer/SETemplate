@@ -1,4 +1,5 @@
 ﻿//@BaseCode
+using System.Text.RegularExpressions;
 
 namespace TemplateTools.Logic.Extensions
 {
@@ -20,6 +21,23 @@ namespace TemplateTools.Logic.Extensions
                 throw new ArgumentNullException(nameof(value));
             }
             return string.Concat(value[..1].ToLower(), value.AsSpan(1));
+        }
+        /// <summary>
+        /// Splits a camel case or Pascal case string into separate words, separated by spaces, and converts the result to lowercase.
+        /// </summary>
+        /// <param name="value">The camel case or Pascal case string to split.</param>
+        /// <returns>
+        /// A string with spaces inserted before each uppercase letter (except the first character), converted to lowercase.
+        /// If the input is null, empty, or consists only of whitespace, the original input is returned.
+        /// </returns>
+        public static string ToCamelCaseSplit(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return value;
+
+            var result = Regex.Replace(value, "(?<!^)([A-Z])", " $1").ToLower();
+
+            return result.Length > 0 ? char.ToUpper(result[0]) + result.Partialstring(1, result.Length - 1) : result;
         }
         ///<summary>
         /// Removes empty lines from a string.

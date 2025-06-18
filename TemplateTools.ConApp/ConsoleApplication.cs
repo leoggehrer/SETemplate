@@ -1,4 +1,5 @@
 ﻿//@BaseCode
+using System.Text.RegularExpressions;
 
 namespace TemplateTools.ConApp
 {
@@ -60,9 +61,21 @@ namespace TemplateTools.ConApp
 
         #region properties
         protected static string ReposPath { get; set; } = SourcePath;
-        #endregion properties
+        /// <summary>
+        /// Splits a camel case or Pascal case string into separate words, separated by spaces, and converts the result to lowercase.
+        /// </summary>
+        /// <param name="input">The camel case or Pascal case string to split.</param>
+        /// <returns>
+        /// A string with spaces inserted before each uppercase letter (except the first character), converted to lowercase.
+        /// If the input is null, empty, or consists only of whitespace, the original input is returned.
+        /// </returns>
+        public static string SplitCamelCase(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
 
-        #region Helpers
+            return Regex.Replace(input, "(?<!^)([A-Z])", " $1").ToLower();
+        }
         /// <summary>
         /// Retrieves a collection of source code files from a given directory path.
         /// </summary>

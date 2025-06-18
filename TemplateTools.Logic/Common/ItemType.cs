@@ -57,8 +57,10 @@ namespace TemplateTools.Logic.Common
         TypeScriptEnum,
         TypeScriptModel,
         TypeScriptService,
+        TypeScriptEditComponent,
+        TypeScriptListComponent,
         #endregion angular
-        
+
         #region diagram
         EntityClassDiagram,
         #endregion diagram

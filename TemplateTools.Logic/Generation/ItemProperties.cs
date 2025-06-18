@@ -84,6 +84,10 @@ namespace TemplateTools.Logic.Generation
                 {
                     sb.Append(char.ToLower(name[i]));
                 }
+                else if (i > 0 && char.IsUpper(name[i - 1]))
+                {
+                    sb.Append(char.ToLower(name[i]));
+                }
                 else if ((i + 1) < name.Length
                          && char.IsUpper(name[i]) && char.IsUpper(name[i + 1]))
                 {
@@ -381,6 +385,69 @@ namespace TemplateTools.Logic.Generation
             }
 
             return result;
+        }
+        /// <summary>
+        /// Creates the parent namespace string from the given full namespace, stopping at the specified item.
+        /// Splits the full namespace by '.', and collects each item until <paramref name="toItem"/> is found.
+        /// Each item is cleaned of non-letter/digit characters.
+        /// </summary>
+        /// <param name="fullNamespace">The full namespace string to process.</param>
+        /// <param name="toItem">The namespace item at which to stop collecting parent namespace items.</param>
+        /// <returns>The parent namespace string up to (but not including) <paramref name="toItem"/>.</returns>
+        public static string CreateParentNamespace(string fullNamespace, string toItem)
+        {
+            var start = true;
+            var result = new List<string>();
+            var items = fullNamespace.Replace("namespace", string.Empty).Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var item in items)
+            {
+                if (start && item == toItem)
+                {
+                    start = false;
+                }
+                if (start)
+                {
+                    result.Add(ClearNamespaceItem(item));
+                }
+            }
+            return string.Join(".", result);
+        }
+        /// <summary>
+        /// Creates a sub-namespace string from the given full namespace, starting from the specified item.
+        /// Splits the full namespace by '.', finds the first occurrence of <paramref name="startItem"/>,
+        /// and returns the sub-namespace including and after that item, with each item cleaned of non-letter/digit characters.
+        /// </summary>
+        /// <param name="fullNamespace">The full namespace string to process.</param>
+        /// <param name="startItem">The namespace item to start the sub-namespace from.</param>
+        /// <returns>The sub-namespace string starting from <paramref name="startItem"/>.</returns>
+        public static string CreateSubNamespace(string fullNamespace, string startItem)
+        {
+            var start = false;
+            var result = new List<string>();
+            var items = fullNamespace.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var item in items)
+            {
+                if (start == false && item == startItem)
+                {
+                    start = true;
+                }
+                if (start)
+                {
+                    result.Add(ClearNamespaceItem(item));
+                }
+            }
+            return string.Join(".", result);
+        }
+        /// <summary>
+        /// Removes all non-letter and non-digit characters from the given namespace item string.
+        /// </summary>
+        /// <param name="item">The namespace item to clean.</param>
+        /// <returns>A string containing only letters and digits from the input.</returns>
+        private static string ClearNamespaceItem(string item)
+        {
+            return string.Concat(item.Where(char.IsLetterOrDigit));
         }
         #endregion type items
 

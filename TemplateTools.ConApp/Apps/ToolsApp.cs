@@ -110,14 +110,6 @@ namespace TemplateTools.ConApp.Apps
                 },
                 new()
                 {
-                    Key = string.Empty,
-                    OptionalKey = "codemanager",
-                    IsDisplayed = false,
-                    Text = string.Empty,
-                    Action = (self) => new CodeManagerApp().Run(AppArgs),
-                },
-                new()
-                {
                     Key = (++mnuIdx).ToString(),
                     OptionalKey = "synchronizer",
                     Text = ToLabelText("Synchronization", "Matches a project with the template"),
@@ -137,6 +129,22 @@ namespace TemplateTools.ConApp.Apps
                     OptionalKey = "cleanup",
                     Text = ToLabelText("Cleanup", "Deletes the temporary directories"),
                     Action = (self) => new CleanupApp().Run(AppArgs),
+                },
+                new()
+                {
+                    Key = string.Empty,
+                    OptionalKey = "codemanager",
+                    IsDisplayed = false,
+                    Text = string.Empty,
+                    Action = (self) => new CodeManagerApp().Run(AppArgs),
+                },
+                new()
+                {
+                    Key = string.Empty,
+                    OptionalKey = "chatgpt",
+                    IsDisplayed = false,
+                    Text = string.Empty,
+                    Action = (self) => new ChatGptApp().Run(AppArgs),
                 },
             };
             return [.. menuItems.Union(CreateExitMenuItems())];

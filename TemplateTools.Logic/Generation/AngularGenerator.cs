@@ -49,6 +49,10 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         public static string ServicesSubFolder => Path.Combine(SourcePath, "services", "http");
         /// <summary>
+        ///     Gets the subfolder path for the services in the application's core.
+        /// </summary>
+        public static string ComponentsSubFolder => Path.Combine(SourcePath, "components");
+        /// <summary>
         /// Gets or sets the source namespace.
         /// </summary>
         public static string SourceNameSpace => "src";
@@ -101,6 +105,7 @@ namespace TemplateTools.Logic.Generation
             result.AddRange(CreateEnums());
             result.AddRange(CreateModels());
             result.AddRange(CreateServices());
+            result.AddRange(CreateComponents());
             return result;
         }
         /// <summary>
@@ -441,6 +446,192 @@ namespace TemplateTools.Logic.Generation
         /// <param name="type">The Type object representing the type of the service.</param>
         /// <param name="lines">A List of strings containing the lines of the service.</param>
         partial void FinishCreateService(Type type, List<string> lines);
+
+        private List<Models.GeneratedItem> CreateComponents()
+        {
+            var result = new List<Models.GeneratedItem>();
+            var entityProject = EntityProject.Create(SolutionProperties);
+
+            foreach (var type in entityProject.AllEntityTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptEditComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
+                {
+                    result.Add(CreateEntityEditComponentFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptEditComponent));
+                }
+            }
+            foreach (var type in entityProject.AllEntityTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
+                {
+                    result.Add(CreateEntityListComponentFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptListComponent));
+                }
+            }
+            foreach (var type in entityProject.AllViewTypes)
+            {
+                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
+                {
+                    result.Add(CreateViewListComponentFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptListComponent));
+                }
+            }
+            return result;
+        }
+        private Models.GeneratedItem CreateEntityEditComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        {
+            var subPath = ConvertFileItem(ItemProperties.CreateSubPathFromType(type));
+            var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
+            var entityName = ItemProperties.CreateEntityName(type);
+            var modelName = ItemProperties.CreateTSModelName(type);
+            var fileName = $"{ConvertFileItem($"{entityName}BaseEditComponent")}{StaticLiterals.TSFileExtension}";
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateTypeScriptFullName(type),
+                FileExtension = StaticLiterals.TSFileExtension,
+                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+            };
+
+            StartCreateListComponent(type, result.Source);
+            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';");
+            result.Add("import { GenericEditComponent } from '@app/components/base/generic-edit.component';");
+            result.Add(CreateImport("@app-models", modelName, subPath));
+
+            result.Add(StaticLiterals.CustomImportBeginLabel);
+            result.AddRange(ReadCustomImports(projectPath, result));
+            result.Add(StaticLiterals.CustomImportEndLabel);
+
+            result.Add("@Directive()");
+            result.Add($"export abstract class {entityName}BaseEditComponent extends GenericEditComponent<{modelName}> implements OnInit" + " {");
+            result.Add("  constructor(public override activeModal: NgbActiveModal)");
+            result.Add("  {");
+            result.Add("    super(activeModal);");
+            result.Add("  }");
+
+            result.Add("  ngOnInit(): void {");
+            result.Add("  }");
+
+            result.Add("  public override get title(): string {");
+            result.Add($"    return '{entityName}' + super.title;");
+            result.Add("  }");
+
+            result.Add("}");
+
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
+            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
+            FinishCreateListComponent(type, result.Source);
+            return result;
+        }
+        private Models.GeneratedItem CreateEntityListComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        {
+            var subPath = ConvertFileItem(ItemProperties.CreateSubPathFromType(type));
+            var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
+            var entityName = ItemProperties.CreateEntityName(type);
+            var modelName = ItemProperties.CreateTSModelName(type);
+            var serviceName = $"{entityName}Service";
+            var fileName = $"{ConvertFileItem($"{entityName}BaseListComponent")}{StaticLiterals.TSFileExtension}";
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateTypeScriptFullName(type),
+                FileExtension = StaticLiterals.TSFileExtension,
+                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+            };
+
+            StartCreateListComponent(type, result.Source);
+            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { NgbModal } from '@ng-bootstrap/ng-bootstrap';");
+            result.Add("import { MessageBoxService } from '@app/services/message-box-service.service';");
+            result.Add("import { GenericEntityListComponent } from '@app/components/base/generic-entity-list.component';");
+            result.Add(CreateImport("@app-models", modelName, subPath));
+            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+
+            result.Add(StaticLiterals.CustomImportBeginLabel);
+            result.AddRange(ReadCustomImports(projectPath, result));
+            result.Add(StaticLiterals.CustomImportEndLabel);
+
+            result.Add("@Directive()");
+            result.Add($"export abstract class {entityName}BaseListComponent extends GenericEntityListComponent<{modelName}> implements OnInit" + " {");
+            result.Add("  constructor(");
+            result.Add($"              protected override modal: NgbModal,");
+            result.Add($"              protected dataAccessService: {serviceName},");
+            result.Add($"              protected override  messageBoxService: MessageBoxService)");
+            result.Add("  {");
+            result.Add("    super(modal, dataAccessService, messageBoxService);");
+            result.Add("  }");
+
+            result.Add("  ngOnInit(): void {");
+            result.Add("    this.reloadData();");
+            result.Add("  }");
+
+            result.Add("}");
+
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
+            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
+            FinishCreateListComponent(type, result.Source);
+            return result;
+        }
+        private Models.GeneratedItem CreateViewListComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        {
+            var subPath = ConvertFileItem(ItemProperties.CreateSubPathFromType(type));
+            var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
+            var entityName = ItemProperties.CreateEntityName(type);
+            var modelName = ItemProperties.CreateTSModelName(type);
+            var serviceName = $"{entityName}Service";
+            var fileName = $"{ConvertFileItem($"{entityName}BaseListComponent")}{StaticLiterals.TSFileExtension}";
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateTypeScriptFullName(type),
+                FileExtension = StaticLiterals.TSFileExtension,
+                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+            };
+
+            StartCreateListComponent(type, result.Source);
+            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { NgbModal } from '@ng-bootstrap/ng-bootstrap';");
+            result.Add("import { MessageBoxService } from '@app/services/message-box-service.service';");
+            result.Add("import { GenericViewListComponent } from '@app/components/base/generic-view-list.component';");
+            result.Add(CreateImport("@app-models", modelName, subPath));
+            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+
+            result.Add(StaticLiterals.CustomImportBeginLabel);
+            result.AddRange(ReadCustomImports(projectPath, result));
+            result.Add(StaticLiterals.CustomImportEndLabel);
+
+            result.Add("@Directive()");
+            result.Add($"export abstract class {entityName}ListComponent extends GenericViewListComponent<{modelName}> implements OnInit" + " {");
+            result.Add("  constructor(");
+            result.Add($"              protected override modal: NgbModal,");
+            result.Add($"              protected dataAccessService: {serviceName},");
+            result.Add($"              protected override  messageBoxService: MessageBoxService)");
+            result.Add("  {");
+            result.Add("    super(modal, dataAccessService, messageBoxService);");
+            result.Add("  }");
+
+            result.Add("  ngOnInit(): void {");
+            result.Add("    this.reloadData();");
+            result.Add("  }");
+
+            result.Add("}");
+
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
+            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
+            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
+            FinishCreateListComponent(type, result.Source);
+            return result;
+        }
+
+        /// <summary>
+        /// Starts the process of creating a component of the specified type, using the given list of lines.
+        /// </summary>
+        /// <param name="type">The type of service to be created.</param>
+        /// <param name="lines">The list of lines to be used for creating the service.</param>
+        partial void StartCreateListComponent(Type type, List<string> lines);
+        /// <summary>
+        /// FinishCreateService is a method that finishes the creation of a component with the specified type and lines.
+        /// </summary>
+        /// <param name="type">The Type object representing the type of the service.</param>
+        /// <param name="lines">A List of strings containing the lines of the service.</param>
+        partial void FinishCreateListComponent(Type type, List<string> lines);
 
         #region Helpers
         /// <summary>

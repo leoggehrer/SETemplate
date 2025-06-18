@@ -115,43 +115,50 @@ namespace SETemplate.CodeGenApp
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "chg_gen_option",
                     Text = ToLabelText("Generation file", "Change generation file option"),
                     Action = (self) => WriteToGroupFile = !WriteToGroupFile
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Add info header", "Change add info header option"),
+                     OptionalKey = "chg_info_header",
+                   Text = ToLabelText("Add info header", "Change add info header option"),
                     Action = (self) => WriteInfoHeader = !WriteInfoHeader
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "chg_del_folders",
                     Text = ToLabelText("Delete folders", "Change delete empty folders option"),
                     Action = (self) => IncludeCleanDirectory = !IncludeCleanDirectory
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Exclude files", "Change the exclusion of generated files from GIT"),
+                     OptionalKey = "chg_exc_files",
+                   Text = ToLabelText("Exclude files", "Change the exclusion of generated files from GIT"),
                     Action = (self) => ExcludeGeneratedFilesFromGIT = !ExcludeGeneratedFilesFromGIT
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "del_gen_files",
                     Text =  ToLabelText("Delete files", "Delete all generated files"),
                     Action = (self) => DeleteGeneratedFiles(),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
+                    OptionalKey = "del_emp_folders",
                     Text =  ToLabelText("Delete folders", "Delete empty folders in the path"),
                     Action = (self) => DeleteEmptyFolders(),
                 },
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
-                    Text =  ToLabelText("Start", "Start of source code generation"),
+                    OptionalKey = "start",
+                    Text =  ToLabelText("Start", "Start code generation"),
                     Action = (self) => StartCodeGeneration(),
                 },
             };

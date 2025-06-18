@@ -290,6 +290,9 @@ namespace TemplateTools.ConApp.Apps
             }
             base.BeforeRun([.. appArgs]);
         }
+        #endregion overrides
+
+        #region app methods
         /// <summary>
         /// Starts the process of importing entities from the specified import file.
         /// Prints the application header, starts a progress bar, logs the import action,
@@ -325,13 +328,14 @@ namespace TemplateTools.ConApp.Apps
                 foreach (var tag in tags)
                 {
                     var logicProject = $"{sourceSolutionName}.Logic";
-                    var parentNamespace = CreateParentNamespace(tag.FullText, "Entities");
-                    var subNamespace = CreateSubNamespace(tag.FullText, "Entities");
-                    var fullNamespace = $"{logicProject}.{subNamespace}";
+                    var parentNamespace = CreateParentNamespace(tag.FullText, Logic.StaticLiterals.EntitiesFolder);
+                    var subNamespace = CreateSubNamespace(tag.FullText, Logic.StaticLiterals.EntitiesFolder);
+                    var fullNamespace = subNamespace.IsNullOrEmpty() ? $"{logicProject}.{Logic.StaticLiterals.EntitiesFolder}"
+                                                                     : $"{logicProject}.{Logic.StaticLiterals.EntitiesFolder}.{subNamespace}";
                     var entityCode = entities.ExtractBetween('{', '}', tag.StartTagIndex).Replace(parentNamespace, logicProject);
                     var entityName = entityCode.ExtractBetween(" class ", ":").RemoveLeftAndRight(' ');
-                    var entityPath = Path.Combine(CodeSolutionPath, logicProject, subNamespace.Replace('.', Path.DirectorySeparatorChar));
-                    var entityFilePath = Path.Combine(CodeSolutionPath, logicProject, subNamespace.Replace('.', Path.DirectorySeparatorChar), $"{entityName}.cs");
+                    var entityPath = Path.Combine(CodeSolutionPath, logicProject, Logic.StaticLiterals.EntitiesFolder, subNamespace.Replace('.', Path.DirectorySeparatorChar));
+                    var entityFilePath = Path.Combine(entityPath, $"{entityName}.cs");
                     var fullEntityCode = ($"namespace {fullNamespace} " + '\n' + '{' + $"{entityCode}" + '}');
 
                     if (Force || File.Exists(entityFilePath) == false)

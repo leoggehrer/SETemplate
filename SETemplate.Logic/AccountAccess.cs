@@ -55,7 +55,7 @@ namespace SETemplate.Logic
         /// <param name="email">The email of the user.</param>
         /// <param name="password">The password of the user.</param>
         /// <returns>A task that represents the asynchronous logon operation. The task result contains a <see cref="LoginSession"/> object.</returns>
-        public static async Task<LoginSession> LogonAsync(string email, string password)
+        public static async Task<LoginSession> LoginAsync(string email, string password)
         {
             var result = await AccountManager.LoginAsync(email, password).ConfigureAwait(false);
             

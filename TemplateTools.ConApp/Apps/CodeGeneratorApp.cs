@@ -158,7 +158,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     OptionalKey = "del_gen_files",
-                    Text =  ToLabelText("Delete files", "Delete generated files"),
+                    Text =  ToLabelText("Delete files", "Delete all generated files"),
                     Action = (self) => DeleteGeneratedFiles(),
                 },
                 new()

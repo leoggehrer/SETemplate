@@ -360,6 +360,28 @@ namespace TemplateTools.Logic
                     WriteItems(projectPath, writeItems, false);
                 }
             }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.AngularAppProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AngularApp && (e.ItemType == ItemType.TypeScriptListComponent));
+
+                    WriteLogging("Write Angular-List-Components...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.AngularAppProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AngularApp && (e.ItemType == ItemType.TypeScriptEditComponent));
+
+                    WriteLogging("Write Angular-Edit-Components...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
             #endregion WriteAngularComponents
 
             Task.WaitAll([.. tasks]);
