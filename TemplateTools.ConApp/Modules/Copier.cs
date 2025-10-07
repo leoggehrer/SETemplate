@@ -513,7 +513,7 @@ namespace TemplateTools.ConApp.Modules
             {
                 var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionPath, targetSolutionPath);
 
-                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
+                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder, targetSolutionPath);
             }
         }
 
@@ -544,7 +544,7 @@ namespace TemplateTools.ConApp.Modules
                 {
                     var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionPath, targetSolutionPath);
 
-                    CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
+                    CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder, targetSolutionPath);
                 }
             }
             if (string.IsNullOrEmpty(projectFilePath) == false)
@@ -572,7 +572,7 @@ namespace TemplateTools.ConApp.Modules
             {
                 var targetFilePath = CreateTargetFilePath(sourceFile.FullName, sourceSolutionDirectory, targetSolutionDirectory);
 
-                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder);
+                CopyFile(sourceFile.FullName, targetFilePath, sourceSolutionName, targetSolutionFolder, targetSolutionDirectory);
             }
         }
         /// <summary>
@@ -583,8 +583,9 @@ namespace TemplateTools.ConApp.Modules
         /// <param name="targetFilePath">The full path where the copied file will be saved.</param>
         /// <param name="sourceSolutionName">The name of the source solution.</param>
         /// <param name="targetSolutionName">The name of the target solution.</param>
+        /// <param name="targetSolutionPath">The target solution path.</param>
         /// <returns>void</returns>
-        private void CopyFile(string sourceFilePath, string targetFilePath, string sourceSolutionName, string targetSolutionName)
+        private void CopyFile(string sourceFilePath, string targetFilePath, string sourceSolutionName, string targetSolutionName, string targetSolutionPath)
         {
             var fileName = Path.GetFileName(sourceFilePath);
             var extension = Path.GetExtension(sourceFilePath);
@@ -635,11 +636,18 @@ namespace TemplateTools.ConApp.Modules
                         && sourceLines.First().Contains(CommonStaticLiterals.IgnoreLabel) == false
                         && sourceLines.First().Contains(CommonStaticLiterals.GeneratedCodeLabel) == false))
                 {
+                    var replaceSolutionPath = $"{targetSolutionPath}{Path.DirectorySeparatorChar}";
+
+                    if (Path.DirectorySeparatorChar == '\\')
+                    {
+                        replaceSolutionPath = replaceSolutionPath.Replace(@"\", @"\\");
+                    }
                     foreach (var sourceLine in sourceLines)
                     {
                         var targetLine = regex.Replace(sourceLine, targetSolutionName);
 
                         targetLine = targetLine.Replace(CommonStaticLiterals.BaseCodeLabel, CommonStaticLiterals.CodeCopyLabel);
+                        targetLine = targetLine.Replace(CommonStaticLiterals.SolutionPathLabel, replaceSolutionPath);
                         targetLines.Add(targetLine);
                     }
                     WriteAllLines(targetFilePath, [.. targetLines], Encoding.UTF8);

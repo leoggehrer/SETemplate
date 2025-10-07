@@ -42,7 +42,7 @@ namespace SETemplate.Common
         /// This method is called after the initialization of the class is completed.
         /// </summary>
         static partial void AfterClassInitialize();
-        
+
         /// Gets the extension for solution files.
         /// @return The file extension for solution files as a string.
         public static string SolutionFileExtension => ".sln";
@@ -90,7 +90,7 @@ namespace SETemplate.Common
         /// <returns>The extension for Angular app files.</returns>
         public static string AngularExtension => ".AngularApp";
         #endregion Template project extensions
-        
+
         /// <summary>
         /// Gets or sets the array of template projects.
         /// </summary>
@@ -110,7 +110,7 @@ namespace SETemplate.Common
         /// The array of template project extensions.
         /// </value>
         public static string[] TemplateProjectExtensions { get; private set; }
-        
+
         /// Gets or sets the array of folders that should be ignored during generation.
         /// This property is used to specify the folders that should not be included when generating something.
         /// @returns The array of folders to be ignored during generation.
@@ -139,7 +139,9 @@ namespace SETemplate.Common
         /// Gets the label for chatgpt code.
         /// @returns The label for chatgpt code.
         public static string AiCodeLabel => "@" + "AiCode";
-
+        /// Gets the label for chatgpt code.
+        /// @returns The label for chatgpt code.
+        public static string SolutionPathLabel => "|SolutionPath|";
         /// <summary>
         /// Gets an array of labels that can appear as the first line in a code file.
         /// </summary>
@@ -195,13 +197,13 @@ namespace SETemplate.Common
         /// The extensions of source files in the format "*.css|*.cs|*.ts|*.cshtml|*.razor|*.razor.cs|*.template".
         /// </value>
         public static string SourceFileExtensions => "*.cs|*.ts|*.css|*.html|*.cshtml|*.razor|*.razor.cs|*.template|*.puml|*.axaml";
-        
+
         /// <summary>
         /// Gets the maximum page size.
         /// </summary>
         /// <returns>The maximum page size as an integer.</returns>
         public static int MaxPageSize => 500;
-        
+
         #region Folders and Files
         /// <summary>
         /// Gets the list of folders to be ignored.
