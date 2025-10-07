@@ -1,0 +1,24 @@
+<!--@BaseCode-->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>ACCOUNT_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;ROWVERSION_OFF;EXTERNALGUID_OFF;POSTGRES_OFF;SQLSERVER_OFF;SQLITE_ON;DOCKER_OFF;DEVELOP_ON;DBOPERATION_ON;GENERATEDCODE_OFF</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SETemplate.Logic\SETemplate.Logic.csproj" />
+  </ItemGroup>
+
+</Project>

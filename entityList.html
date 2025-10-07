@@ -1,0 +1,81 @@
+﻿<!--Please adjust to the entity-->
+<div class="container mt-4">
+    <!-- Header -->
+	<div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-secondary text-white shadow-sm rounded">
+		<h3 class="mb-0 flex-grow-1">{{ 'ENTITYNAME_LIST.TITLE' | translate }}</h3>
+		<a
+			routerLink="/dashboard"
+			class="btn btn-outline-light"
+			title="{{ 'ENTITYNAME_LIST.BACK_TO_DASHBOARD' | translate }}"
+			data-bs-toggle="tooltip"
+			data-bs-placement="top">
+			<i class="bi bi-arrow-left-circle"></i>
+		</a>
+	</div>
+
+    <!-- Action Buttons and Search -->
+	<div class="d-flex flex-column flex-md-row mb-3 gap-2">
+		<button
+			*ngIf="canAdd"
+			class="btn btn-primary"
+			(click)="addCommand()"
+			data-bs-toggle="tooltip"
+			[title]="'ENTITYNAME_LIST.ADD_ACTIVITY' | translate">
+			<i class="bi bi-plus"></i>
+		</button>
+
+		<input
+			*ngIf="canSearch"
+			type="text"
+			class="form-control"
+			[(ngModel)]="searchTerm"
+			[placeholder]="'ENTITYNAME_LIST.SEARCH_PLACEHOLDER' | translate"/>
+
+		<button
+			*ngIf="canRefresh"
+			class="btn btn-success"
+			(click)="reloadData()"
+			data-bs-toggle="tooltip"
+			[title]="'ENTITYNAME_LIST.REFRESH' | translate">
+			<i class="bi bi-arrow-clockwise"></i>
+		</button>
+	</div>
+
+    <!-- List Group -->
+	<ul class="list-group">
+		<li *ngFor="let item of dataItems" class="list-group-item list-group-item-action flex-column flex-md-row d-flex align-items-start align-items-md-center justify-content-between mb-2 shadow-sm">
+			<div class="flex-grow-1">
+                <!-- Item Details -->
+				<div class="fw-bold mb-1">
+					<i class="bi bi-person-badge"></i>
+					<span class="ms-1">{{ item.lastName + ' ' + item.firstName || ('ENTITYNAME_LIST.NO_NAME' | translate) }}</span>
+				</div>
+				<div class="small text-muted mb-2" *ngIf="item.email">
+					<i class="bi bi-envelope"></i>
+					<span class="ms-1">{{ item.email }}</span>
+				</div>
+			</div>
+
+            <!-- Action Buttons -->
+			<div class="d-flex gap-2 mt-3 mt-md-0">
+				<button
+					*ngIf="canEdit"
+					class="btn btn-sm btn-outline-secondary"
+					(click)="editCommand(item)"
+					[title]="'ENTITYNAME_LIST.EDIT' | translate">
+					<i class="bi bi-pencil"></i>
+				</button>
+				<button
+					*ngIf="canDelete"
+					class="btn btn-sm btn-outline-danger"
+					(click)="deleteCommand(item)"
+					[title]="'ENTITYNAME_LIST.DELETE' | translate">
+					<i class="bi bi-trash"></i>
+				</button>
+			</div>
+		</li>
+		<li *ngIf="dataItems.length === 0" class="list-group-item text-center text-muted">
+			{{ 'ENTITYNAME_LIST.EMPTY' | translate }}
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,63 @@
+﻿<div class="container mt-5">
+  <h1>{{ 'DASHBOARD.WELCOME' | translate }}</h1>
+
+  <div class="container-fluid mt-4">
+
+    <!-- Oeffentliche Karten -->
+    <ng-container *ngIf="publicCards.length > 0">
+      <!--<h2>{{ 'DASHBOARD.PUBLIC_ACCESS' | translate }}</h2>-->
+      
+      <div class="row">
+        <div class="col-md-3 mb-4" *ngFor="let card of publicCards">
+          <a [routerLink]="[card.type]" class="text-decoration-none">
+            <div class="card shadow-sm h-100" [ngClass]="card.bg">
+              <div class="card-body text-center">
+                <i class="{{card.icon}} fs-1 mb-3" style="display: block;"></i>
+                <h5 class="card-title">{{ card.title | translate }}</h5>
+                <p class="card-text">{{ card.text | translate }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <hr />
+    </ng-container>
+
+    <!-- Geschuetzte Karten -->
+    <ng-container *ngIf="authCards.length > 0">
+      <!--<h2>{{ 'DASHBOARD.PROTECTED_AREA' | translate }}</h2>-->
+
+      <div style="margin: 20px;" *ngIf="isLoginReqired">
+        <div class="text-end">
+          <div *ngIf="isLoggedIn">
+            <button class="btn btn-danger mt-2 d-inline-flex align-items-center" (click)="logout()">
+              <i class="bi bi-arrow-left-square" style="margin-right: 10px;"></i>
+              {{ 'AUTH.LOGOUT' | translate }}
+            </button>
+          </div>
+          <div *ngIf="!isLoggedIn">
+            <a class="btn btn-primary mt-2 d-inline-flex align-items-center" [routerLink]="['/auth/login']">
+              {{ 'AUTH.LOGIN' | translate }}
+              <i class="bi bi-arrow-right-square" style="margin-left: 10px;"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mb-4" *ngFor="let card of authCards">
+          <a [routerLink]="[card.type]" class="text-decoration-none">
+            <div class="card shadow-sm h-100" [ngClass]="card.bg">
+              <div class="card-body text-center">
+                <i class="{{card.icon}} fs-1 mb-3" style="display: block;"></i>
+                <h5 class="card-title">{{ card.title | translate }}</h5>
+                <p class="card-text">{{ card.text | translate }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

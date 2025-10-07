@@ -1,0 +1,116 @@
+﻿Projektanweisungen für CSV-Import
+=================================
+
+Du bist ein Experte für C# und nutzt die aktuellen Sprachfeatures von .NET 8.0.  
+Deine Aufgabe besteht darin, aus textuellen Beschreibungen CSV-Daten für alle Entitäten zu generieren und den Import-Code nach den folgenden Konventionen zu implementieren.
+
+----------------------------------------------------
+Struktur für den CSV-Import
+----------------------------------------------------
+
+Die Import-Logik wird als partial-Methode in der Program-Klasse implementiert.  
+Das Grundgerüst sieht wie folgt aus:
+
+//@AiCode
+//Filename: StarterApp.Import.cs
+namespace SolutionName.ConApp.Apps
+{
+    // Filename: StarterApp.Import.cs
+    partial class StarterApp
+    {
+        partial void AfterCreateMenuItems(ref int menuIdx, List<MenuItem> menuItems)
+        {
+            menuItems.Add(new()
+            {
+                Key = "----",
+                Text = new string('-', 65),
+                Action = (self) => { },
+                ForegroundColor = ConsoleColor.DarkGreen,
+            });
+
+            menuItems.Add(new()
+            {
+                Key = $"{++menuIdx}",
+                Text = ToLabelText($"{nameof(ImportData).ToCamelCaseSplit()}", "Started the import of the csv-data"),
+                Action = (self) =>
+                {
+#if DEBUG && DEVELOP_ON
+                    ImportData();
+#endif
+                },
+#if DEBUG && DEVELOP_ON
+                ForegroundColor = ConsoleApplication.ForegroundColor,
+#else
+                    ForegroundColor = ConsoleColor.Red,
+#endif
+            });
+        }
+        private static void ImportData()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await ImportDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    var saveColor = ForegroundColor;
+
+                    PrintLine();
+                    ForegroundColor = ConsoleColor.Red;
+                    PrintLine($"Error during data import: {ex.Message}");
+                    ForegroundColor = saveColor;
+                    PrintLine();
+                    ReadLine("Continue with the Enter key...");
+                }
+            }).Wait();
+        }
+
+
+        private static async Task ImportDataAsync()
+        {
+            Logic.Contracts.IContext context = CreateContext();
+
+            var entityNameFilePath = Path.Combine(AppContext.BaseDirectory, "data", "entityName_set.csv");
+            var entityNameLines = File.ReadAllLines(entityNameFilePath);
+
+            for (int i = 0; i < entityNameLines.Length; i++)
+            {
+                if (i != 0 && !entityNameLines[i].StartsWith('#'))
+                {
+                    var parts = entityNameLines[i].Split(';');
+                    var entityName = new Logic.Entities.EntityName
+                    {
+                        PropertyName = parts[0],
+                        // ... weitere Properties
+                    };
+                    try
+                    {
+                        await context.EntityNameSet.AddAsync(entityName);
+                        await context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await context.RejectChangesAsync();
+                        Console.WriteLine($"Error in line {i + 1}: {ex.Message}");
+                    }
+                }
+            }
+        }
+    }
+}
+
+----------------------------------------------------
+Namensräume und Struktur
+----------------------------------------------------
+
+- Der Namespace SolutionName.ConApp.Apps ist verbindlich und unverändert zu verwenden.
+- Alle CSV-Dateien werden im Unterordner data gespeichert.
+
+----------------------------------------------------
+Ausgabeformat
+----------------------------------------------------
+
+- Der Import-Code wird in Canvas-Blöcken ausgegeben.
+- Jede Entität erhält ihren eigenen Import-Block in der Program.Import.cs.

@@ -1,0 +1,36 @@
+﻿<!--@BaseCode-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						 xmlns:vm="using:SETemplate.MVVMApp.ViewModels.Templates"
+             mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="320"
+             x:Class="SETemplate.MVVMApp.Views.Templates.ItemUserControl"
+	 					 x:DataType="vm:ItemViewModel">
+
+	<UserControl.DataContext>
+		<vm:ItemViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20 10 20 10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<Label Grid.Row="0" Grid.Column="0" Content="Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10 10 10 0"/>
+		<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Margin="0 10 10 0"/>
+
+		<StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+			<Button Content="Abbrechen" Command="{Binding CancelCommand}" Width="120" HorizontalContentAlignment="Center" Margin="0 10 10 0"/>
+			<Button Content="Speichern" Command="{Binding SaveCommand}" Width="120" HorizontalContentAlignment="Center" Margin="0 10 10 0"/>
+		</StackPanel>
+	</Grid>
+
+</UserControl>

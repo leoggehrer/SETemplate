@@ -1,0 +1,48 @@
+﻿<div *ngIf="dataItem" class="card mt-4 shadow-sm">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h3 class="mb-0">
+			{{ (editMode ? 'EMPLOYEE_EDIT.TITLE_EDIT' : 'EMPLOYEE_EDIT.TITLE_CREATE') | translate }}
+		</h3>
+    <button type="button"
+            class="btn btn-sm btn-danger"
+            aria-label="Schlie�en"
+            (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="card-body">
+      <form (ngSubmit)="submitForm()" #editForm="ngForm">
+          <!-- Fuegen Sie hier die Elemente nach den folgenden Schemata hinzu:-->
+          <!-- Schema: Text
+          <div class="mb-3">
+              <label class="form-label">Album</label>
+              <input class="form-control" [(ngModel)]="dataItem.title" name="title" required />
+          </div>
+          -->
+          <!-- Schema: Auswahl
+          <div class="mb-3">
+            <label for="artist" class="form-label">Artist</label>
+            <select id="artist" name="artistId" class="form-select" [(ngModel)]="dataItem.artistId" #artistId="ngModel"
+              required>
+              <option *ngFor="let item of artists" [ngValue]="item.id">
+                {{ item.name }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="artistId.invalid && artistId.touched">
+              Bitte w�hle einen Artist.
+            </div>
+          </div>
+          -->
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="submit" class="btn btn-success" [disabled]="editForm.invalid || saveData">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ 'COMMON.SAVE' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()" [disabled]="saveData">
+            <i class="bi bi-x-circle me-1"></i>
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

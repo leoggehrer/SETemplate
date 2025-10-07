@@ -1,0 +1,16 @@
+﻿UnitType;ItemType;ItemName;SettingName;SettingValue
+
+###############################################################
+# General Configurations                                      #
+###############################################################
+General;Property;All;Generate;True
+
+###############################################################
+# Project Configurations                                      #
+###############################################################
+SETemplate.Logic;Property;All;Generate;True
+
+###############################################################
+# Angular Project Configurations                              #
+###############################################################
+AngularApp;All;All;Generate;True

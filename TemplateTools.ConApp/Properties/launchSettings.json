@@ -1,0 +1,8 @@
+﻿{
+  "profiles": {
+    "TemplateTools.ConApp": {
+      "commandName": "Project",
+      "commandLineArgs": "#commandfile=oai_musicstore_codemang_import.bat"
+    }
+  }
+}

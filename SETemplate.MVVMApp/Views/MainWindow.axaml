@@ -1,0 +1,31 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:SETemplate.MVVMApp.ViewModels"
+		xmlns:views="using:SETemplate.MVVMApp.Views"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="SETemplate.MVVMApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+		Width="1000"
+		Height="600"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Fima-Manager">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<TabControl Margin="5">
+		<TabItem Header="Logon">
+			<Button Content="Test logon" Command="{Binding LogonCommand }"></Button>
+		</TabItem>
+		<TabItem Header="Item2">
+			<TextBlock Margin="5">This is tab 2 for item2</TextBlock>
+		</TabItem>
+		<TabItem Header="item3">
+			<TextBlock Margin="5">This is tab 3 for item3</TextBlock>
+		</TabItem>
+	</TabControl>	
+
+</Window>

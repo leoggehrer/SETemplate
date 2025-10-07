@@ -1,0 +1,91 @@
+﻿<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/dashboard">SETemplate</a>
+
+    <!-- Hamburger Button mit ng-bootstrap -->
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed" [attr.aria-expanded]="!isMenuCollapsed" aria-controls="navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible menu mit ng-bootstrap -->
+    <div class="collapse navbar-collapse" [ngClass]="{'show': !isMenuCollapsed}" id="navbarNav">
+      <!-- Navigation Links -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+            <i class="bi bi-speedometer2 me-1"></i>
+            {{ 'NAVIGATION.DASHBOARD' | translate }}
+          </a>
+        </li>
+
+        <!-- Mobile Theme Toggle -->
+        <li class="nav-item d-lg-none">
+          <a class="nav-link" (click)="toggleTheme(); isMenuCollapsed = true">
+            <i class="bi me-2" [ngClass]="currentTheme === 'light' ? 'bi-moon-stars' : 'bi-sun'"></i>
+            {{ 'THEME.' + (currentTheme === 'light' ? 'SWITCH_TO_DARK' : 'SWITCH_TO_LIGHT') | translate }}
+          </a>
+        </li>
+
+        <!-- Mobile Sprachauswahl - direkt in der Navigation -->
+        <li class="nav-item d-lg-none">
+          <a class="nav-link" (click)="switchLanguage('de'); isMenuCollapsed = true" [class.active]="currentLanguage === 'de'">
+            🇩🇪 Deutsch
+          </a>
+        </li>
+        <li class="nav-item d-lg-none">
+          <a class="nav-link" (click)="switchLanguage('en'); isMenuCollapsed = true" [class.active]="currentLanguage === 'en'">
+            🇺🇸 English
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right-aligned items -->
+      <ul class="navbar-nav ms-auto">
+
+        <!-- Theme Toggle Button -->
+        <li class="nav-item">
+          <a class="nav-link" role="button" (click)="toggleTheme()" [title]="'THEME.' + (currentTheme === 'light' ? 'SWITCH_TO_DARK' : 'SWITCH_TO_LIGHT') | translate">
+            <i class="bi" [ngClass]="currentTheme === 'light' ? 'bi-moon-stars' : 'bi-sun'"></i>
+          </a>
+        </li>
+
+        <!-- Sprachauswahl - Desktop Dropdown -->
+        <li ngbDropdown class="nav-item dropdown d-none d-lg-block">
+          <a class="nav-link dropdown-toggle" role="button" ngbDropdownToggle aria-expanded="false">
+            <i class="bi bi-globe me-1"></i>
+            {{ currentLanguage === 'de' ? 'Deutsch' : 'English' }}
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu">
+            <button class="dropdown-item" type="button" ngbDropdownItem (click)="switchLanguage('de')">
+              <i class="bi bi-check me-2" *ngIf="currentLanguage === 'de'"></i>
+              <span [class.ms-4]="currentLanguage !== 'de'">Deutsch</span>
+            </button>
+            <button class="dropdown-item" type="button" ngbDropdownItem (click)="switchLanguage('en')">
+              <i class="bi bi-check me-2" *ngIf="currentLanguage === 'en'"></i>
+              <span [class.ms-4]="currentLanguage !== 'en'">English</span>
+            </button>
+          </div>
+        </li>
+
+        <!-- Untermenue -->
+        <ng-container *ngIf="isLoginRequired">
+          <li ngbDropdown class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" ngbDropdownToggle aria-expanded="false">
+              {{ userName }}
+              <i class="bi bi-person ms-2"></i>
+            </a>
+            <div *ngIf="isLoggedIn" ngbDropdownMenu class="dropdown-menu">
+              <button class="dropdown-item" type="button" ngbDropdownItem (click)="logout()">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                {{ 'AUTH.LOGOUT' | translate }}
+              </button>
+            </div>
+          </li>
+        </ng-container>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

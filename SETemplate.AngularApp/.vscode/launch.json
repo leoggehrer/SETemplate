@@ -1,0 +1,13 @@
+﻿{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "npm: start",
+      "name": "Angular localhost (Chrome)",
+      "url": "http://localhost:54091",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}

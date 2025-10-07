@@ -1,0 +1,42 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "paths": {
+      "@environment/*": ["src/environments/*"],
+      "@app/*": ["src/app/*"],
+      "@app-pages/*": ["src/app/pages/*"],
+      "@app-shared/*": ["src/app/shared/*"],
+      "@app-components/*": ["src/app/components/*"],
+      "@app-enums/*": ["src/app/enums/*"],
+      "@app-models/*": ["src/app/models/*"],
+      "@app-services/*": ["src/app/services/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "obj"
+  ],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

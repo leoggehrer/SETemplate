@@ -1,0 +1,87 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.2.9" pages="2">
+  <diagram id="P0oo_iRfbmGJb3e3g-kt" name="Balancing overview">
+    <mxGraphModel dx="1428" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-0" />
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-1" parent="CTooLNYAlZKYvmqyQTV2-0" />
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-2" value="&lt;b&gt;SETemplate&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=4;hachureGap=8;hachureAngle=45;fillColor=#A9C4EB;sketch=1;fontSize=12;" parent="CTooLNYAlZKYvmqyQTV2-1" vertex="1">
+          <mxGeometry x="200" y="80" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-4" value="Comparer" style="label;whiteSpace=wrap;html=1;image=img/clipart/Gear_128x128.png;fontSize=12;fillColor=#f9f7ed;strokeColor=#36393d;rounded=1;glass=0;shadow=0;" parent="CTooLNYAlZKYvmqyQTV2-1" vertex="1">
+          <mxGeometry x="465" y="100" width="185" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-5" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rounded=1;glass=0;fontSize=12;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="CTooLNYAlZKYvmqyQTV2-1" vertex="1">
+          <mxGeometry x="370" y="122.5" width="90" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-8" value="&lt;b&gt;DomainProject&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=4;hachureGap=8;hachureAngle=45;fillColor=#d5e8d4;sketch=1;fontSize=12;strokeColor=#82b366;" parent="CTooLNYAlZKYvmqyQTV2-1" vertex="1">
+          <mxGeometry x="800" y="80" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="CTooLNYAlZKYvmqyQTV2-15" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="CTooLNYAlZKYvmqyQTV2-1" vertex="1">
+          <mxGeometry x="660" y="110" width="130" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="1cCb_u2O2cXnM25xXA9q" name="Balancing">
+    <mxGraphModel dx="1428" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KD4jFZE-13GcvxPWc2QR-21" value="" style="endArrow=classic;html=1;fontSize=10;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="7GGGFVkYKhm-ITxrIMb6-2" target="2U2i2e_DFax4SPKRQ2U6-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="373" as="sourcePoint" />
+            <mxPoint x="440.95000000000005" y="229" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-3" value="TemplateTools.ConApp" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f5f5f5;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
+          <mxGeometry x="360" y="280" width="240" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-4" value="Alle Dateien im QuickTemplate &#xa;welche mit dem Label&#xa;&#39;@BaseCode&#39; gekennzeichnet  &#xa;sind, werden im Domain-Projekt ersetzt. &#xa;Die Ersetzung erfolgt nur dann,&#xa;wenn die Datei im Domain-Project&#xa;mit dem Label &#39;@CoodeCopy&#39; &#xa;gekennzeichnet ist." style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=0" parent="2U2i2e_DFax4SPKRQ2U6-3" vertex="1">
+          <mxGeometry y="26" width="240" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-5" value="DomainProject1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#b1ddf0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#10739e;" parent="1" vertex="1">
+          <mxGeometry x="720" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-6" value="+ DomainProjekt1.CodeGenApp&#xa;+ DomainProjekt1.Common&#xa;+ DomainProjekt1.ConApp&#xa;+ DomainProjekt1.Logic&#xa;+ DomainProjekt1.MVVMApp&#xa;+ DomainProjekt1.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" parent="2U2i2e_DFax4SPKRQ2U6-5" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-7" value="" style="endArrow=classic;html=1;fontSize=10;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1.013;exitY=0.403;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="2U2i2e_DFax4SPKRQ2U6-4" target="2U2i2e_DFax4SPKRQ2U6-11" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="133" as="sourcePoint" />
+            <mxPoint x="720" y="133" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-10" value="DomainProject2" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#b1ddf0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#10739e;" parent="1" vertex="1">
+          <mxGeometry x="720" y="270" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-11" value="+ DomainProjekt2.CodeGenApp&#xa;+ DomainProjekt2.Common&#xa;+ DomainProjekt2.ConApp&#xa;+ DomainProjekt2.Logic&#xa;+ DomainProjekt2.MVVMApp&#xa;+ DomainProjekt2.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" parent="2U2i2e_DFax4SPKRQ2U6-10" vertex="1">
+          <mxGeometry y="26" width="200" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-12" value="DomainProject3" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#b1ddf0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#10739e;" parent="1" vertex="1">
+          <mxGeometry x="720" y="520" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-13" value="+ DomainProjekt3.CodeGenApp&#xa;+ DomainProjekt3.Common&#xa;+ DomainProjekt3.ConApp&#xa;+ DomainProjekt3.Logic&#xa;+ DomainProjekt3.MVVMApp&#xa;+ DomainProjekt3.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" parent="2U2i2e_DFax4SPKRQ2U6-12" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-16" value="" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.997;exitY=0.715;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="2U2i2e_DFax4SPKRQ2U6-4" target="2U2i2e_DFax4SPKRQ2U6-13" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="330" as="sourcePoint" />
+            <mxPoint x="550" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2U2i2e_DFax4SPKRQ2U6-17" value="" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1.008;exitY=0.112;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="2U2i2e_DFax4SPKRQ2U6-4" target="2U2i2e_DFax4SPKRQ2U6-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="609.28" y="411.80999999999995" as="sourcePoint" />
+            <mxPoint x="730" y="583" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7GGGFVkYKhm-ITxrIMb6-1" value="SETemplate" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#dae8fc;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;align=center;fontSize=14;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="280" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="7GGGFVkYKhm-ITxrIMb6-2" value="+ SETemplate.CodeGenApp&#xa;+ SETemplate.Common&#xa;+ SETemplate.ConApp&#xa;+ SETemplate.Logic&#xa;+ SETemplate.MVVMApp&#xa;+ SETemplate.WebApi&#xa;+ TemplateTools.ConApp&#xa;+ TemplateTools.Logic" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" parent="7GGGFVkYKhm-ITxrIMb6-1" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

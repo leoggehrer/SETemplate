@@ -1,0 +1,93 @@
+﻿<!--@BaseCode-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SETemplate.MVVMApp.ViewModels.Templates"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SETemplate.MVVMApp.Views.Templates.ItemsUserControl"
+	 					 x:DataType="vm:ItemsViewModel">
+
+	<UserControl.DataContext>
+		<vm:ItemsViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Column="0" Grid.Row="0" Margin="0 0 0 10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="35"></ColumnDefinition>
+				<ColumnDefinition Width="*"></ColumnDefinition>
+				<ColumnDefinition Width="35"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+
+			<!-- Filter-Textbox nimmt die gesamte verfügbare Breite ein -->
+			<Button Grid.Column="0"	Grid.Row="0"
+				Background="Transparent"
+				Command="{Binding AddItemCommand}">
+				<StackPanel Orientation="Horizontal" Width="20" Height="20">
+					<Image Source="/Assets/add.png"></Image>
+				</StackPanel>
+			</Button>
+
+			<TextBox Grid.Column="1" Grid.Row="0" 
+				Watermark="Geben Sie hier eine Filter ein"
+				Text="{Binding Filter}" 
+				HorizontalAlignment="Stretch" />
+
+			<!-- Button mit fester Breite -->
+			<Button	Grid.Column="2"	Grid.Row="0"
+				Background="Transparent"
+				Command="{Binding LoadModelsCommand}">
+				<StackPanel Orientation="Horizontal" Width="20" Height="20">
+					<Image Stretch="" Source="/Assets/reload.png"></Image>
+				</StackPanel>
+			</Button>
+		</Grid>
+
+		<DataGrid Grid.Column="0" Grid.Row="1"
+			x:Name="dataGrid"
+			BorderThickness="1"
+			BorderBrush="Gray"
+			IsReadOnly="True"
+			ItemsSource="{Binding Models}"
+			SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+			AutoGenerateColumns="False">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+				<DataGridTemplateColumn Width="Auto" Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<Button
+									Background="Transparent"
+									Command="{Binding #dataGrid.((vm:ItemsViewModel)DataContext).EditItemCommand}"
+									CommandParameter="{Binding}">
+									<StackPanel Orientation="Horizontal" Width="20" Height="20">
+										<Image Stretch="" Source="/Assets/edit.png"></Image>
+									</StackPanel>
+								</Button>
+								<Button
+									Background="Transparent"
+									Command="{Binding #dataGrid.((vm:ItemsViewModel)DataContext).DeleteItemCommand}"
+									CommandParameter="{Binding}">
+									<StackPanel Orientation="Horizontal" Width="20" Height="20">
+										<Image Stretch="" Source="/Assets/delete.png"></Image>
+									</StackPanel>
+								</Button>
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+
+</UserControl>

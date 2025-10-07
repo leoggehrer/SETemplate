@@ -1,0 +1,127 @@
+﻿TemplateTools-Execue´-Parameters
+
+HomePath=C:\Users\...\source\repos\leoggehrer\SEDevelopment\...
+UserPath=C:\Users\...\source\repos\leoggehrer\SEDevelopment\...
+ReposPath=C:\Users\...\source\repos\...
+SourcePath=C:\Users\...\source\repos\leoggehrer\SEDevelopment\...
+SolutionPath=C:\Users\...\source\repos\leoggehrer\SEDevelopment\SEMusicStore
+
+AppArg=preprocessor | copier | codegenerator | synchronizer | partialsynchronizer | cleanup | codemanager | exit
+
+##############################################
+# Preprocessor                               #
+##############################################
+
+#PARAMS for Preprocessor
+AddDefine=TEST1
+RemoveDefine=TEST1
+PreprocessorSolutionPath=C:\User\ggehr\source\...
+
+AppArg=preprocessor,ACCOUNT_OFF,IDINT_ON,IDLONG_OFF,IDGUID_OFF,ROWVERSION_OFF,EXTERNALGUID_OFF,POSTGRES_OFF,SQLSERVER_OFF,SQLITE_ON,DOCKER_OFF,DEVELOP_ON,DBOPERATION_ON,GENERATEDCODE_OFF,x,x
+
+ACCOUNT_OFF...set account off
+...
+x...exit menu
+x...exit app
+
+#EXAMPLES for Preprocessor
+"SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore AppArg=preprocessor,TEST1_ON,x AddDefine=TEST1 AddDefine=TEST2"
+"SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore AppArg=preprocessor,x RemoveDefine=TEST1 RemoveDefine=TEST2"
+"SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore AppArg=preprocessor,ACCOUNT_OFF,IDINT_ON,IDLONG_OFF,IDGUID_OFF,ROWVERSION_OFF,EXTERNALGUID_OFF,POSTGRES_OFF,SQLSERVER_OFF,SQLITE_ON,DOCKER_OFF,DEVELOP_ON,DBOPERATION_ON,GENERATEDCODE_OFF,x"
+
+##############################################
+# Copier                                     #
+##############################################
+
+#PARAMS for Copier
+Force=True
+TargetSolutionName=CopierTest
+SourceSolutionPath=C:\User\ggehr\source\...
+TargetSolutionSubPath=C:\User\ggehr\source\...
+
+#EXAMPLES for Copier
+"AppArg=copier,5,x SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore TargetSolutionName=Gerhard"
+
+##############################################
+# CodeGenerator                              #
+##############################################
+
+#PARAMS for CodeGeneration
+WriteToGroupFile=True | False
+WriteInfoHeader=True | False
+IncludeDeleteEmptyFolders=True | False
+ExcludeGeneratedFilesFromGIT=True | False
+CodeSolutionPath=C:\User\ggehr\source\...
+AppArg=compile | del_gen_files | del_emp_folders | start | exit
+
+AppArg=codegenerator,del_gen_files,start,exit,ext
+delgenfiles...delete generated files
+start...start code generation
+exit...exit menu
+exit...exit app
+
+AppArg=codegenerator,7,9,x,x
+7...delete generated files
+9...start code generation
+x...exit menu
+x...exit app
+
+#EXAMPLES for CodeGeneration
+"AppArg=codegenerator,9,x,x SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore WriteToGroupFile=True WriteInfoHeader=False ExcludeGeneratedFilesFromGIT=False IncludeDeleteEmptyFolders=True"
+
+
+##############################################
+# CodeManager                                #
+##############################################
+
+#PARAMS for CodeManager
+Force=True
+CodeSolutionPath=C:\User\ggehr\source\...
+ImportPath=C:\User\ggehr\source\...
+ImportFileName=entities.cs
+
+AppArg=codemanager,import_entities,x,x
+
+add_entities...added all entities
+x...exit menu
+x...exit app
+
+#EXAMPLES for CodeManager
+"AppArg=codemanager,import_entities,x,x Force=True CodeSolutionPath=C:\...\OAIDevelopment\OAIMusicStore ImportPath=C:\...\OAIDevelopment\OAIEntities ImportFileName=musicstore_entities.cs"
+
+##############################################
+# PartialSynchronizer                        #
+##############################################
+
+#PARAMS for PartialSynchronizer
+SourceCodePath=C:\User\ggehr\source\...
+TargetCodePath=C:\User\ggehr\source\...
+SourceLabels=@BaseCode
+TargetLabels=@BaseCode
+
+AppArgs=partialsynchronizer,a,x,x
+
+a...all
+x...exit menu
+x...exit app
+
+#EXAMPLES for PartialSynchronizer
+"AppArg=partialsynchronizer,a,x,x SolutionPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SETemplateDeploment TargetCodePath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEBookStore"
+
+##############################################
+# Cleanup                                    #
+##############################################
+
+#PARAMS for Cleanup
+CleanupPath=C:\User\ggehr\source\...
+DropFolderNames=bin|obj|target|node_modules
+
+AppArg=cleanup,a,x,x
+
+a...all
+x...exit menu
+x...exit app
+
+#EXAMPLES for Cleanup
+"AppArg=cleanup,a,x,x CleanupPath=C:\Users\ggehr\source\repos\leoggehrer\SEDevelopment\SEMusicStore"
+

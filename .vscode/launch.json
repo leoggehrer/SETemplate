@@ -1,0 +1,45 @@
+﻿{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "TemplateTools.ConApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-TemplateTools",
+            "program": "${workspaceFolder}/TemplateTools.ConApp/bin/Debug/net8.0/TemplateTools.ConApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "externalTerminal"
+        },
+        {
+            "name": "ConApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/SETemplate.ConApp/bin/Debug/net8.0/SETemplate.ConApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "externalTerminal"
+        },
+        {
+            "name": "WebApi-Console",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/SETemplate.WebApi/bin/Debug/net8.0/SETemplate.WebApi.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "externalTerminal",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:7074"
+            }
+        }
+    ]
+}

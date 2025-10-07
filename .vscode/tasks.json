@@ -1,0 +1,20 @@
+﻿{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "build"
+		},
+		{
+			"type": "dotnet",
+			"task": "build-TemplateTools",
+			"group": "build",
+			"file": "${workspaceFolder}/TemplateTools.ConApp/TemplateTools.ConApp.csproj",
+			"problemMatcher": [],
+			"label": "build-TemplateTools"
+		},
+	]
+}

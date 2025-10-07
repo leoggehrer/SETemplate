@@ -1,0 +1,74 @@
+﻿<!--@BaseCode-->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:SETemplate.MVVMApp.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="150"
+        x:Class="SETemplate.MVVMApp.Views.MessageDialog"
+		x:DataType="vm:MessageDialogViewModel"
+		WindowStartupLocation="CenterOwner"
+		Width="400" Height="150"
+		CanResize="False"
+        Title="{Binding Title}">
+
+	<Grid Margin="5 0 5 0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="10" IsVisible="{ Binding IsInfoType }">
+			<Image Source="/Assets/info.png"></Image>
+		</StackPanel>
+		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="10" IsVisible="{ Binding IsQuestionType }">
+			<Image Source="/Assets/question.png"></Image>
+		</StackPanel>
+		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="10" IsVisible="{ Binding IsErrorType }">
+			<Image Source="/Assets/stop.png"></Image>
+		</StackPanel>
+		<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{ Binding Message }" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+		<StackPanel Grid.Column="0"	Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{ Binding IsInfoOrErrorType }">
+			<Button
+				Content="OK"
+				Width="80"
+				Height="30"
+				HorizontalAlignment="Center"
+				HorizontalContentAlignment="Center"
+				VerticalAlignment="Bottom"
+				Margin="0 0 0 20"
+				Command="{ Binding CloseCommand }">
+			</Button>
+		</StackPanel>
+
+		<StackPanel Grid.Column="0"	Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{Binding IsQuestionType}" Orientation="Horizontal" HorizontalAlignment="Center">
+			<Button
+				Content="Yes"
+				Width="80"
+				Height="30"
+				HorizontalAlignment="Center"
+				HorizontalContentAlignment="Center"
+				VerticalAlignment="Bottom"
+				Margin="0 0 20 20"
+				Command="{ Binding YesCommand }">
+			</Button>
+			<Button
+				Content="No"
+				Width="80"
+				Height="30"
+				HorizontalAlignment="Center"
+				HorizontalContentAlignment="Center"
+				VerticalAlignment="Bottom"
+				Margin="0 0 0 20"
+				Command="{ Binding NoCommand }">
+			</Button>
+		</StackPanel>
+
+	</Grid>
+</Window>

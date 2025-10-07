@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>ACCOUNT_OFF;IDINT_ON;IDLONG_OFF;IDGUID_OFF;ROWVERSION_OFF;EXTERNALGUID_OFF;POSTGRES_OFF;SQLSERVER_OFF;SQLITE_ON;DOCKER_OFF;DEVELOP_ON;DBOPERATION_ON;GENERATEDCODE_OFF</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SETemplate.Logic\SETemplate.Logic.csproj" />
+    <ProjectReference Include="..\TemplateTools.Logic\TemplateTools.Logic.csproj" />
+      <PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.1" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="templates\entities_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="templates\forms_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="templates\import_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

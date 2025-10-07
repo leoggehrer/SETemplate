@@ -1,0 +1,221 @@
+﻿----------------------------------------------------
+Struktur für Entitäten
+----------------------------------------------------
+
+//@AiCode
+namespace SolutionName.Logic.Entities[.SubFolder]
+{
+    using System.... // Required usings
+
+#if SQLITE_ON
+    [Table("EntityNames")]
+#else
+    [Table("EntityNames", Schema = "app")]
+#endif
+    [Index(...)] // If the restriction follows from the context.
+    public partial class EntityName : EntityObject 
+    {
+        #region fields
+        private PropertyType _fullPropertyName = default!; // Initialization only when necessary
+        #endregion fields
+
+        #region properties
+        /// <summary>
+        /// Auto property example.
+        /// </summary>
+        public PropertyType AutoPropertyName { get; set; } = default!; // Initialization only when necessary
+
+        /// <summary>
+        /// Full property example.
+        /// </summary>
+        public PropertyType FullPropertyName 
+        { 
+            get
+            {
+                var result = _fullPropertyName;
+                OnFullPropertyNameReading(ref result);
+                return result;
+            }
+            set
+            {
+                bool handled = false;
+                OnFullPropertyNameChanging(ref handled, value);
+                if (!handled)
+                {
+                    _fullPropertyName = value;
+                }
+                OnFullPropertyNameChanged(_fullPropertyName);
+            }
+        }
+        #endregion properties
+
+        #region navigation properties
+        #endregion navigation properties
+
+        #region partial methods
+        partial void OnFullPropertyNameReading(ref PropertyType value);
+        partial void OnFullPropertyNameChanging(ref bool handled, PropertyType value);
+        partial void OnFullPropertyNameChanged(PropertyType value);
+        #endregion partial methods
+    }
+}
+
+----------------------------------------------------
+Struktur für Validierungsklassen
+----------------------------------------------------
+
+Erstelle eine separate partial Klasse für die Validierung der Entitäten. Diese Klasse liegt im selben Namespace wie die Entität und implementiert die Schnittstelle IValidatableEntity.  
+Falls in der Textbeschreibung Validierungsregeln erkennbar sind, implementiere diese. Der Filename für diese Klasse ist: EntityName.Validation.cs
+
+//@AiCode
+namespace SolutionName.Logic.Entities[.SubFolder]
+{
+    using System.... // Required usings
+    using SolutionName.Logic.Modules.Exceptions;
+
+    partial class EntityName : SolutionName.Logic.Contracts.IValidatableEntity 
+    {
+        public void Validate(SolutionName.Logic.Contracts.IContext context, EntityState entityState)
+        {
+            bool handled = false;
+            BeforeExecuteValidation(ref handled, context, entityState);
+
+            if (!handled)
+            {
+                // Implement validation logic here
+                if (!IsPropertyNameValid(PropertyName))
+                {
+                    throw new BusinessRuleException(
+                        $"The value of {nameof(PropertyName)} '{PropertyName}' is not valid.");
+                }
+            }
+        }
+        
+        #region methods
+        public static bool IsPropertyNameValid(PropertyType value)
+        {
+            // Implement validation logic here
+            return true; // or false based on validation
+        }
+        #endregion methods
+
+        #region partial methods
+        partial void BeforeExecuteValidation(ref bool handled, SolutionName.Logic.Contracts.IContext context, EntityState entityState);
+        #endregion partial methods
+    }
+}
+
+----------------------------------------------------
+Validierungsregeln
+----------------------------------------------------
+
+- Validierungen für Id-Felder sind nicht erforderlich, da diese von der Datenbank verwaltet werden.
+
+----------------------------------------------------
+Struktur für Views
+----------------------------------------------------
+
+//@AiCode
+namespace SolutionName.Logic.Entities.Views[.SubFolder]
+{
+    using System.... // Required usings
+
+    [CommonModules.Attributes.View("ViewNames")]
+    public partial class ViewName : ViewObject 
+    {
+        #region properties
+        #endregion properties
+
+        #region navigation properties
+        #endregion navigation properties
+    }
+}
+
+----------------------------------------------------
+Using-Regeln
+----------------------------------------------------
+
+- Das using System muss nicht explicit angegeben werden.
+
+----------------------------------------------------
+Entity-Regeln
+----------------------------------------------------
+
+- Die Kommentar-Tags (//<CSharpItem> usw.) müssen für jede Entität angegeben werden.
+- SolutionName.Logic ist ein fixer Bestandteil des Namespace.
+- [.SubFolder] ist optional und dient nur der besseren Strukturierung.
+
+----------------------------------------------------
+Property-Regeln
+----------------------------------------------------
+
+- Der Primärschlüssel (Id) wird nicht in der Entität definiert – er wird von EntityObject geerbt.
+- Auto-Properties werden verwendet, wenn keine zusätzliche Logik erforderlich ist.
+- Full-Properties werden erstellt, wenn die Beschreibung zusätzliche Logik beim Lesen/Schreiben nahelegt.
+- Für ID-Felder ist stets der Typ IdType zu verwenden.
+- Wenn eine Längenangabe vorhanden ist, füge das Attribut [MaxLength(n)] hinzu.
+- Nicht-nullable Strings (string) werden mit string.Empty initialisiert.
+- Nullable Strings (string?) benötigen keine Initialisierung.
+
+----------------------------------------------------
+Navigation Properties-Regeln
+----------------------------------------------------
+
+- Navigation Relations werden in der Many-Entität mit der Konvention EntityNameId erstellt.
+- Navigation Properties müssen vollqualifiziert angegeben werden: 
+  ProjectName.Entities.EntityName EntityName
+- Für One-to-Many (1:n) gilt: 
+  public List<Type> EntityNames { get; set; } = [];
+- Für Einzelverweise (1:1, n:1) gilt: 
+  Type? EntityName { get; set; }
+
+----------------------------------------------------
+Dokumentation
+----------------------------------------------------
+
+- Jede Entität und alle ihre Properties müssen mit XML-Kommentaren dokumentiert werden.
+- Alle Kommentare sind in englischer Sprache zu schreiben.
+
+Beispiel:
+/// <summary>
+/// Name of the entity.
+/// </summary>
+public string Name { get; set; } = string.Empty;
+
+----------------------------------------------------
+Ausgabeformat
+----------------------------------------------------
+
+Alle Entitäten sollen in einem Canvas ausgegeben werden, wobei jede Entität ihren eigenen Namespace-Block erhält. Zum Beispiel:
+
+//@AiCode
+namespace SolutionName.Logic.Entities[.SubFolder]
+{
+    using System.... // Required usings
+
+    [Table("Entity1")]
+    public partial class Entity1 : EntityObject 
+    {
+        #region properties
+        #endregion properties
+
+        #region navigation properties
+        #endregion navigation properties
+    }
+}
+
+//@AiCode
+namespace SolutionName.Logic.Entities[.SubFolder]
+{
+    using System.... // Required usings
+
+    [Table("Entity2")]
+    public partial class Entity2 : EntityObject 
+    {
+        #region properties
+        #endregion properties
+
+        #region navigation properties
+        #endregion navigation properties
+    }
+}

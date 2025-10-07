@@ -1,0 +1,125 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "SETemplate.AngularApp": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/setemplate.angular-app",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js",
+              "@angular/localize/init"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/assets/vendor/bootstrap/bootstrap.min.css",
+              "src/assets/vendor/bootstrap-icons/bootstrap-icons.css",
+              "src/styles.css"
+            ],
+            "scripts": [
+            ],
+            "allowedCommonJsDependencies": [
+              "moment"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": false
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "950kB",
+                  "maximumError": "1.3MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "SETemplate.AngularApp:build:production"
+            },
+            "development": {
+              "buildTarget": "SETemplate.AngularApp:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 54091
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing",
+              "@angular/localize/init"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ],
+            "karmaConfig": "karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
