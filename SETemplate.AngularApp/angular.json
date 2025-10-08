@@ -37,7 +37,7 @@
             ],
             "styles": [
               "src/assets/vendor/bootstrap/bootstrap.min.css",
-              "src/assets/vendor/bootstrap-icons/bootstrap-icons.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
             "scripts": [
