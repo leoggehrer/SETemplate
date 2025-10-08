@@ -25,7 +25,7 @@ namespace TemplateTools.Logic.Generation
         /// </summary>
         /// <value>The full path of the project.</value>
         public string ProjectPath => Path.Combine(SolutionProperties.SolutionPath, ProjectName);
-        
+
         /// <summary>
         /// Initializes a new instance of the EntityProject class.
         /// </summary>
@@ -43,7 +43,7 @@ namespace TemplateTools.Logic.Generation
         {
             return new(solutionProperties);
         }
-        
+
         private IEnumerable<Type>? assemblyTypes;
         ///<summary>
         /// Gets or sets the types in the assembly.
@@ -61,7 +61,7 @@ namespace TemplateTools.Logic.Generation
                     if (SolutionProperties.CompileLogicAssemblyFilePath.HasContent() && File.Exists(SolutionProperties.CompileLogicAssemblyFilePath))
                     {
                         var assembly = Assembly.LoadFile(SolutionProperties.CompileLogicAssemblyFilePath!);
-                        
+
                         if (assembly != null)
                         {
                             try
@@ -77,7 +77,7 @@ namespace TemplateTools.Logic.Generation
                     if (assemblyTypes == null && SolutionProperties.LogicAssemblyFilePath.HasContent() && File.Exists(SolutionProperties.LogicAssemblyFilePath))
                     {
                         var assembly = Assembly.LoadFile(SolutionProperties.LogicAssemblyFilePath);
-                        
+
                         if (assembly != null)
                         {
                             try
@@ -116,21 +116,31 @@ namespace TemplateTools.Logic.Generation
         /// Gets the collection of view types, within the assembly.
         /// </summary>
         public IEnumerable<Type> AllViewTypes => AssemblyTypes.Where(t => t.IsClass
-                                                                         && t.IsAbstract == false
+                                                                         //&& t.IsAbstract == false
                                                                          && t.IsNested == false
                                                                          && t.Namespace != null
                                                                          && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
                                                                          && t.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.ViewObjectName)) != null);
 
         /// <summary>
+        /// Gets the collection of view set types, within the assembly.
+        /// </summary>
+        public IEnumerable<Type> ViewSetTypes => AllViewTypes.Where(t => t.IsAbstract == false);
+
+        /// <summary>
         /// Gets the collection of entity types, within the assembly.
         /// </summary>
         public IEnumerable<Type> AllEntityTypes => AssemblyTypes.Where(t => t.IsClass
-                                                                         && t.IsAbstract == false
+                                                                         //&& t.IsAbstract == false
                                                                          && t.IsNested == false
                                                                          && t.Namespace != null
                                                                          && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
                                                                          && t.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null);
+
+        /// <summary>
+        /// Gets the collection of entity set types, within the assembly.
+        /// </summary>
+        public IEnumerable<Type> EntitySetTypes => AllEntityTypes.Where(t => t.IsAbstract == false);
 
         /// <summary>
         /// Gets the collection of entity types, excluding certain types, within the assembly.
@@ -154,7 +164,7 @@ namespace TemplateTools.Logic.Generation
             || type.FullName!.EndsWith($".{StaticLiterals.Account}.Role")
             || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity")
             || type.FullName!.EndsWith($".{StaticLiterals.Account}.User");
-            
+
             return result;
         }
         /// <summary>

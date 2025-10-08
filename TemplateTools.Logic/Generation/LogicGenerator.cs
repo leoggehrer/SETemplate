@@ -107,7 +107,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
 
             result.Add("#region properties");
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.EntitySetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -130,7 +130,7 @@ namespace TemplateTools.Logic.Generation
                 }
             }
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -163,7 +163,7 @@ namespace TemplateTools.Logic.Generation
 
             bool first = false;
 
-            foreach (var type in entityProject.AllEntityTypes.Union(entityProject.AllViewTypes))
+            foreach (var type in entityProject.EntitySetTypes.Union(entityProject.ViewSetTypes))
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -186,7 +186,7 @@ namespace TemplateTools.Logic.Generation
 
             first = false;
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.EntitySetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -215,7 +215,7 @@ namespace TemplateTools.Logic.Generation
 
             first = false;
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -242,7 +242,7 @@ namespace TemplateTools.Logic.Generation
             result.Add($"static partial void OnViewModelCreating(ModelBuilder modelBuilder)");
             result.Add("{");
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -382,7 +382,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.AllEntityTypes.Where(e => e.IsAbstract == false))
             {
                 var itemType = Common.ItemType.EntitySet;
                 var defaultValue = (GenerateEntitySets && GetGenerateDefault(type)).ToString();
@@ -404,7 +404,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var itemType = Common.ItemType.ViewSet;
                 var defaultValue = (GenerateEntitySets && GetGenerateDefault(type)).ToString();
@@ -510,7 +510,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var itemType = Common.ItemType.ViewSetContract;
                 var defaultValue = (GenerateEntitySetContracts && GetGenerateDefault(type)).ToString();
@@ -555,7 +555,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.AllEntityTypes.Where(e => e.IsAbstract == false))
             {
                 var itemType = Common.ItemType.EntitySetContract;
                 var defaultValue = (GenerateEntitySetContracts && GetGenerateDefault(type)).ToString();
@@ -614,7 +614,7 @@ namespace TemplateTools.Logic.Generation
             result.Add($"partial interface {itemName}");
             result.Add("{");
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.EntitySetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -630,7 +630,7 @@ namespace TemplateTools.Logic.Generation
                 }
             }
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 

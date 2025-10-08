@@ -59,7 +59,7 @@ namespace TemplateTools.Logic.Generation
         public IEnumerable<IGeneratedItem> GenerateAll()
         {
             var result = new List<IGeneratedItem>();
-            
+
             result.AddRange(CreateModels());
             result.AddRange(CreateEntityControllers());
             result.AddRange(CreateViewControllers());
@@ -74,7 +74,7 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
-            
+
             foreach (var type in entityProject.EntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.WebApiModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
@@ -117,14 +117,14 @@ namespace TemplateTools.Logic.Generation
                 FileExtension = StaticLiterals.CSharpFileExtension,
                 SubFilePath = ItemProperties.CreateModelSubPath(type, ".Edit", StaticLiterals.CSharpFileExtension),
             };
-            
+
             result.AddRange(CreateComment(type));
             CreateModelAttributes(type, unitType, itemType, result.Source);
             result.Add($"public partial class {modelName}");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(modelName));
             result.AddRange(CreatePartialConstrutor("public", modelName));
-            
+
             foreach (var propertyInfo in filteredProperties.Where(pi => pi.CanWrite))
             {
                 result.AddRange(CreateComment(propertyInfo));
@@ -136,7 +136,7 @@ namespace TemplateTools.Logic.Generation
             result.FormatCSharpCode();
             return result;
         }
-        
+
         /// <summary>
         /// Creates controllers for entity types.
         /// </summary>
@@ -145,8 +145,8 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
-            
-            foreach (var type in entityProject.EntityTypes)
+
+            foreach (var type in entityProject.EntitySetTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.EntityController, type, StaticLiterals.Generate, GenerateControllers.ToString()))
                 {
@@ -219,7 +219,7 @@ namespace TemplateTools.Logic.Generation
 
             result.Add($"partial void BeforeToEntity(TModel model, ref TEntity outEntity, ref bool handled);");
             result.Add($"partial void AfterToEntity(TModel model, TEntity entity);");
-            
+
             result.Add("}");
             result.EnvelopeWithANamespace(ItemProperties.CreateControllerNamespace(type));
             result.FormatCSharpCode();
@@ -235,7 +235,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.ViewController, type, StaticLiterals.Generate, GenerateControllers.ToString()))
                 {
@@ -328,7 +328,7 @@ namespace TemplateTools.Logic.Generation
 
             if (GenerateContextAccessor)
             {
-                foreach (var type in entityProject.EntityTypes)
+                foreach (var type in entityProject.EntitySetTypes)
                 {
                     result.Add($"if (typeof(TEntity) == typeof({type.FullName}))");
                     result.Add("{");
@@ -346,7 +346,7 @@ namespace TemplateTools.Logic.Generation
 
             if (GenerateContextAccessor)
             {
-                foreach (var type in entityProject.AllViewTypes)
+                foreach (var type in entityProject.ViewSetTypes)
                 {
                     result.Add($"if (typeof(TView) == typeof({type.FullName}))");
                     result.Add("{");
@@ -378,7 +378,7 @@ namespace TemplateTools.Logic.Generation
         private T QuerySetting<T>(ItemType itemType, Type type, string valueName, string defaultValue)
         {
             T result;
-            
+
             try
             {
                 result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.WebApi, itemType, ItemProperties.CreateSubTypeFromEntity(type), valueName, defaultValue), typeof(T));
@@ -402,7 +402,7 @@ namespace TemplateTools.Logic.Generation
         private T QuerySetting<T>(ItemType itemType, string itemName, string valueName, string defaultValue)
         {
             T result;
-            
+
             try
             {
                 result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.WebApi, itemType, itemName, valueName, defaultValue), typeof(T));
