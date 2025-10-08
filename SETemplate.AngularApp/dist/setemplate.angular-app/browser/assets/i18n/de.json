@@ -1,0 +1,78 @@
+{
+  "APP": {
+    "TITLE": "SETemplate",
+    "BRAND": "SETemplate"
+  },
+  "NAVIGATION": {
+    "DASHBOARD": "Dashboard"
+  },
+  "AUTH": {
+    "LOGIN": "Anmelden",
+    "LOGOUT": "Abmelden",
+    "EMAIL": "E-Mail",
+    "PASSWORD": "Passwort",
+    "LOGIN_ERROR": "Anmeldung fehlgeschlagen"
+  },
+  "COMMON": {
+    "SAVE": "Speichern",
+    "CANCEL": "Abbrechen",
+    "DELETE": "Löschen",
+    "EDIT": "Bearbeiten",
+    "ADD": "Hinzufügen",
+    "CLOSE": "Schließen",
+    "REFRESH": "Aktualisieren",
+    "SEARCH": "Suchen",
+    "SEARCH_PLACEHOLDER": "Suche...",
+    "CONFIRM": "Bestätigen",
+    "YES": "Ja",
+    "NO": "Nein",
+    "OK": "OK",
+    "DELETE_CONFIRM": "Möchten Sie den Eintrag '{{item}}' löschen?",
+    "DELETE_TITLE": "Löschen bestätigen"
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "WELCOME": "Willkommen im SETemplate!",
+    "PUBLIC_ACCESS": "Öffentlicher Zugang",
+    "PROTECTED_AREA": "Geschützter Bereich",
+    "STATISTICS": "Statistiken",
+    "RECENT_ACTIVITIES": "Letzte Aktivitäten",
+    "CARDS": {
+      "DASHBOARD_TITLE": "Dashboard",
+      "DASHBOARD_TEXT": "Übersicht"
+    }
+  },
+  "MESSAGE_BOX": {
+    "TITLE": "Hinweis",
+    "CONFIRM_TITLE": "Bitte bestätigen",
+    "CONFIRM": "Bestätigen",
+    "CANCEL": "Abbrechen",
+    "OK": "OK",
+    "CLOSE": "Schließen",
+    "YES": "Ja",
+    "NO": "Nein",
+    "SHOW_DETAILS": "Details anzeigen",
+    "HIDE_DETAILS": "Details ausblenden",
+    "DETAILS": "Details"
+  },
+  "ERRORS": {
+    "GENERAL": "Ein Fehler ist aufgetreten",
+    "NETWORK": "Netzwerkfehler",
+    "VALIDATION": "Validierungsfehler",
+    "NOT_FOUND": "Nicht gefunden",
+    "UNAUTHORIZED": "Nicht autorisiert",
+    "CREATE_FAILED": "Fehler beim Erstellen",
+    "SAVE_FAILED": "Fehler beim Speichern",
+    "DELETE_FAILED": "Fehler beim Löschen"
+  },
+  "LANGUAGE": {
+    "TITLE": "Sprache"
+  },
+  "THEME": {
+    "TITLE": "Design",
+    "LIGHT": "Hell",
+    "DARK": "Dunkel",
+    "SWITCH_TO_LIGHT": "Zu hellem Design wechseln",
+    "SWITCH_TO_DARK": "Zu dunklem Design wechseln"
+  }
+}
