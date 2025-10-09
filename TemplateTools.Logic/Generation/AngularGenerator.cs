@@ -720,9 +720,9 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("@Directive()");
             result.Add($"export abstract class {entityName}BaseEditComponent extends GenericEditComponent<{modelName}> implements OnInit" + " {");
-            result.Add("  constructor(public override activeModal: NgbActiveModal)");
+            result.Add("  constructor()");
             result.Add("  {");
-            result.Add("    super(activeModal);");
+            result.Add("    super();");
             result.Add("  }");
 
             result.Add("  ngOnInit(): void {");
