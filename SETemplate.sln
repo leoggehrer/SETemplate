@@ -9,6 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{A288F100-2A15-4E8F-B686-8ACD1EB87D9D}"
 	ProjectSection(SolutionItems) = preProject
 		CodeGeneration.csv = CodeGeneration.csv
+		.github\copilot-instructions.md = .github\copilot-instructions.md
 		entityEdit.html = entityEdit.html
 		entityEdit.ts = entityEdit.ts
 		entityList.html = entityList.html
