@@ -46,6 +46,64 @@ namespace SETemplate.Logic.Modules.Security
         static partial void ClassConstructed();
         #endregion class constructor
 
+        #region Implemented check authorization for attribute
+        /// <summary>
+        /// Checks the authorization for a given session token, method, action, and roles.
+        /// </summary>
+        /// <param name="sessionToken">The session token.</param>
+        /// <param name="authorizeAttribute">The authorization attribute to evaluate.</param>
+        /// <param name="roles">The roles.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        internal static void CheckAuthorization(string? sessionToken, AuthorizeAttribute authorizeAttribute, params string[] roles)
+        {
+            if (string.IsNullOrEmpty(sessionToken))
+            {
+                if (authorizeAttribute.Required)
+                {
+                    throw new AuthorizationException(ErrorType.NotLogedIn);
+                }
+            }
+            else
+            {
+                var curSession = AccountManager.QueryLoginSession(sessionToken);
+
+                if (curSession == default)
+                    throw new AuthorizationException(ErrorType.InvalidSessionToken);
+
+                if (curSession.IsTimeout)
+                    throw new AuthorizationException(ErrorType.AuthorizationTimeOut);
+
+                if (IsAuthorized(authorizeAttribute, curSession, roles) == false)
+                    throw new AuthorizationException(ErrorType.NotAuthorized);
+
+                curSession.LastAccess = DateTime.UtcNow;
+            }
+        }
+        /// <summary>
+        /// Determines whether the specified authorize attribute permits access for the given login session and roles.
+        /// </summary>
+        /// <param name="authorizeAttribute">The authorization attribute to evaluate.</param>
+        /// <param name="loginSession">The login session of the user requesting access.</param>
+        /// <param name="roles">Additional roles to check for authorization.</param>
+        /// <returns>
+        /// <c>true</c> if authorization is not required, or if no specific roles are required, 
+        /// or if the login session contains at least one of the required roles; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsAuthorized(AuthorizeAttribute authorizeAttribute, LoginSession loginSession, params string[] roles)
+        {
+            var result = true;
+
+            if (authorizeAttribute.Required)
+            {
+                var allRoles = authorizeAttribute.Roles.Union(roles);
+
+                result = allRoles.Any() == false
+                       || loginSession.Roles.Any(lr => allRoles.Contains(lr.Designation));
+            }
+            return result;
+        }
+        #endregion Implemented check authorization for attribute
+
         #region Implemented check authorization for type
         /// <summary>
         /// Checks the authorization for a given session token, subject type, action, and roles.
@@ -141,8 +199,6 @@ namespace SETemplate.Logic.Modules.Security
         /// </summary>
         /// <param name="sessionToken">The session token.</param>
         /// <param name="methodBase">The method base.</param>
-        /// <param name="action">The action.</param>
-        /// <param name="infoData">The info data.</param>
         /// <param name="roles">The roles.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         internal static void CheckAuthorization(string? sessionToken, MethodBase methodBase, params string[] roles)
@@ -250,4 +306,5 @@ namespace SETemplate.Logic.Modules.Security
     }
 }
 #endif
+
 

@@ -112,6 +112,7 @@ namespace TemplateTools.Logic.Generation
         /// </value>
         public IEnumerable<Type> InterfaceTypes => AssemblyTypes.Where(t => t.IsInterface);
 
+        #region collections of view types
         /// <summary>
         /// Gets the collection of view types, within the assembly.
         /// </summary>
@@ -121,12 +122,10 @@ namespace TemplateTools.Logic.Generation
                                                                          && t.Namespace != null
                                                                          && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
                                                                          && t.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.ViewObjectName)) != null);
-
         /// <summary>
         /// Gets the collection of view set types, within the assembly.
         /// </summary>
         public IEnumerable<Type> ViewSetTypes => AllViewTypes.Where(t => t.IsAbstract == false);
-
         /// <summary>
         /// Gets the collection of entity types, within the assembly.
         /// </summary>
@@ -136,19 +135,34 @@ namespace TemplateTools.Logic.Generation
                                                                          && t.Namespace != null
                                                                          && t.Namespace!.Contains($".{StaticLiterals.EntitiesFolder}")
                                                                          && t.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null);
+        #endregion collections of view types
 
-        /// <summary>
-        /// Gets the collection of entity set types, within the assembly.
-        /// </summary>
-        public IEnumerable<Type> EntitySetTypes => AllEntityTypes.Where(t => t.IsAbstract == false);
-
+        #region collections of entity types
         /// <summary>
         /// Gets the collection of entity types, excluding certain types, within the assembly.
         /// </summary>
         public IEnumerable<Type> EntityTypes => AllEntityTypes.Where(t => t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.AccountFolder}.") == false
                                                                        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false
                                                                        && t.FullName!.Contains($"{StaticLiterals.EntitiesFolder}.{StaticLiterals.LoggingFolder}.") == false);
+        /// <summary>
+        /// Gets the collection of set entity types.
+        /// </summary>
+        public IEnumerable<Type> SetEntityTypes => AllEntityTypes.Where(t => t.IsAbstract == false);
+        /// <summary>
+        /// Gets the collection of contract entity types.
+        /// </summary>
+        public IEnumerable<Type> ContractEntityTypes => AllEntityTypes.Where(e => e.IsAbstract == false && EntityProject.IsAccountEntity(e) == false);
+        /// <summary>
+        /// Gets the collection of model entity types.
+        /// </summary>
+        public IEnumerable<Type> ModelEntityTypes => AllEntityTypes.Where(e => EntityProject.IsAccountEntity(e) == false);
+        /// <summary>
+        /// Gets the collection of component entity types.
+        /// </summary>
+        public IEnumerable<Type> ComponentEntityTypes => AllEntityTypes.Where(e => e.IsAbstract == false && EntityProject.IsAccountEntity(e) == false);
+        #endregion collections of entity types
 
+        #region properties of entity types.
         /// <summary>
         /// Determines if the specified <paramref name="type"/> is an account entity.
         /// </summary>
@@ -159,11 +173,11 @@ namespace TemplateTools.Logic.Generation
         public static bool IsAccountEntity(Type type)
         {
             var result = type.FullName!.EndsWith($".{StaticLiterals.Account}.Identity")
-            || type.FullName!.EndsWith($".{StaticLiterals.Account}.IdentityXRole")
-            || type.FullName!.EndsWith($".{StaticLiterals.Account}.LoginSession")
-            || type.FullName!.EndsWith($".{StaticLiterals.Account}.Role")
-            || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity")
-            || type.FullName!.EndsWith($".{StaticLiterals.Account}.User");
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.IdentityXRole")
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.LoginSession")
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.Role")
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity")
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.User");
 
             return result;
         }
@@ -220,6 +234,7 @@ namespace TemplateTools.Logic.Generation
         {
             return IsSystemEntity(type) == false;
         }
+        #endregion properties of entity types.
     }
 }
 

@@ -1,10 +1,8 @@
 ﻿//@BaseCode
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SETemplate.Logic.Contracts;
 using SETemplate.WebApi.Contracts;
 using System.Linq.Dynamic.Core;
-using System.Linq.Dynamic.Core.Exceptions;
 
 namespace SETemplate.WebApi.Controllers
 {
@@ -25,10 +23,6 @@ namespace SETemplate.WebApi.Controllers
         #endregion fields
 
         #region properties
-        /// <summary>
-        /// Gets the max count.
-        /// </summary>
-        protected virtual int MaxCount { get; } = 500;
         /// <summary>
         /// Gets the context accessor.
         /// </summary>
@@ -53,7 +47,7 @@ namespace SETemplate.WebApi.Controllers
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>
-        protected virtual IQueryable<TEntity> NoTrackingSet => EntitySet.AsNoTrackingSet();
+        //protected virtual IQueryable<TEntity> NoTrackingSet => EntitySet.AsNoTrackingSet();
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericEntityController{TModel, TEntity, TContract}"/> class.
         /// </summary>
@@ -132,7 +126,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual async Task<ActionResult<IEnumerable<TModel>>> GetAsync()
         {
-            var query = await NoTrackingSet.Take(MaxCount).ToArrayAsync();
+            var query = await EntitySet.GetAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);
@@ -145,43 +139,15 @@ namespace SETemplate.WebApi.Controllers
         /// <returns>A list of models.</returns>
         [HttpPost("query")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public virtual async Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody] Models.QueryParams queryParams)
+        public virtual async Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody] Logic.Models.QueryParams queryParams)
         {
             if (string.IsNullOrWhiteSpace(queryParams.Filter))
                 return BadRequest("The filter printout must not be empty.");
 
-            try
-            {
-                var set = NoTrackingSet;
-                var query = default(TEntity[]);
+            var query = await EntitySet.QueryAsync(queryParams);
+            var result = query.Select(e => ToModel(e));
 
-                foreach (var include in queryParams.Includes ?? Array.Empty<string>())
-                {
-                    if (!string.IsNullOrWhiteSpace(include))
-                        set = set.Include(include);
-                }
-
-                if (queryParams.Filter != null
-                    && queryParams.Values != null
-                    && queryParams.Values.Length > 0)
-                {
-                    query = await set.Where(ParsingConfig, queryParams.Filter, queryParams.Values)
-                                     .Take(MaxCount)
-                                     .ToArrayAsync();
-                }
-                else
-                {
-                    query = await set.Take(MaxCount)
-                                     .ToArrayAsync();
-                }
-                var result = query.Select(ToModel).ToArray();
-
-                return Ok(result);
-            }
-            catch (ParseException ex)
-            {
-                return BadRequest($"Invalid filter expression: {ex.Message}");
-            }
+            return Ok(result);
         }
     }
 }

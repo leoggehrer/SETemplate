@@ -83,9 +83,9 @@ namespace SETemplate.CodeGenApp
         /// <param name="args">The arguments passed to the program.</param>
         static void Main(string[] args)
         {
-            var app1 = new CodeGeneratorApp();
+            var app = new CodeGeneratorApp();
 
-            app1.Run(args);
+            app.Run(args);
         }
         #region Console methods
         

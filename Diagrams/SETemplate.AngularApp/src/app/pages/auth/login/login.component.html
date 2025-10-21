@@ -1,0 +1,24 @@
+﻿<!--@CodeCopy-->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">{{ 'AUTH.LOGIN' | translate }}</div>
+        <div class="card-body">
+          <form (submit)="onLogin(); $event.preventDefault()">
+            <div class="mb-3">
+              <label for="email" class="form-label">{{ 'AUTH.EMAIL' | translate }}</label>
+              <input type="text" id="email" [(ngModel)]="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">{{ 'AUTH.PASSWORD' | translate }}</label>
+              <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">{{ 'AUTH.LOGIN' | translate }}</button>
+            <div *ngIf="error" class="alert alert-danger mt-2" style="white-space: pre-wrap;">{{ error }}</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

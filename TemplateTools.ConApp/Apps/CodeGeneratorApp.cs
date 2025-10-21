@@ -161,11 +161,21 @@ namespace TemplateTools.ConApp.Apps
                     Text = ToLabelText("Source path", "Change the source solution path"),
                     Action = (self) =>
                     {
-                        var result = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath);
+                        var previousPath = CodeSolutionPath;
+                        var pathChangerApp = new PathChangerApp(
+                            "Template Code Generator",
+                            "Code solution path",
+                            () => CodeSolutionPath,
+                            (value) => CodeSolutionPath = value);
 
-                        if (result.HasContent())
+                         pathChangerApp.Run([]);
+
+                        if (string.IsNullOrEmpty(CodeSolutionPath) || Directory.GetFiles(CodeSolutionPath, "*.sln").Length == 0)
                         {
-                            CodeSolutionPath = result;
+                            PrintLine();
+                            PrintErrorLine("The selected solution path is invalid or does not exist.");
+                            CodeSolutionPath = previousPath;
+                            Thread.Sleep(3000);
                         }
                     }
                 },

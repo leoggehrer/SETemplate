@@ -72,7 +72,6 @@ namespace TemplateTools.Logic.Generation
         {
             return EntityProject.IsCustomEntity(type);
         }
-
         /// <summary>
         /// Creates entity contracts.
         /// </summary>
@@ -82,11 +81,11 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 var defaultValue = (GenerateEntityContracts && GetGenerateDefault(type)).ToString();
 
-                if (CanCreate(type) 
+                if (CanCreate(type)
                     && QuerySetting<bool>(Common.ItemType.EntityContract, type, StaticLiterals.Generate, defaultValue))
                 {
                     result.Add(CreateEntityContract(type, Common.UnitType.Common, Common.ItemType.EntityContract));

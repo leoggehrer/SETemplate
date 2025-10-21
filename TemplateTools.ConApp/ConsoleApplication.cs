@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using TemplateTools.Logic;
 
 namespace TemplateTools.ConApp
@@ -60,6 +59,14 @@ namespace TemplateTools.ConApp
         partial void Constructed();
         #endregion Instance-Constructors
 
+        #region properties
+        /// <summary>
+        /// Gets or sets the path to the repositories directory.
+        /// Defaults to <see cref="SourcePath"/> if no repos directory is found.
+        /// </summary>
+        protected static string ReposPath { get; set; } = SourcePath;
+        #endregion properties
+
         #region overrides
         /// <summary>
         /// Creates the menu items for exiting the application.
@@ -88,7 +95,18 @@ namespace TemplateTools.ConApp
         #endregion overrides
 
         #region methods
-        protected static string ReposPath { get; set; } = SourcePath;
+        /// <summary>
+        /// Prints an error message to the console in red color.
+        /// </summary>
+        /// <param name="message">The error message to display.</param>
+        protected void PrintErrorLine(string message)
+        {
+            var saveForegroundColor = ForegroundColor;
+
+            ForegroundColor = ConsoleColor.Red;
+            PrintLine(message);
+            ForegroundColor = saveForegroundColor;
+        }
         /// <summary>
         /// Retrieves a collection of source code files from a given directory path.
         /// </summary>
@@ -294,11 +312,10 @@ namespace TemplateTools.ConApp
             Process.Start(psi);
         }
         /// <summary>
-        /// Opens a html file in the default browser for the current operating system.
+        /// Opens a URL in the default web browser for the current operating system.
         /// </summary>
-        /// <param name="filePath">The full path to the html file to open.</param>
-        /// <exception cref="FileNotFoundException">Thrown if the specified file does not exist.</exception>
-        /// <exception cref="PlatformNotSupportedException">Thrown if the operating system is not supported.</exception>
+        /// <param name="url">The URL to open in the browser.</param>
+        /// <exception cref="PlatformNotSupportedException">Thrown if the operating system is not supported and no fallback method works.</exception>
         protected static void OpenBrowser(string url)
         {
             try

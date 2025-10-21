@@ -107,7 +107,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("{");
 
             result.Add("#region properties");
-            foreach (var type in entityProject.EntitySetTypes)
+            foreach (var type in entityProject.SetEntityTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -163,7 +163,7 @@ namespace TemplateTools.Logic.Generation
 
             bool first = false;
 
-            foreach (var type in entityProject.EntitySetTypes.Union(entityProject.ViewSetTypes))
+            foreach (var type in entityProject.SetEntityTypes.Union(entityProject.ViewSetTypes))
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -186,7 +186,7 @@ namespace TemplateTools.Logic.Generation
 
             first = false;
 
-            foreach (var type in entityProject.EntitySetTypes)
+            foreach (var type in entityProject.SetEntityTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
@@ -309,7 +309,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 var itemtype = Common.ItemType.EntityContract;
                 var defaultValue = (GenerateEntityContracts && GetGenerateDefault(type)).ToString();
@@ -600,6 +600,7 @@ namespace TemplateTools.Logic.Generation
         private GeneratedItem CreateDbContextContract(Common.UnitType unitType, Common.ItemType itemType)
         {
             var entityProject = EntityProject.Create(SolutionProperties);
+            var entityTypes = entityProject.SetEntityTypes.Where(e => EntityProject.IsAccountEntity(e) == false);
             var itemName = StaticLiterals.ContextContractName;
             var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
             var subPath = $"{StaticLiterals.ContractsFolder}";
@@ -614,7 +615,7 @@ namespace TemplateTools.Logic.Generation
             result.Add($"partial interface {itemName}");
             result.Add("{");
 
-            foreach (var type in entityProject.EntitySetTypes)
+            foreach (var type in entityTypes)
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 

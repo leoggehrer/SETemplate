@@ -54,6 +54,16 @@ namespace TemplateTools.ConApp.Apps
 
         #region overrides
         /// <summary>
+        /// Prints the header for the application.
+        /// </summary>
+        protected override void PrintHeader()
+        {
+            List<KeyValuePair<string, object>> headerParams = [new("Solution path:", SolutionPath)];
+
+            base.PrintHeader("Template Tools", [.. headerParams]);
+        }
+
+        /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>
         /// <returns>An array of MenuItem objects representing the menu items.</returns>
@@ -69,24 +79,30 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
-
                 new()
                 {
                     Key = $"{++mnuIdx}",
                     Text = ToLabelText("Path", "Change solution path"),
                     Action = (self) =>
                     {
-                        var parentPath = Path.GetDirectoryName(SolutionPath);
+                        var previousPath = SolutionPath;
+                        var pathChangerApp = new PathChangerApp(
+                            "Template Tools",
+                            "Source solution path",
+                            () => SolutionPath,
+                            (value) => SolutionPath = value);
 
-                        if (string.IsNullOrEmpty(parentPath) || !Directory.Exists(parentPath))
+                        pathChangerApp.Run([]);
+
+                        if (string.IsNullOrEmpty(SolutionPath) || Directory.GetFiles(SolutionPath, "*.sln").Length == 0)
                         {
-                            Console.WriteLine("The current solution path is invalid or does not exist.");
-                            parentPath = ReposPath;
+                            PrintLine();
+                            PrintErrorLine("The selected solution path is invalid or does not exist.");
+                            SolutionPath = previousPath;
+                            Thread.Sleep(3000);
                         }
-                       SolutionPath = SelectOrChangeToPath(parentPath, MaxSubPathDepth, "*.sln", ReposPath);
                     },
                 },
-
                 new()
                 {
                     Key = "----",
@@ -94,7 +110,6 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
-
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
@@ -154,7 +169,6 @@ namespace TemplateTools.ConApp.Apps
                     Text = string.Empty,
                     Action = (self) => new CodeManagerApp().Run(AppArgs),
                 },
-
                 new()
                 {
                     Key = "----",
@@ -162,7 +176,6 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
-
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
@@ -174,15 +187,6 @@ namespace TemplateTools.ConApp.Apps
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
 
-        /// <summary>
-        /// Prints the header for the application.
-        /// </summary>
-        protected override void PrintHeader()
-        {
-            List<KeyValuePair<string, object>> headerParams = [new("Solution path:", SolutionPath)];
-
-            base.PrintHeader("Template Tools", [.. headerParams]);
-        }
         /// <summary>
         /// Performs any necessary setup or initialization before running the application.
         /// </summary>

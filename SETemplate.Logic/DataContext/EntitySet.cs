@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SETemplate.Logic.Contracts;
 using System.Reflection;
 
@@ -11,12 +10,58 @@ namespace SETemplate.Logic.DataContext
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="context">The database context.</param>
     /// <param name="dbSet">The set of entities.</param>
-    internal abstract partial class EntitySet<TEntity>(ProjectDbContext context, DbSet<TEntity> dbSet) : IEntitySet<TEntity>, IDisposable
+    internal abstract partial class EntitySet<TEntity> : IEntitySet<TEntity>, IDisposable
         where TEntity : Entities.EntityObject, new()
     {
+        #region constructors
+        /// <summary>
+        /// Initializes the static ApiControllerBase class.
+        /// </summary>
+        static EntitySet()
+        {
+            ClassConstructing();
+            ClassConstructed();
+        }
+        /// <summary>
+        /// Represents a partial method called before the constructor of the class is executed.
+        /// </summary>
+        /// <remarks>
+        /// This method is automatically generated and can be implemented in partial classes.
+        /// </remarks>
+        static partial void ClassConstructing();
+        /// <summary>
+        /// This method is called after the class is constructed.
+        /// </summary>
+        static partial void ClassConstructed();
+
+        /// <summary>
+        /// Initializes a new instance of the ApiControllerBase class.
+        /// </summary>
+        internal EntitySet(ProjectDbContext context, DbSet<TEntity> dbSet)
+        {
+            Constructing();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _dbSet = dbSet ?? throw new ArgumentNullException(nameof(dbSet));
+            Constructed();
+        }
+        /// <summary>
+        /// This method is called during the construction of the object.
+        /// </summary>
+        /// <remarks>
+        /// This method can be overridden by a partial class to include additional custom logic.
+        /// It is defined as "partial" so that multiple partial classes can provide their own implementation of this method.
+        /// </remarks>
+        partial void Constructing();
+        /// <summary>
+        /// This method is called after the object has been initialized.
+        /// It represents a partial method without an implementation.
+        /// </summary>
+        partial void Constructed();
+        #endregion constructors
+
         #region fields
-        private ProjectDbContext? _context = context;
-        private DbSet<TEntity>? _dbSet = dbSet;
+        private ProjectDbContext? _context;
+        private DbSet<TEntity>? _dbSet;
         #endregion fields
 
         #region properties
@@ -54,17 +99,6 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
-        /// Returns an <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.
-        /// </summary>
-        /// <returns>An <see cref="IQueryable{TEntity}"/> that can be used to query the set of entities without tracking changes.</returns>
-        public virtual IQueryable<TEntity> AsNoTrackingSet()
-        {
-            BeforeReadAccessing(MethodBase.GetCurrentMethod()!);
-
-            return ExecuteAsNoTrackingSet();
-        }
-
-        /// <summary>
         /// Returns the element of type T with the identification of id.
         /// </summary>
         /// <param name="id">The identification.</param>
@@ -74,6 +108,51 @@ namespace SETemplate.Logic.DataContext
             BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
             return ExecuteGetByIdAsync(id);
+        }
+
+        /// <summary>
+        /// Returns the entity with the specified identifier without tracking.
+        /// </summary>
+        /// <param name="id">The identifier of the entity.</param>
+        /// <returns>The entity with the specified identifier, or null if not found.</returns>
+        public virtual Task<TEntity?> QueryByIdAsync(IdType id)
+        {
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+
+            return ExecuteQueryByIdAsync(id);
+        }
+
+        /// <summary>
+        /// Retrieves all entities from the set without tracking changes.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a collection of entities limited to <see cref="MaxCount"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method queries entities without change tracking for better performance when read-only access is needed.
+        /// The results are automatically limited to the maximum count defined by <see cref="MaxCount"/> to prevent excessive data retrieval.
+        /// </remarks>
+        public virtual Task<IEnumerable<TEntity>> GetAsync()
+        {
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+
+            return ExecuteGetAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously queries entities from the set based on the provided query parameters.
+        /// </summary>
+        /// <param name="queryParams">The query parameters containing filter expression, filter values, and navigation properties to include.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of entities matching the query criteria.</returns>
+        /// <remarks>
+        /// This method applies the filter expression with the provided values and includes the specified navigation properties.
+        /// The query is executed against the database without tracking changes.
+        /// </remarks>
+        public virtual Task<IEnumerable<TEntity>> QueryAsync(Models.QueryParams queryParams)
+        {
+            BeforeReadAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
+
+            return ExecuteQueryAsync(queryParams);
         }
 
         /// <summary>
@@ -157,27 +236,74 @@ namespace SETemplate.Logic.DataContext
         }
         #endregion internal methods
 
-        #region partial methods
+        #region access methods
         /// <summary>
         /// Method that is called before accessing any read operation in the EntitySet class.
         /// </summary>
         /// <param name="methodBase">The method that is being accessed.</param>
-        partial void BeforeReadAccessing(MethodBase methodBase);
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void BeforeReadAccessing(MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessBeforeReading(methodBase, roles);
+        }
         /// <summary>
         /// Method that is called before accessing any create operation in the EntitySet class.
         /// </summary>
         /// <param name="methodBase">The method that is being accessed.</param>
-        partial void BeforeCreateAccessing(MethodBase methodBase);
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void BeforeCreateAccessing(MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessBeforeCreating(methodBase, roles);
+        }
         /// <summary>
         /// Method that is called before accessing any update operation in the EntitySet class.
         /// </summary>
         /// <param name="methodBase">The method that is being accessed.</param>
-        partial void BeforeUpdateAccessing(MethodBase methodBase);
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void BeforeUpdateAccessing(MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessBeforeUpdating(methodBase, roles);
+        }
         /// <summary>
         /// Method that is called before accessing any delete operation in the EntitySet class.
         /// </summary>
         /// <param name="methodBase">The method that is being accessed.</param>
-        partial void BeforeDeleteAccessing(MethodBase methodBase);
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void BeforeDeleteAccessing(MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessBeforeDeleting(methodBase, roles);
+        }
+        #endregion access methods
+
+        #region partial methods
+        /// <summary>
+        /// Partial method that is invoked before performing any read operation on the entity set.
+        /// Implement this method in a partial class to add custom authorization or validation logic before reading data.
+        /// </summary>
+        /// <param name="methodBase">The reflection metadata of the method being accessed for the read operation.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        partial void CheckAccessBeforeReading(MethodBase methodBase, params string[] roles);
+        /// <summary>
+        /// Partial method that is invoked before performing any create operation on the entity set.
+        /// Implement this method in a partial class to add custom authorization or validation logic before creating entities.
+        /// </summary>
+        /// <param name="methodBase">The reflection metadata of the method being accessed for the create operation.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        partial void CheckAccessBeforeCreating(MethodBase methodBase, params string[] roles);
+        /// <summary>
+        /// Partial method that is invoked before performing any update operation on the entity set.
+        /// Implement this method in a partial class to add custom authorization or validation logic before updating entities.
+        /// </summary>
+        /// <param name="methodBase">The reflection metadata of the method being accessed for the update operation.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        partial void CheckAccessBeforeUpdating(MethodBase methodBase, params string[] roles);
+        /// <summary>
+        /// Partial method that is invoked before performing any delete operation on the entity set.
+        /// Implement this method in a partial class to add custom authorization or validation logic before deleting entities.
+        /// </summary>
+        /// <param name="methodBase">The reflection metadata of the method being accessed for the delete operation.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        partial void CheckAccessBeforeDeleting(MethodBase methodBase, params string[] roles);
         #endregion partial methods
     }
 }

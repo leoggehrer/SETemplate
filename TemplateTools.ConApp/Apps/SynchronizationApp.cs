@@ -65,6 +65,10 @@ namespace TemplateTools.ConApp.Apps
         /// </summary>
         private string CodeSolutionPath { get; set; }
         /// <summary>
+        /// Gets or sets the repos paths.
+        /// </summary>
+        private string TargetReposPath { get; set; } = ConsoleApplication.ReposPath;
+        /// <summary>
         /// Gets or sets the target paths.
         /// </summary>
         /// <value>
@@ -78,13 +82,6 @@ namespace TemplateTools.ConApp.Apps
         /// An array of strings representing the target paths to be added.
         /// </value>
         private string[] AddTargetPaths { get; set; }
-        /// <summary>
-        /// Gets an array of search patterns used for searching source files.
-        /// </summary>
-        /// <value>
-        /// An array of search patterns.
-        /// </value>
-        private static string[] SearchPatterns => CommonStaticLiterals.SourceFileExtensions.Split('|');
         /// <summary>
         /// Gets or sets the source labels.
         /// </summary>
@@ -102,6 +99,22 @@ namespace TemplateTools.ConApp.Apps
         #endregion Properties
 
         #region overrides
+        /// <summary>
+        /// Prints the header for the application.
+        /// </summary>
+        protected override void PrintHeader()
+        {
+            List<KeyValuePair<string, object>> headerParams = [new("Balance labels(s):", string.Empty)];
+            for (int i = 0; i < SourceLabels.Length && i < TargetLabels.Length; i++)
+            {
+                headerParams.Add(new($"  {SourceLabels[i],-15} =>", TargetLabels[i]));
+            }
+            headerParams.Add(new("Solution path:", CodeSolutionPath));
+            headerParams.Add(new(new string('-', 20), ""));
+            headerParams.Add(new("Repos path:", TargetReposPath));
+
+            base.PrintHeader("Template Synchronization", [.. headerParams]);
+        }
         /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>
@@ -123,10 +136,25 @@ namespace TemplateTools.ConApp.Apps
                 new()
                 {
                     Key = (++mnuIdx).ToString(),
-                    Text = ToLabelText("Path", "Change the source solution path"),
+                    Text = ToLabelText("Path", "Change the repos path"),
                     Action = (self) =>
                     {
-                        CodeSolutionPath = ChangeTemplateSolutionPath(CodeSolutionPath, MaxSubPathDepth, ReposPath);
+                        var previousPath = TargetReposPath;
+                        var pathChangerApp = new PathChangerApp(
+                            "Template Synchronization",
+                            "Repos path",
+                            () => TargetReposPath,
+                            (value) => TargetReposPath = value);
+
+                        pathChangerApp.Run([]);
+
+                        if (string.IsNullOrEmpty(TargetReposPath))
+                        {
+                            PrintLine();
+                            PrintErrorLine("The selected solution path is invalid or does not exist.");
+                            TargetReposPath = previousPath;
+                            Thread.Sleep(3000);
+                        }
                     }
                 },
                 new()
@@ -143,10 +171,10 @@ namespace TemplateTools.ConApp.Apps
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
             };
-            BeforeGetTargetPaths(ReposPath, targetPaths, ref handled);
+            BeforeGetTargetPaths(TargetReposPath, targetPaths, ref handled);
             if (handled == false)
             {
-                targetPaths.AddRange(TemplatePath.GetTemplateSolutions(ReposPath));
+                targetPaths.AddRange(TemplatePath.GetTemplateSolutions(TargetReposPath));
                 targetPaths.AddRange(AddTargetPaths);
             }
             else
@@ -154,7 +182,7 @@ namespace TemplateTools.ConApp.Apps
                 targetPaths.AddRange(AddTargetPaths);
             }
             targetPaths.Remove(CodeSolutionPath);
-            AfterGetTargetPaths(ReposPath, targetPaths);
+            AfterGetTargetPaths(TargetReposPath, targetPaths);
 
             TargetPaths = [.. targetPaths.Distinct().Order()];
 
@@ -164,7 +192,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     Key = (++mnuIdx).ToString(),
                     OptionalKey = "a",
-                    Text = ToLabelText("Synchronize with", $"{path.Replace(ReposPath, ".")}", 19, ' '),
+                    Text = ToLabelText("Synchronize with", $"{path.Replace(TargetReposPath, ".")}", 19, ' '),
                     Action = (self) =>
                     {
                         var targetPath = self.Params["path"]?.ToString() ?? string.Empty;
@@ -175,20 +203,6 @@ namespace TemplateTools.ConApp.Apps
                 });
             }
             return [.. menuItems.Union(CreateExitMenuItems())];
-        }
-        /// <summary>
-        /// Prints the header for the application.
-        /// </summary>
-        protected override void PrintHeader()
-        {
-            List<KeyValuePair<string, object>> headerParams = [new("Balance labels(s):", string.Empty)];
-            for (int i = 0; i < SourceLabels.Length && i < TargetLabels.Length; i++)
-            {
-                headerParams.Add(new($"  {SourceLabels[i],-15} =>", TargetLabels[i]));
-            }
-            headerParams.Add(new("Source code path:", CodeSolutionPath));
-
-            base.PrintHeader("Template Synchronization", [.. headerParams]);
         }
         #endregion overrides
 

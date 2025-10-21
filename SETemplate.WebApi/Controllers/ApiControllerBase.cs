@@ -1,6 +1,5 @@
 ﻿//@BaseCode
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Dynamic.Core;
 
 namespace SETemplate.WebApi.Controllers
 {
@@ -28,26 +27,6 @@ namespace SETemplate.WebApi.Controllers
         /// This method is called after the class is constructed.
         /// </summary>
         static partial void ClassConstructed();
-
-        #region properties
-        protected ParsingConfig ParsingConfig
-        {
-            get
-            {
-                return new ParsingConfig
-                {
-                    // Erlaubt Class-Names („DateTime“) ohne Namensraum
-                    ResolveTypesBySimpleName = true,
-
-                    // Verhindert, dass über „new“ beliebige Typen zur Laufzeit erzeugt werden
-                    AllowNewToEvaluateAnyType = false,
-
-                    // Optional: Wenn du LINQ.GroupBy schon auf der Datenbank ausführen lassen willst:
-                    EvaluateGroupByAtDatabase = true,
-                };
-            }
-        }
-        #endregion properties
 
         /// <summary>
         /// Initializes a new instance of the ApiControllerBase class.

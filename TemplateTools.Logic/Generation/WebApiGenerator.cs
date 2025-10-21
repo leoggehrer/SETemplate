@@ -75,7 +75,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.WebApiModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
                 {
@@ -145,8 +145,9 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
+            var entityTypes = entityProject.SetEntityTypes.Where(e => EntityProject.IsAccountEntity(e) == false);
 
-            foreach (var type in entityProject.EntitySetTypes)
+            foreach (var type in entityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.EntityController, type, StaticLiterals.Generate, GenerateControllers.ToString()))
                 {
@@ -307,6 +308,7 @@ namespace TemplateTools.Logic.Generation
         private GeneratedItem CreateContextAccessor(UnitType unitType, ItemType itemType)
         {
             var entityProject = EntityProject.Create(SolutionProperties);
+            var entityTypes = entityProject.SetEntityTypes.Where(e => EntityProject.IsAccountEntity(e) == false);
             var itemName = StaticLiterals.ContextAccessor;
             var controllerNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ControllersFolder}";
             var contractNamespace = $"{ItemProperties.ProjectNamespace}.{StaticLiterals.ContractsFolder}";
@@ -328,7 +330,7 @@ namespace TemplateTools.Logic.Generation
 
             if (GenerateContextAccessor)
             {
-                foreach (var type in entityProject.EntitySetTypes)
+                foreach (var type in entityTypes)
                 {
                     result.Add($"if (typeof(TEntity) == typeof({type.FullName}))");
                     result.Add("{");

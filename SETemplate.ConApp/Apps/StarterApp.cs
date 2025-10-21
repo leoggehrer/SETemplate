@@ -192,7 +192,7 @@ namespace SETemplate.ConApp.Apps
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in {MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error in {System.Reflection.MethodBase.GetCurrentMethod()!.Name}: {ex.Message}");
             }
 
             return result ?? Logic.DataContext.Factory.CreateContext();
@@ -207,7 +207,7 @@ namespace SETemplate.ConApp.Apps
         partial void BeforeInitDatabase();
         partial void AfterInitDatabase();
 #if ACCOUNT_ON
-        partial void CreateAccounts();
+        static partial void CreateAccounts();
 #endif
         #endregion partial methods
     }

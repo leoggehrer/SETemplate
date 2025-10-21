@@ -51,6 +51,26 @@ namespace TemplateTools.ConApp.Apps
 
         #region overrides
         /// <summary>
+        /// Prints the header for the application.
+        /// </summary>
+        /// <param name="sourcePath">The path of the solution.</param>
+        protected override void PrintHeader()
+        {
+            var solutionProperties = SolutionProperties.Create(SourceSolutionPath);
+            var sourceSolutionName = solutionProperties.SolutionName;
+            var sourceLabel = $"'{sourceSolutionName}' from:";
+            var targetLabel = $"'{TargetSolutionName}' to:";
+
+            List<KeyValuePair<string, object>> headerParams =
+            [
+                new(sourceLabel, SourceSolutionPath),
+                new("  -> copy ->  ", string.Empty),
+                new(targetLabel, Path.Combine(TargetSolutionSubPath, TargetSolutionName)),
+            ];
+
+            base.PrintHeader("Template Copier", [.. headerParams]);
+        }
+        /// <summary>
         /// Creates an array of menu items for the application menu.
         /// </summary>
         /// <returns>An array of MenuItem objects representing the menu items.</returns>
@@ -68,26 +88,56 @@ namespace TemplateTools.ConApp.Apps
                     Action = (self) => { },
                     ForegroundColor = ConsoleColor.DarkGreen,
                 },
-
-                new()
-                {
-                    Key = $"{++mnuIdx}",
-                    Text = ToLabelText($"{MaxSubPathDepth}", "Change max sub path depth"),
-                    Action = (self) => ChangeMaxSubPathDepth(),
-                },
                 new()
                 {
                     Key = $"{++mnuIdx}",
                     OptionalKey = "sourcepath",
                     Text = ToLabelText("Source path", "Change the source solution path"),
-                    Action = (self) => SourceSolutionPath = ChangeTemplateSolutionPath(SourceSolutionPath, MaxSubPathDepth, ReposPath),
+                    Action = (self) =>
+                    {
+                        var previousPath = SourceSolutionPath;
+                        var pathChangerApp = new PathChangerApp(
+                             "Template Copier",
+                             "Source solution path",
+                             () => SourceSolutionPath,
+                             (value) => SourceSolutionPath = value,
+                             (path) => Directory.GetFiles(path, "*.sln").Length > 0);
+
+                        pathChangerApp.Run([]);
+
+                        if (string.IsNullOrEmpty(SourceSolutionPath) || Directory.GetFiles(SourceSolutionPath, "*.sln").Length == 0)
+                        {
+                            PrintLine();
+                            PrintErrorLine("The selected solution path is invalid or does not exist.");
+                            SourceSolutionPath = previousPath;
+                            Thread.Sleep(3000);
+                        }
+                    },
                 },
                 new()
                 {
                     Key = $"{++mnuIdx}",
                     OptionalKey = "targetpath",
                     Text = ToLabelText("Target path", "Change the target solution path"),
-                    Action = (self) => TargetSolutionSubPath = SelectOrChangeToSubPath(TargetSolutionSubPath, MaxSubPathDepth, ReposPath),
+                    Action = (self) =>
+                    {
+                        var previousPath = TargetSolutionSubPath;
+                        var pathChangerApp = new PathChangerApp(
+                            "Template Copier",
+                            "Target solution path",
+                            () => TargetSolutionSubPath,
+                            (value) => TargetSolutionSubPath = value);
+
+                        pathChangerApp.Run([]);
+
+                        if (string.IsNullOrEmpty(TargetSolutionSubPath))
+                        {
+                            PrintLine();
+                            PrintErrorLine("The selected solution path is invalid or does not exist.");
+                            TargetSolutionSubPath = previousPath;
+                            Thread.Sleep(3000);
+                        }
+                    },
                 },
                 new()
                 {
@@ -128,28 +178,6 @@ namespace TemplateTools.ConApp.Apps
             }
 
             return [.. menuItems.Union(CreateExitMenuItems())];
-        }
-        /// <summary>
-        /// Prints the header for the application.
-        /// </summary>
-        /// <param name="sourcePath">The path of the solution.</param>
-        protected override void PrintHeader()
-        {
-            var solutionProperties = SolutionProperties.Create(SourceSolutionPath);
-            var sourceSolutionName = solutionProperties.SolutionName;
-            var forceLabel = "Force:";
-            var sourceLabel = $"'{sourceSolutionName}' from:";
-            var targetLabel = $"'{TargetSolutionName}' to:";
-
-            List<KeyValuePair<string, object>> headerParams =
-            [
-                new(forceLabel, $"{Force}"),
-                new(sourceLabel, SourceSolutionPath),
-                new("  -> copy ->  ", string.Empty),
-                new(targetLabel, Path.Combine(TargetSolutionSubPath, TargetSolutionName)),
-            ];
-
-            base.PrintHeader("Template Copier", [.. headerParams]);
         }
         /// <summary>
         /// Performs any necessary setup or initialization before running the application.

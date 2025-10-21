@@ -29,6 +29,6 @@ namespace SETemplate.WebApi.Contracts
         /// </summary>
         /// <param name="queryParams">The query parameters containing predicates and values.</param>
         /// <returns>An <see cref="ActionResult"/> containing an enumerable of <typeparamref name="TModel"/> that match the query.</returns>
-        Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody] Models.QueryParams queryParams);
+        Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody] Logic.Models.QueryParams queryParams);
     }
 }

@@ -68,7 +68,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
                 {
@@ -138,7 +138,7 @@ namespace TemplateTools.Logic.Generation
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.EntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(ItemType.MVVMAppModel, type, StaticLiterals.Generate, GenerateViewModels.ToString()))
                 {

@@ -217,7 +217,7 @@ namespace TemplateTools.Logic.Generation
             var entityProject = EntityProject.Create(SolutionProperties);
 
             result.Add(CreateBaseModel());
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ModelEntityTypes)
             {
                 if (CanCreate(type)
                     && QuerySetting<bool>(Common.ItemType.TypeScriptModel, type, StaticLiterals.Generate, GenerateModels.ToString()))
@@ -248,7 +248,7 @@ namespace TemplateTools.Logic.Generation
         /// <returns>
         /// An <see cref="IGeneratedItem"/> representing the generated base model TypeScript code.
         /// </returns>
-        public IGeneratedItem CreateBaseModel()
+        public static IGeneratedItem CreateBaseModel()
         {
             var modelName = "IKeyModel";
             var fileName = $"{ConvertFileItem(modelName)}{StaticLiterals.TSFileExtension}";
@@ -582,21 +582,21 @@ namespace TemplateTools.Logic.Generation
             var result = new List<Models.GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ComponentEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
                     result.Add(CreateEntityBaseListComponentFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptListComponent));
                 }
             }
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ComponentEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptEditComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
                     result.Add(CreateEntityBaseEditComponentFromType(type, Common.UnitType.AngularApp, Common.ItemType.TypeScriptEditComponent));
                 }
             }
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
@@ -604,7 +604,7 @@ namespace TemplateTools.Logic.Generation
                 }
             }
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityProject.ComponentEntityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptPageListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
@@ -618,7 +618,7 @@ namespace TemplateTools.Logic.Generation
                 }
             }
 
-            foreach (var type in entityProject.AllViewTypes)
+            foreach (var type in entityProject.ViewSetTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptPageListComponent, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
@@ -650,7 +650,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -704,7 +704,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -771,7 +771,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -834,7 +834,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -923,7 +923,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateEntityListHtmlComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}List")}.component{StaticLiterals.HtmlFileExtension}";
 
@@ -933,7 +932,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             result.Add("<p>List item works!</p>");
@@ -950,7 +949,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateEntityListCssComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}List")}.component{StaticLiterals.CssFileExtension}";
 
@@ -960,7 +958,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             return result;
@@ -990,7 +988,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -1032,7 +1030,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateEntityEditHtmlComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}Edit")}.component{StaticLiterals.HtmlFileExtension}";
 
@@ -1042,7 +1039,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             result.Add("<p>Edit item works!</p>");
@@ -1059,7 +1056,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateEntityEditCssComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}Edit")}.component{StaticLiterals.CssFileExtension}";
 
@@ -1069,7 +1065,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             return result;
@@ -1101,7 +1097,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -1170,7 +1166,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateViewListHtmlComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}List")}.component{StaticLiterals.HtmlFileExtension}";
 
@@ -1180,7 +1175,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             result.Add("<p>List item works!</p>");
@@ -1197,7 +1192,6 @@ namespace TemplateTools.Logic.Generation
         /// </returns>
         private static Models.GeneratedItem CreateViewListCssComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
-            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}List")}.component{StaticLiterals.CssFileExtension}";
 
@@ -1207,7 +1201,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, subPath, fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
             };
 
             return result;

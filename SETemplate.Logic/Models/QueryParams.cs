@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-namespace SETemplate.WebApi.Models
+namespace SETemplate.Logic.Models
 {
     public partial class QueryParams
     {

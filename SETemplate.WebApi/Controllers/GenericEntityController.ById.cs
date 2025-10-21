@@ -2,7 +2,6 @@
 #if EXTERNALGUID_OFF
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace SETemplate.WebApi.Controllers
 {
@@ -62,7 +61,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await EntitySet.QueryByIdAsync(id);
 
                 if (entity != null)
                 {
@@ -93,7 +92,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await EntitySet.QueryByIdAsync(id);
 
                 if (entity != null)
                 {
@@ -126,7 +125,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Id == id);
+                var entity = await EntitySet.QueryByIdAsync(id);
 
                 if (entity != null)
                 {

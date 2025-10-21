@@ -2,9 +2,7 @@
 using SETemplate.Logic.Contracts;
 using SETemplate.WebApi.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using System.Linq.Dynamic.Core.Exceptions;
 
 namespace SETemplate.WebApi.Controllers
 {
@@ -50,10 +48,6 @@ namespace SETemplate.WebApi.Controllers
         /// Gets the DbSet.
         /// </summary>
         protected virtual IViewSet<TView> ViewSet => ContextAccessor.GetViewSet<TView>() ?? throw new Exception($"Invalid DbSet<{typeof(TView)}>");
-        /// <summary>
-        /// Gets the IQueriable<TEntity>.
-        /// </summary>
-        protected virtual IQueryable<TView> NoTrackingSet => ViewSet.AsNoTrackingSet();
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericEntityController{TModel, TEntity, TContract}"/> class.
         /// </summary>
@@ -113,7 +107,7 @@ namespace SETemplate.WebApi.Controllers
         {
             var authHeader = HttpContext.Request.Headers.Authorization;
 
-            var query = await NoTrackingSet.AsNoTracking().Take(MaxCount).ToArrayAsync();
+            var query = await ViewSet.GetAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);
@@ -126,25 +120,15 @@ namespace SETemplate.WebApi.Controllers
         /// <returns>A list of models.</returns>
         [HttpPost("query")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public virtual async Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody]Models.QueryParams queryParams)
+        public virtual async Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody]Logic.Models.QueryParams queryParams)
         {
             if (string.IsNullOrWhiteSpace(queryParams.Filter))
                 return BadRequest("The filter printout must not be empty.");
 
-            try
-            {
-                var query = await NoTrackingSet.AsNoTracking()
-                                          .Where(ParsingConfig, queryParams.Filter, queryParams.Values)
-                                          .Take(MaxCount)
-                                          .ToArrayAsync();
-                var result = query.Select(e => ToModel(e)).ToArray();
+            var query = await ViewSet.QueryAsync(queryParams);
+            var result = query.Select(e => ToModel(e));
 
-                return Ok(result);
-            }
-            catch (ParseException ex)
-            {
-                return BadRequest($"Invalid filter expression: {ex.Message}");
-            }
+            return Ok(result);
         }
     }
 }
