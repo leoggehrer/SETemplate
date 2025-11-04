@@ -16,7 +16,7 @@ namespace SETemplate.Logic.DataContext
         /// Gets a dictionary of authorization parameters, where the key is a string identifier and the value is an <see
         /// cref="AuthorizeAttribute"/> representing the associated authorization settings.
         /// </summary>
-        private static Dictionary<string, AuthorizeAttribute> AuthorizationParameters { get; } = new();
+        private static Dictionary<string, AuthorizeAttribute> Authorizations { get; } = new();
         /// <summary>
         /// Gets or sets the session token used for authorization.
         /// </summary>
@@ -29,38 +29,174 @@ namespace SETemplate.Logic.DataContext
 
         #region methods
         /// <summary>
-        /// Adds an authorization parameter for a specific type.
+        /// Generates a unique key identifier for the specified type.
         /// </summary>
-        /// <param name="type">The type for which to add authorization parameters.</param>
-        /// <param name="authorizeAttribute">The authorization attribute containing the authorization rules.</param>
-        /// <remarks>
-        /// This method ensures that authorization parameters are added only once per type.
-        /// If authorization parameters for the specified type already exist, they will not be overwritten.
-        /// </remarks>
-        internal static void AddAuthorizationParameter(Type type, AuthorizeAttribute authorizeAttribute)
+        /// <param name="type">The type for which to generate a key.</param>
+        /// <returns>A string representing the type's name used as a dictionary key for authorization lookups.</returns>
+        internal static string GetTypeKey(Type type) => type.GetTypeInfo().Name;
+        /// <summary>
+        /// Generates a unique key identifier for the specified method.
+        /// </summary>
+        /// <param name="methodBase">The method for which to generate a key.</param>
+        /// <returns>
+        /// A string in the format "DeclaringTypeName.MethodName" used as a dictionary key for authorization lookups.
+        /// If the declaring type is null, returns ".MethodName".
+        /// </returns>
+        internal static string GetMethodKey(MethodBase methodBase) => $"{methodBase.DeclaringType?.Name}.{methodBase.Name}";
+        /// <summary>
+        /// Sets authorization for Get operations.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="authorize">The authorization settings to apply.</param>
+        internal static void SetAuthorization4Get(Type type, Modules.Security.AuthorizeAttribute authorize)
         {
-            if (!AuthorizationParameters.ContainsKey(type.Name))
+            SetAuthorization(type, nameof(EntitySet<TEntity>.GetAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.GetByIdAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.QueryByIdAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.QueryAsync), authorize);
+        }
+        /// <summary>
+        /// Sets authorization for Create operations.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="authorize">The authorization settings to apply.</param>
+        internal static void SetAuthorization4Create(Type type, Modules.Security.AuthorizeAttribute authorize)
+        {
+            SetAuthorization(type, nameof(EntitySet<TEntity>.Create), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.AddAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.AddRangeAsync), authorize);
+        }
+        /// <summary>
+        /// Sets authorization for Update operations.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="authorize">The authorization settings to apply.</param>
+        internal static void SetAuthorization4Update(Type type, Modules.Security.AuthorizeAttribute authorize)
+        {
+            SetAuthorization(type, nameof(EntitySet<TEntity>.UpdateAsync), authorize);
+        }
+        /// <summary>
+        /// Sets authorization for Delete operations.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="authorize">The authorization settings to apply.</param>
+        internal static void SetAuthorization4Delete(Type type, Modules.Security.AuthorizeAttribute authorize)
+        {
+            SetAuthorization(type, nameof(EntitySet<TEntity>.Create), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.AddAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.UpdateAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.RemoveAsync), authorize);
+        }
+        /// <summary>
+        /// Generates a unique key identifier for the specified method within the context of a specific type.
+        /// </summary>
+        /// <param name="type">The type context for the method.</param>
+        /// <param name="methodBase">The method for which to generate a key.</param>
+        /// <returns>
+        /// A string in the format "TypeName.MethodName" used as a dictionary key for authorization lookups.
+        /// </returns>
+        internal static string GetMethodKey(Type type, MethodBase methodBase) => $"{GetTypeKey(type)}.{methodBase.Name}";
+        /// <summary>
+        /// Sets the authorization attribute for the specified type.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="authorizeAttribute">The authorization attribute to associate with the type.</param>
+        internal static void SetAuthorization(Type type, AuthorizeAttribute authorizeAttribute)
+        {
+            SetAuthorization(GetTypeKey(type), authorizeAttribute);
+        }
+        /// <summary>
+        /// Sets the authorization attribute for a specific method on the specified type.
+        /// </summary>
+        /// <param name="type">The type containing the method for which to set authorization.</param>
+        /// <param name="methodName">The name of the method for which to set authorization.</param>
+        /// <param name="authorizeAttribute">The authorization attribute to associate with the method.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the specified method is not found on the type.
+        /// </exception>
+        internal static void SetAuthorization(Type type, string methodName, AuthorizeAttribute authorizeAttribute)
+        {
+            var methodInfo = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+            // Resolve to the original method (for async state-machine generated methods) and fall back to the found MethodInfo.
+            MethodBase? methodBase = methodInfo?.GetAsyncOriginal() ?? (MethodBase?)methodInfo;
+
+            if (methodBase == null)
             {
-                AuthorizationParameters.Add(type.Name, authorizeAttribute);
+                throw new ArgumentException($"Method '{methodName}' not found on type '{type.FullName}'.", nameof(methodName));
+            }
+            SetAuthorization(type, methodBase, authorizeAttribute);
+        }
+        /// <summary>
+        /// Sets the authorization attribute for the specified type and method.
+        /// </summary>
+        /// <param name="type">The type for which to set authorization.</param>
+        /// <param name="methodBase">The method for which to set authorization.</param>
+        /// <param name="authorizeAttribute">The authorization attribute to associate with the method.</param>
+        internal static void SetAuthorization(Type type, MethodBase methodBase, AuthorizeAttribute authorizeAttribute)
+        {
+            SetAuthorization(GetMethodKey(type, methodBase), authorizeAttribute);
+        }
+        /// <summary>
+        /// Sets the authorization attribute for the specified key in the authorization dictionary.
+        /// </summary>
+        /// <param name="key">The unique key identifying the type or method for which to set authorization.</param>
+        /// <param name="authorizeAttribute">The authorization attribute to associate with the key.</param>
+        internal static void SetAuthorization(string key, AuthorizeAttribute authorizeAttribute)
+        {
+            if (!Authorizations.ContainsKey(key))
+            {
+                Authorizations.Add(key, authorizeAttribute);
+            }
+            else
+            {
+                Authorizations[key] = authorizeAttribute;
             }
         }
         /// <summary>
-        /// Adds an authorization parameter for a specific method.
+        /// Gets the authorization parameter for a specific type.
         /// </summary>
-        /// <param name="methodInfo">The method information for which to add authorization parameters.</param>
-        /// <param name="authorizeAttribute">The authorization attribute containing the authorization rules.</param>
-        /// <remarks>
-        /// This method creates a unique key using the format "DeclaringTypeName.MethodName" to identify the method.
-        /// Authorization parameters are added only once per method. If parameters for the specified method already exist,
-        /// they will not be overwritten.
-        /// </remarks>
-        internal static void AddAuthorizationParameter(MethodInfo methodInfo, AuthorizeAttribute authorizeAttribute)
+        /// <param name="type">The type for which to retrieve the authorization parameter.</param>
+        /// <returns>The authorization parameter for the specified type, or null if not found.</returns>
+        internal static AuthorizeAttribute? GetAuthorization(Type type)
         {
-            var methodKey = $"{methodInfo.DeclaringType?.Name}.{methodInfo.Name}";
+            var runType = type;
+            AuthorizeAttribute? result = null;
 
-            if (!AuthorizationParameters.ContainsKey(methodKey))
+            while (runType != null && result == null)
             {
-                AuthorizationParameters.Add(methodKey, authorizeAttribute);
+                Authorizations.TryGetValue(GetTypeKey(runType), out result);
+                runType = runType.BaseType;
+            }
+            return result;
+        }
+        /// <summary>
+        /// Gets the authorization parameter for a specific type and method.
+        /// </summary>
+        /// <param name="type">The type for which to retrieve the authorization parameter.</param>
+        /// <param name="methodBase">The method for which to retrieve the authorization parameter.</param>
+        /// <returns>The authorization parameter for the specified type and method, or null if not found.</returns>
+        internal static AuthorizeAttribute? GetAuthorization(Type type, MethodBase methodBase)
+        {
+            var runType = type;
+            AuthorizeAttribute? result = null;
+
+            while (runType != null && result == null)
+            {
+                Authorizations.TryGetValue(GetMethodKey(runType, methodBase), out result);
+                runType = runType.BaseType;
+            }
+            return result;
+        }
+        /// <summary>
+        /// Removes an authorization parameter for a specific key.
+        /// </summary>
+        /// <param name="key">The key identifying the authorization parameter.</param>
+        internal static void RemoveAuthorization(string key)
+        {
+            if (Authorizations.ContainsKey(key))
+            {
+                Authorizations.Remove(key);
             }
         }
         #endregion methods
@@ -115,38 +251,49 @@ namespace SETemplate.Logic.DataContext
         /// <param name="roles">The roles required for authorization.</param>
         protected virtual void CheckAccessing(MethodBase methodBase, params string[] roles)
         {
-            var methodAuthorize = Authorization.GetAuthorizeAttribute(methodBase);
+            var type = GetType();
+            AuthorizeAttribute? authorizeAttribute = GetAuthorization(type, methodBase);
 
-            if (methodAuthorize != null)
+            if (authorizeAttribute != null)
             {
-                if (methodAuthorize.Required)
+                if (authorizeAttribute.Required)
                 {
-                    Authorization.CheckAuthorization(SessionToken, methodBase, roles);
+                    Authorization.CheckAuthorization(SessionToken, authorizeAttribute, roles);
                 }
             }
             else
             {
-                var type = GetType();
-                var typeAuthorize = Authorization.GetAuthorizeAttribute(type);
+                authorizeAttribute = GetAuthorization(type);
 
-                if (typeAuthorize != null)
+                if (authorizeAttribute != null)
                 {
-                    if (typeAuthorize.Required)
+                    if (authorizeAttribute.Required)
                     {
-                        Authorization.CheckAuthorization(SessionToken, type, roles);
+                        Authorization.CheckAuthorization(SessionToken, authorizeAttribute, roles);
                     }
                 }
                 else
                 {
-                    var methodKey = $"{type.Name}.{methodBase.Name}";
+                    authorizeAttribute = Authorization.GetAuthorizeAttribute(methodBase);
 
-                    if (AuthorizationParameters.TryGetValue(methodKey, out var methodAuthorizeAttribute))
+                    if (authorizeAttribute != null)
                     {
-                        Authorization.CheckAuthorization(SessionToken, methodAuthorizeAttribute, roles);
+                        if (authorizeAttribute.Required)
+                        {
+                            Authorization.CheckAuthorization(SessionToken, authorizeAttribute, roles);
+                        }
                     }
-                    else if (AuthorizationParameters.TryGetValue(type.Name, out var typeAuthorizeAttribute))
+                    else
                     {
-                        Authorization.CheckAuthorization(SessionToken, typeAuthorizeAttribute, roles);
+                        authorizeAttribute = Authorization.GetAuthorizeAttribute(type);
+
+                        if (authorizeAttribute != null)
+                        {
+                            if (authorizeAttribute.Required)
+                            {
+                                Authorization.CheckAuthorization(SessionToken, authorizeAttribute, roles);
+                            }
+                        }
                     }
                 }
             }

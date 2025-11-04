@@ -187,7 +187,8 @@ namespace TemplateTools.Logic.Generation
             var attributes = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Attribute, string.Empty);
             var contractType = ItemProperties.CreateFullCommonContractType(type);
             var typeProperties = type.GetAllPropertyInfos();
-            var generationProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
+            var generationProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false
+                                                              && StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             GeneratedItem result = new(unitType, itemType)
             {
                 FullName = modelFullName,
@@ -289,6 +290,7 @@ namespace TemplateTools.Logic.Generation
             var modelSubFilePath = ConvertModelSubPath(ItemProperties.CreateModelSubPath(type, ".Factory", StaticLiterals.CSharpFileExtension));
             var modelBaseType = ConvertModelBaseType(GetBaseClassByType(type));
             var typeProperties = type.GetAllPropertyInfos();
+            var generationProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false) ?? [];
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = modelFullName,
@@ -326,7 +328,7 @@ namespace TemplateTools.Logic.Generation
             result.Add($"result = new {modelType}();");
             result.Add($"(result as {contractType}).CopyProperties(entity);");
 
-            foreach (var propertyInfo in typeProperties.Where(p => p.IsNavigationProperties()))
+            foreach (var propertyInfo in generationProperties.Where(p => p.IsNavigationProperties()))
             {
                 if (CanCreate(propertyInfo)
                     && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True")
@@ -369,7 +371,7 @@ namespace TemplateTools.Logic.Generation
             result.Add($"result = new {modelType}();");
             result.Add($"(result as {contractType}).CopyProperties(entity);");
 
-            foreach (var propertyInfo in typeProperties.Where(p => p.IsNavigationProperties()))
+            foreach (var propertyInfo in generationProperties.Where(p => p.IsNavigationProperties()))
             {
                 if (CanCreate(propertyInfo)
                     && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True")

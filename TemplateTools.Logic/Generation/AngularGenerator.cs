@@ -650,7 +650,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -704,7 +704,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -771,7 +771,7 @@ namespace TemplateTools.Logic.Generation
             {
                 FullName = CreateTypeScriptModelFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -834,7 +834,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -932,7 +932,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             result.Add("<p>List item works!</p>");
@@ -958,7 +958,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             return result;
@@ -988,7 +988,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -1039,7 +1039,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             result.Add("<p>Edit item works!</p>");
@@ -1065,7 +1065,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(ComponentsSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             return result;
@@ -1097,7 +1097,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = CommonStaticLiterals.CustomCodeLabel,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.TSFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             StartCreateListComponent(type, result.Source);
@@ -1175,7 +1175,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.HtmlFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             result.Add("<p>List item works!</p>");
@@ -1201,7 +1201,7 @@ namespace TemplateTools.Logic.Generation
                 SpecialLabel = string.Empty,
                 FullName = CreateTypeScriptComponentFullName(type),
                 FileExtension = StaticLiterals.CssFileExtension,
-                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type), fileName),
+                SubFilePath = Path.Combine(PagesSubFolder, ItemProperties.CreateSubPathFromType(type).ToLower(), fileName),
             };
 
             return result;
@@ -1502,6 +1502,13 @@ namespace TemplateTools.Logic.Generation
                     result.Add($"{tsPropertyName.SetIndent()}: number | null;");
                 else
                     result.Add($"{tsPropertyName.SetIndent()}: number;");
+            }
+            else if (propertyInfo.PropertyType == typeof(byte[]))
+            {
+                if (propertyInfo.PropertyType.IsNullableType())
+                    result.Add($"{tsPropertyName.SetIndent()}: string | null;");
+                else
+                    result.Add($"{tsPropertyName.SetIndent()}: string;");
             }
             else if (propertyInfo.PropertyType.IsGenericType)
             {

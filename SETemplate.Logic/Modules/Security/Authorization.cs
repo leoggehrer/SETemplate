@@ -298,7 +298,7 @@ namespace SETemplate.Logic.Modules.Security
                 var allRoles = authorization.Roles.Union(roles);
 
                 result = allRoles.Any() == false
-                       || loginSession.Roles.Any(lr => allRoles.Contains(lr.Designation));
+                    || loginSession.Roles.Any(lr => allRoles.Contains(lr.Designation));
             }
             return result;
         }

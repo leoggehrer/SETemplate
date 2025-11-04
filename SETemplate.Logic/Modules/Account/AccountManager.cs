@@ -515,7 +515,7 @@ namespace SETemplate.Logic.Modules.Account
         /// </returns>
         internal static LoginSession? QueryLoginSession(string sessionToken)
         {
-            return LoginSessions.FirstOrDefault(ls => ls.IsActive && ls.SessionToken.Equals(sessionToken));
+            return QueryAliveSessionAsync(sessionToken).GetAwaiter().GetResult();
         }
         /// <summary>
         /// Queries the alive session based on the given session token.

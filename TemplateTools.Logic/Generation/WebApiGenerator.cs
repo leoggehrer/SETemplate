@@ -109,8 +109,9 @@ namespace TemplateTools.Logic.Generation
         {
             var modelName = ItemProperties.CreateEditModelName(type);
             var typeProperties = type.GetAllPropertyInfos();
-            var filteredProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
-            && ItemProperties.IsListType(e.PropertyType) == false);
+            var filteredProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false
+                                                            && ItemProperties.IsListType(e.PropertyType) == false
+                                                            && StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false);
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = CreateModelFullName(type),

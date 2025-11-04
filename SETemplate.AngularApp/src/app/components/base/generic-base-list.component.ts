@@ -212,29 +212,41 @@ export abstract class GenericBaseListComponent<T extends IModel> {
     const comp = modalRef.componentInstance;
 
     this.getTemplate()
-      .subscribe(template => {
-        this.created(template);
-        comp.dataItem = template;
-        comp.save.subscribe((item: T) => {
-          comp.saveData = true;
-          this.addItem(item)
-            .pipe(finalize(() => comp.saveData = false))
-            .subscribe({
-              next: () => {
-                comp.close();
-                this.reloadData();
-              },
-              error: err => {
-                const errorDetails = this.errorHandlerService.extractErrorDetails(err);
-                this.messageBoxService.show(
-                  this.translateService.instant('ERRORS.CREATE_FAILED'),
-                  this.translateService.instant('ERRORS.CREATE_FAILED'),
-                  this.translateService.instant('COMMON.OK'),
-                  errorDetails
-                );
-              }
-            });
-        });
+      .subscribe({
+        next: (template) => {
+          this.created(template);
+          comp.dataItem = template;
+          comp.save.subscribe((item: T) => {
+            comp.saveData = true;
+            this.addItem(item)
+              .pipe(finalize(() => comp.saveData = false))
+              .subscribe({
+                next: () => {
+                  comp.close();
+                  this.reloadData();
+                },
+                error: err => {
+                  const errorDetails = this.errorHandlerService.extractErrorDetails(err);
+                  this.messageBoxService.show(
+                    this.translateService.instant('ERRORS.CREATE_FAILED'),
+                    this.translateService.instant('ERRORS.CREATE_FAILED'),
+                    this.translateService.instant('COMMON.OK'),
+                    errorDetails
+                  );
+                }
+              });
+          });
+        },
+        error: err => {
+          const errorDetails = this.errorHandlerService.extractErrorDetails(err);
+          this.messageBoxService.show(
+            this.translateService.instant('ERRORS.LOAD_TEMPLATE_FAILED'),
+            this.translateService.instant('ERRORS.LOAD_TEMPLATE_FAILED'),
+            this.translateService.instant('COMMON.OK'),
+            errorDetails
+          );
+          modalRef.dismiss('LOAD_TEMPLATE_FAILED');
+        }
       });
   }
 
