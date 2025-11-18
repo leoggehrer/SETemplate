@@ -1,9 +1,9 @@
 ﻿//@BaseCode
-import { Directive } from "@angular/core";
+import { Directive, OnInit } from "@angular/core";
 import { IdType, IKeyModel } from "@app/models/i-key-model";
 import { IApiEntityBaseService } from "@app/services/i-api-entity-base.service";
 import { GenericBaseListComponent } from "./generic-base-list.component";
-import { Observable } from "rxjs";
+import { Observable, take } from "rxjs";
 
 /**
  * A generic list component for managing a collection of items of type T.
@@ -12,7 +12,7 @@ import { Observable } from "rxjs";
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericEntityListComponent<T extends IKeyModel> extends GenericBaseListComponent<T> {
+export abstract class GenericEntityListComponent<T extends IKeyModel> extends GenericBaseListComponent<T> implements OnInit {
   /**
    * Constructor for the GenericListComponent.
    * 
@@ -23,12 +23,31 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
     super(entityService);
   }
 
+  private _canSearch: boolean = true;
+  private _canAdd: boolean = true;
+  private _canEdit: boolean = true;
+  private _canDelete: boolean = true;
+
+  public ngOnInit(): void {
+    this.entityService.hasCurrentUserPermission("Query").pipe(take(1)).subscribe(permission => {
+      this._canSearch = permission;
+    });
+    this.entityService.hasCurrentUserPermission("Create").pipe(take(1)).subscribe(permission => {
+      this._canAdd = permission;
+    });
+    this.entityService.hasCurrentUserPermission("Update").pipe(take(1)).subscribe(permission => {
+      this._canEdit = permission;
+    });
+    this.entityService.hasCurrentUserPermission("Delete").pipe(take(1)).subscribe(permission => {
+      this._canDelete = permission;
+    });
+  }
   /**
    * Indicates whether the search functionality is enabled for the entity list.
    * Always returns true, allowing search operations.
    */
   public override get canSearch(): boolean {
-    return true;
+    return this._canSearch;
   }
 
   /**
@@ -36,7 +55,7 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
    * Always returns true, allowing add operations.
    */
   public override get canAdd(): boolean {
-    return true;
+    return this._canAdd;
   }
 
   /**
@@ -44,7 +63,7 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
    * Always returns true, allowing edit operations.
    */
   public override get canEdit(): boolean {
-    return true;
+    return this._canEdit;
   }
 
   /**
@@ -52,7 +71,7 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
    * Always returns true, allowing delete operations.
    */
   public override get canDelete(): boolean {
-    return true;
+    return this._canDelete;
   }
 
   /**

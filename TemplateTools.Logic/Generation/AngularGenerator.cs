@@ -654,7 +654,7 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateListComponent(type, result.Source);
-            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { Directive } from '@angular/core';");
             result.Add("import { GenericEntityListComponent } from '@app/components/base/generic-entity-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
             result.Add(CreateImport("@app-services/http", serviceName, subPath));
@@ -664,7 +664,7 @@ namespace TemplateTools.Logic.Generation
             result.Add(StaticLiterals.CustomImportEndLabel);
 
             result.Add("@Directive()");
-            result.Add($"export abstract class {entityName}BaseListComponent extends GenericEntityListComponent<{modelName}> implements OnInit" + " {");
+            result.Add($"export abstract class {entityName}BaseListComponent extends GenericEntityListComponent<{modelName}>" + " {");
             result.Add("  constructor(");
             result.Add($"              protected dataAccessService: {serviceName}");
             result.Add($"            )");
@@ -672,7 +672,8 @@ namespace TemplateTools.Logic.Generation
             result.Add("    super(dataAccessService);");
             result.Add("  }");
 
-            result.Add("  ngOnInit(): void {");
+            result.Add("  override ngOnInit(): void {");
+            result.Add("    super.ngOnInit();");
             result.Add("    this.reloadData();");
             result.Add("  }");
 
@@ -708,7 +709,7 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateListComponent(type, result.Source);
-            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { Directive } from '@angular/core';");
             result.Add("import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';");
             result.Add("import { IdType, IdDefault, IKeyModel } from '@app/models/i-key-model';");
             result.Add("import { GenericEditComponent } from '@app/components/base/generic-edit.component';");
@@ -719,14 +720,12 @@ namespace TemplateTools.Logic.Generation
             result.Add(StaticLiterals.CustomImportEndLabel);
 
             result.Add("@Directive()");
-            result.Add($"export abstract class {entityName}BaseEditComponent extends GenericEditComponent<{modelName}> implements OnInit" + " {");
+            result.Add($"export abstract class {entityName}BaseEditComponent extends GenericEditComponent<{modelName}>" + " {");
             result.Add("  constructor()");
             result.Add("  {");
             result.Add("    super();");
             result.Add("  }");
 
-            result.Add("  ngOnInit(): void {");
-            result.Add("  }");
             result.Add(string.Empty);
 #if EXTERNALGUID_ON
             result.Add($"  public override getItemKey(item: {modelName}): IdType " + "{");
@@ -775,7 +774,7 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateListComponent(type, result.Source);
-            result.Add("import { Directive, OnInit } from '@angular/core';");
+            result.Add("import { Directive } from '@angular/core';");
             result.Add("import { GenericViewListComponent } from '@app/components/base/generic-view-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
             result.Add(CreateImport("@app-services/http", serviceName, subPath));
@@ -785,18 +784,13 @@ namespace TemplateTools.Logic.Generation
             result.Add(StaticLiterals.CustomImportEndLabel);
 
             result.Add("@Directive()");
-            result.Add($"export abstract class {entityName}BaseListComponent extends GenericViewListComponent<{modelName}> implements OnInit" + " {");
+            result.Add($"export abstract class {entityName}BaseListComponent extends GenericViewListComponent<{modelName}>" + " {");
             result.Add("  constructor(");
             result.Add($"              protected dataAccessService: {serviceName}");
             result.Add("             )");
             result.Add("  {");
             result.Add("    super(dataAccessService);");
             result.Add("  }");
-
-            result.Add("  ngOnInit(): void {");
-            result.Add("    this.reloadData();");
-            result.Add("  }");
-
             result.Add("}");
 
             result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
@@ -882,6 +876,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("  }");
 
             result.Add("  override ngOnInit(): void {");
+            result.Add("    super.ngOnInit();");
             result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("    this.reloadData();");
             result.Add("  }");
@@ -1139,6 +1134,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("  }");
 
             result.Add("  override ngOnInit(): void {");
+            result.Add("    super.ngOnInit();");
             result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("    this.reloadData();");
             result.Add("  }");
@@ -1475,7 +1471,10 @@ namespace TemplateTools.Logic.Generation
             }
             else if (propertyInfo.PropertyType == typeof(string))
             {
-                if (propertyInfo.PropertyType.IsNullableType())
+                var nullabilityContext = new NullabilityInfoContext();
+                var nullabilityInfo = nullabilityContext.Create(propertyInfo);
+
+                if (nullabilityInfo.ReadState == NullabilityState.Nullable)
                     result.Add($"{tsPropertyName.SetIndent()}: string | null;");
                 else
                     result.Add($"{tsPropertyName.SetIndent()}: string;");

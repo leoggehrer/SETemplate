@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-import { Directive, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Directive, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { IdType, IdDefault, IKeyModel } from '@app-models/i-key-model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,7 +10,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericEditComponent<T extends IKeyModel> {
+export abstract class GenericEditComponent<T extends IKeyModel> implements OnInit {
   private _dataItem!: T;
   private _saveData: boolean = false;
 
@@ -41,7 +41,7 @@ export abstract class GenericEditComponent<T extends IKeyModel> {
    */
   @Output() cancel = new EventEmitter<void>();
 
-     // Injizierte Services
+  // Injizierte Services
   public activeModal = inject(NgbActiveModal);
 
   /**
@@ -50,6 +50,12 @@ export abstract class GenericEditComponent<T extends IKeyModel> {
    * @param activeModal - The active modal instance from NgbActiveModal.
    */
   constructor() { }
+
+  /**
+   * Initializes the component.
+   */
+  ngOnInit(): void {
+  }
 
   /**
    * Gets the unique key of an item.

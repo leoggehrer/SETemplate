@@ -6,6 +6,7 @@ import { IApiEntityBaseService } from './i-api-entity-base.service';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { arrayToDate, stringToDate } from '@app/converter/date-converter';
+import { environment } from '@environment/environment';
 
 /**
  * Abstract base service for API operations.
@@ -35,15 +36,23 @@ export abstract class ApiEntityBaseService<T extends IKeyModel> implements IApiE
   }
 
   /**
-   * Retrieves the count of entities from the API.
-   * @returns An Observable of the count as a number.
+   * Checks if the current user has permission for a specific action.
+   * @param actionName - The name of the action to check permission for.
+   * @returns An Observable of boolean indicating whether the user has permission.
    */
-  public getCount(): Observable<number> {
-    return this.http.get<number>(`${this.ENDPOINT_URL}/count`).pipe(
-      map((response: number) => {
-        return response;
-      })
-    );
+  public hasCurrentUserPermission(actionName: string): Observable<boolean> {
+    if (environment.loginRequired === false) {
+      return new Observable<boolean>((observer) => {
+        observer.next(true);
+        observer.complete();
+      });
+    } else {
+      return this.http.get<boolean>(`${this.ENDPOINT_URL}/hasCurrentUserPermission/${actionName}`).pipe(
+        map((response: boolean) => {
+          return response;
+        })
+      );
+    }
   }
 
   /**
@@ -54,6 +63,18 @@ export abstract class ApiEntityBaseService<T extends IKeyModel> implements IApiE
     return this.http.get<T>(`${this.ENDPOINT_URL}/template`).pipe(
       map((response: T) => {
         stringToDate(response);
+        return response;
+      })
+    );
+  }
+
+  /**
+   * Retrieves the count of entities from the API.
+   * @returns An Observable of the count as a number.
+   */
+  public getCount(): Observable<number> {
+    return this.http.get<number>(`${this.ENDPOINT_URL}/count`).pipe(
+      map((response: number) => {
         return response;
       })
     );

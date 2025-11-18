@@ -1,5 +1,5 @@
 ﻿//@CodeCopy
-import { Directive } from "@angular/core";
+import { Directive, OnInit } from "@angular/core";
 import { IViewModel } from "@app/models/i-view-model";
 import { IApiViewBaseService } from "@app/services/i-api-view-base.service";
 import { GenericBaseListComponent } from "./generic-base-list.component";
@@ -11,7 +11,7 @@ import { GenericBaseListComponent } from "./generic-base-list.component";
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericViewListComponent<T extends IViewModel> extends GenericBaseListComponent<T> {
+export abstract class GenericViewListComponent<T extends IViewModel> extends GenericBaseListComponent<T> implements OnInit {
 
   /**
    * Constructor for the GenericListComponent.
@@ -23,4 +23,9 @@ export abstract class GenericViewListComponent<T extends IViewModel> extends Gen
     super(viewService);
   }
 
+  /**
+   * Initializes the component.
+   */
+  ngOnInit(): void {
+  }
 }

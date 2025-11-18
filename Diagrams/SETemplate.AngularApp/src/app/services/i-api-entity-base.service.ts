@@ -4,6 +4,9 @@ import { Observable } from "rxjs";
 import { IApiQueryBaseService } from "./i-api-query-base.service";
 
 export interface IApiEntityBaseService<T extends IKeyModel> extends IApiQueryBaseService<T> {
+
+  hasCurrentUserPermission(actionName: string): Observable<boolean>;
+  
   getItemKey(item: T): IdType;
   getTemplate(): Observable<T>;
   getById(id: IdType): Observable<T>;

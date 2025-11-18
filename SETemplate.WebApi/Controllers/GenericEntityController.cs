@@ -96,15 +96,6 @@ namespace SETemplate.WebApi.Controllers
         /// <returns>The entity.</returns>
         protected abstract TEntity ToEntity(TModel model, TEntity? entity);
 
-        [HttpGet("count")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public virtual async Task<ActionResult> CountAsync()
-        {
-            var result = await EntitySet.CountAsync();
-
-            return Ok(result);
-        }
-
         /// <summary>
         /// Returns a new instance object with default values.
         /// </summary>
@@ -114,6 +105,19 @@ namespace SETemplate.WebApi.Controllers
         public virtual ActionResult GetTemplate()
         {
             var result = EntitySet.Create();
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Counts the models.
+        /// </summary>
+        /// <returns>The count of models.</returns>
+        [HttpGet("count")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public virtual async Task<ActionResult> CountAsync()
+        {
+            var result = await EntitySet.CountAsync();
 
             return Ok(result);
         }

@@ -1,5 +1,6 @@
 ﻿//@BaseCode
 #if ACCOUNT_ON
+using SETemplate.Logic.Modules.Exceptions;
 using SETemplate.Logic.Modules.Security;
 using System.Reflection;
 
@@ -28,6 +29,32 @@ namespace SETemplate.Logic.DataContext
         #endregion properties
 
         #region methods
+        /// <summary>
+        /// Determines whether the current user has permission to perform the specified action.
+        /// </summary>
+        /// <param name="methodName">The name of the method to check permissions for.</param>
+        /// <returns>True if the user has permission; otherwise, false.</returns>
+        public bool HasCurrentUserPermission(string methodName)
+        {
+            var result = true;
+            var methodBase = GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+            if (methodBase != null)
+            {
+                try
+                {
+                    CheckAccessing(methodBase);
+                }
+                catch (AuthorizationException)
+                {
+                    result = false;
+                }
+            }
+            return result;
+        }
+        #endregion methods
+
+        #region methods authorization
         /// <summary>
         /// Generates a unique key identifier for the specified type.
         /// </summary>
@@ -199,7 +226,7 @@ namespace SETemplate.Logic.DataContext
                 Authorizations.Remove(key);
             }
         }
-        #endregion methods
+        #endregion methods authorization
 
         #region partial methods
         /// <summary>
