@@ -1,5 +1,6 @@
 ﻿//@BaseCode
 #if ACCOUNT_ON
+using SETemplate.Common.Modules.Exceptions;
 using SETemplate.Logic.Modules.Exceptions;
 using SETemplate.Logic.Modules.Security;
 using System.Reflection;
@@ -29,7 +30,6 @@ namespace SETemplate.Logic.DataContext
         #endregion properties
 
         #region methods
-        /// <summary>
         /// Determines whether the current user has permission to perform the specified action.
         /// </summary>
         /// <param name="methodName">The name of the method to check permissions for.</param>
@@ -75,7 +75,7 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="type">The type for which to set authorization.</param>
         /// <param name="authorize">The authorization settings to apply.</param>
-        internal static void SetAuthorization4Get(Type type, Modules.Security.AuthorizeAttribute authorize)
+        internal static void SetAuthorization4Read(Type type, Modules.Security.AuthorizeAttribute authorize)
         {
             SetAuthorization(type, nameof(EntitySet<TEntity>.GetAsync), authorize);
             SetAuthorization(type, nameof(EntitySet<TEntity>.GetByIdAsync), authorize);
@@ -183,8 +183,8 @@ namespace SETemplate.Logic.DataContext
         /// <summary>
         /// Gets the authorization parameter for a specific type.
         /// </summary>
-        /// <param name="type">The type for which to retrieve the authorization parameter.</param>
-        /// <returns>The authorization parameter for the specified type, or null if not found.</returns>
+        /// <param name="type">The type for which to retrieve the authorization parame
+        /// /// <returns>The authorization parameter for the specified type, or null if not found.</returns>
         internal static AuthorizeAttribute? GetAuthorization(Type type)
         {
             var runType = type;
@@ -265,6 +265,57 @@ namespace SETemplate.Logic.DataContext
         {
             CheckDeleteAccessing(methodBase, roles);
         }
+        /// <summary>
+        /// Checks if the current context has access to include the specified navigation property.
+        /// </summary>
+        /// <param name="entityType">The type of the entity.</param>
+        /// <param name="navigationPropertyName">The name of the navigation property to include.</param>
+        /// <exception cref="LogicException"></exception>
+        partial void CheckQueryIncludeAccess(Type entityType, string navigationPropertyName)
+        {
+            static Type? GetTypeBy(string partOfNamespace, string typeName)
+            {
+                var result = default(Type?);
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                var enumerator = assemblies.GetEnumerator();
+
+                while (result == null && enumerator.MoveNext())
+                {
+                    var assembly = (Assembly)enumerator.Current;
+
+                    if (assembly != null)
+                    {
+                        result = assembly.GetTypes().FirstOrDefault(t => t.Namespace != null && t.Namespace.Contains(partOfNamespace, StringComparison.OrdinalIgnoreCase) && t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+                    }
+                }                    
+                return result;
+            }
+
+            var navPropertyInfo = entityType.GetProperty(navigationPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                               ?? throw new LogicException(ErrorType.InvalidPropertyName, $"The navigation property '{navigationPropertyName}' does not exist on type '{entityType.FullName}'.");
+
+            if (navPropertyInfo.PropertyType.IsGenericType)
+            {
+                var subType = navPropertyInfo.PropertyType.GetGenericArguments().First()
+                           ?? throw new LogicException(ErrorType.InvalidPropertyName, $"The navigation property '{navigationPropertyName}' on type '{entityType.FullName}' does not have a valid generic argument.");
+                var dbSetType = GetTypeBy("Logic.DataContext", $"{subType.Name}Set")
+                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The entity set for type '{subType.FullName}' does not exist in the context.");
+                var methodBase = dbSetType.GetMethod("QueryAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The method 'QueryAsync' does not exist on entity set type '{dbSetType.FullName}'.");
+
+                CheckReadAccessing(dbSetType, methodBase);
+            }
+            else if (navPropertyInfo.PropertyType.IsClass)
+            {
+                var propertyType = navPropertyInfo.PropertyType;
+                var dbSetType = GetTypeBy("Logic.DataContext", $"{propertyType.Name}Set")
+                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The entity set for type '{propertyType.FullName}' does not exist in the context.");
+                var methodBase = dbSetType.GetMethod("QueryAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                              ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The method 'QueryAsync' does not exist on entity set type '{dbSetType.FullName}'.");
+
+                CheckReadAccessing(dbSetType, methodBase);
+            }
+        }
         #endregion partial methods
 
         #region accessing methods
@@ -279,6 +330,20 @@ namespace SETemplate.Logic.DataContext
         protected virtual void CheckAccessing(MethodBase methodBase, params string[] roles)
         {
             var type = GetType();
+
+            CheckAccessing(type, methodBase, roles);
+        }
+        /// <summary>
+        /// Checks if the current session has access to the specified type and method.
+        /// First checks for an <see cref="AuthorizeAttribute"/> on the method. If present and required, 
+        /// authorization is enforced for the method. If not present, checks for the attribute on the type.
+        /// If the type-level attribute is present and required, authorization is enforced for the type.
+        /// </summary>
+        /// <param name="type">The type for which access is being checked.</param>
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void CheckAccessing(Type type, MethodBase methodBase, params string[] roles)
+        {
             AuthorizeAttribute? authorizeAttribute = GetAuthorization(type, methodBase);
 
             if (authorizeAttribute != null)
@@ -337,6 +402,18 @@ namespace SETemplate.Logic.DataContext
             CheckAccessing(methodBase, roles);
         }
         /// <summary>
+        /// Checks if the current session has read access to the specified type and method.
+        /// By default, delegates to <see cref="CheckAccessing(Type, MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom read-access logic.
+        /// </summary>
+        /// <param name="type">The type for which access is being checked.</param>
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void CheckReadAccessing(Type type, MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessing(type, methodBase, roles);
+        }
+        /// <summary>
         /// Checks if the current session has create access to the specified method.
         /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
         /// Can be overridden to implement custom create-access logic.
@@ -346,6 +423,18 @@ namespace SETemplate.Logic.DataContext
         protected virtual void CheckCreateAccessing(MethodBase methodBase, params string[] roles)
         {
             CheckAccessing(methodBase, roles);
+        }
+        /// <summary>
+        /// Checks if the current session has create access to the specified type and method.
+        /// By default, delegates to <see cref="CheckAccessing(Type, MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom create-access logic.
+        /// </summary>
+        /// <param name="type">The type for which access is being checked.</param>
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void CheckCreateAccessing(Type type, MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessing(type, methodBase, roles);
         }
         /// <summary>
         /// Checks if the current session has update access to the specified method.
@@ -359,6 +448,18 @@ namespace SETemplate.Logic.DataContext
             CheckAccessing(methodBase, roles);
         }
         /// <summary>
+        /// Checks if the current session has update access to the specified type and method.
+        /// By default, delegates to <see cref="CheckAccessing(Type, MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom update-access logic.
+        /// </summary>
+        /// <param name="type">The type for which access is being checked.</param>
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void CheckUpdateAccessing(Type type, MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessing(type, methodBase, roles);
+        }
+        /// <summary>
         /// Checks if the current session has delete access to the specified method.
         /// By default, delegates to <see cref="CheckAccessing(MethodBase)"/> for standard authorization checks.
         /// Can be overridden to implement custom delete-access logic.
@@ -368,6 +469,18 @@ namespace SETemplate.Logic.DataContext
         protected virtual void CheckDeleteAccessing(MethodBase methodBase, params string[] roles)
         {
             CheckAccessing(methodBase, roles);
+        }
+        /// <summary>
+        /// Checks if the current session has delete access to the specified type and method.
+        /// By default, delegates to <see cref="CheckAccessing(Type, MethodBase)"/> for standard authorization checks.
+        /// Can be overridden to implement custom delete-access logic.
+        /// </summary>
+        /// <param name="type">The type for which access is being checked.</param>
+        /// <param name="methodBase">The method for which access is being checked.</param>
+        /// <param name="roles">The roles required for authorization.</param>
+        protected virtual void CheckDeleteAccessing(Type type, MethodBase methodBase, params string[] roles)
+        {
+            CheckAccessing(type, methodBase, roles);
         }
         #endregion accessing methods
     }

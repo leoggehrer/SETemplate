@@ -182,7 +182,10 @@ namespace SETemplate.Logic.DataContext
                 foreach (var include in queryParams.Includes ?? [])
                 {
                     if (!string.IsNullOrWhiteSpace(include))
+                    {
+                        CheckQueryIncludeAccess(typeof(TEntity), include);
                         set = set.Include(include);
+                    }
                 }
 
                 if (queryParams.Filter != null
@@ -319,6 +322,12 @@ namespace SETemplate.Logic.DataContext
         /// </summary>
         /// <param name="entity">The entity to be prepared for removal.</param>
         partial void PrepareRemove(TEntity entity);
+        /// <summary>
+        /// Checks if the current context has access to include the specified navigation property.
+        /// </summary>
+        /// <param name="entityType">The entity type for which to check include access.</param>
+        /// <param name="navigationPropertyName">The navigation property name to check access for.</param>
+        partial void CheckQueryIncludeAccess(Type entityType, string navigationPropertyName);
         #endregion partial methods
     }
 }

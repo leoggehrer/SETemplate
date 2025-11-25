@@ -431,7 +431,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { IdType, IdDefault } from '@app-models/i-key-model';");
             result.Add("import { Injectable } from '@angular/core';");
             result.Add("import { HttpClient } from '@angular/common/http';");
-            result.Add("import { ApiEntityBaseService } from '@app-services/api-entity-base.service';");
+            result.Add("import { ApiEntityBaseService } from '@app/services/api-entity-base.service';");
             result.Add("import { environment } from '@environment/environment';");
             result.Add(CreateImport("@app-models", modelName, subPath));
 
@@ -490,7 +490,7 @@ namespace TemplateTools.Logic.Generation
             StartCreateService(type, result.Source);
             result.Add("import { Injectable } from '@angular/core';");
             result.Add("import { HttpClient } from '@angular/common/http';");
-            result.Add("import { ApiViewBaseService } from '@app-services/api-view-base.service';");
+            result.Add("import { ApiViewBaseService } from '@app/services/api-view-base.service';");
             result.Add("import { environment } from '@environment/environment';");
             result.Add(CreateImport("@app-models", modelName, subPath));
 
@@ -657,7 +657,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { Directive } from '@angular/core';");
             result.Add("import { GenericEntityListComponent } from '@app/components/base/generic-entity-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
-            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+            result.Add(CreateImport("@app/services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -674,7 +674,6 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("  override ngOnInit(): void {");
             result.Add("    super.ngOnInit();");
-            result.Add("    this.reloadData();");
             result.Add("  }");
 
             result.Add("}");
@@ -777,7 +776,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { Directive } from '@angular/core';");
             result.Add("import { GenericViewListComponent } from '@app/components/base/generic-view-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
-            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+            result.Add(CreateImport("@app/services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -849,7 +848,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { Role } from '@app/models/account/role';");
 #endif
 
-            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+            result.Add(CreateImport("@app/services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -877,8 +876,12 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("  override ngOnInit(): void {");
             result.Add("    super.ngOnInit();");
-            result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("    this.reloadData();");
+            result.Add("  }");
+
+            result.Add("  override prepareQueryParams(): void {");
+            result.Add("    super.prepareQueryParams();");
+            result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("  }");
 
 #if EXTERNALGUID_ON
@@ -1108,7 +1111,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { Role } from '@app/models/account/role';");
 #endif
 
-            result.Add(CreateImport("@app-services/http", serviceName, subPath));
+            result.Add(CreateImport("@app/services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -1371,50 +1374,51 @@ namespace TemplateTools.Logic.Generation
             var result = new List<string>();
             var typeProperties = type.GetAllPropertyInfos();
             var entityName = ItemProperties.CreateEntityName(type);
+            var modelName = ItemProperties.CreateTSModelName(type);
 
             foreach (var propertyInfo in typeProperties)
             {
                 if (propertyInfo.PropertyType.IsEnum)
                 {
-                    var typeName = $"{propertyInfo.PropertyType.Name}";
+                    var enumTypeName = $"{propertyInfo.PropertyType.Name}";
 
-                    if (typeName.Equals(entityName) == false)
+                    if (enumTypeName.Equals(modelName) == false)
                     {
                         var subPath = ConvertPathItem(ItemProperties.CreateItemSubPathFromType(propertyInfo.PropertyType));
 
-                        result.Add(CreateImport("@app-enums", typeName, subPath));
+                        result.Add(CreateImport("@app-enums", enumTypeName, subPath));
                     }
                 }
                 else if (propertyInfo.PropertyType.IsGenericType)
                 {
                     var subType = propertyInfo.PropertyType.GetGenericArguments().First();
-                    var modelType = types.FirstOrDefault(e => e.FullName == subType.FullName);
+                    var subModelType = types.FirstOrDefault(e => e.FullName == subType.FullName);
 
-                    if (modelType != null && modelType.IsClass)
+                    if (subModelType != null && subModelType.IsClass)
                     {
-                        var modelName = ItemProperties.CreateTSModelName(modelType);
+                        var subModelName = ItemProperties.CreateTSModelName(subModelType);
 
-                        if (modelName.Equals(entityName) == false)
+                        if (subModelName.Equals(modelName) == false)
                         {
-                            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(modelType));
+                            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(subModelType));
 
-                            result.Add(CreateImport("@app-models", modelName, subPath));
+                            result.Add(CreateImport("@app-models", subModelName, subPath));
                         }
                     }
                 }
                 else if (propertyInfo.PropertyType.IsClass)
                 {
-                    var modelType = types.FirstOrDefault(e => e.FullName == propertyInfo.PropertyType.FullName);
+                    var propertyType = types.FirstOrDefault(e => e.FullName == propertyInfo.PropertyType.FullName);
 
-                    if (modelType != null && modelType.IsClass)
+                    if (propertyType != null && propertyType.IsClass)
                     {
-                        var modelName = ItemProperties.CreateTSModelName(modelType);
+                        var propertyModelName = ItemProperties.CreateTSModelName(propertyType);
 
-                        if (modelName.Equals(entityName) == false)
+                        if (propertyModelName.Equals(modelName) == false)
                         {
-                            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(modelType));
+                            var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(propertyType));
 
-                            result.Add(CreateImport("@app-models", modelName, subPath));
+                            result.Add(CreateImport("@app-models", propertyModelName, subPath));
                         }
                     }
                 }

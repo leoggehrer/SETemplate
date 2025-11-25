@@ -26,7 +26,7 @@ export class LoginComponent {
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    if (!this.authService.isLoginRequired) {
+    if (!this.authService.isLoginRequired || this.authService.isLoggedIn) {
       this.router.navigateByUrl(this.returnUrl);
     }
   }

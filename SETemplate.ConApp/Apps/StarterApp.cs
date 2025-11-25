@@ -73,6 +73,7 @@ namespace SETemplate.ConApp.Apps
                 new()
                 {
                     Key = $"{++mnuIdx}",
+                    OptionalKey = "init_db",
                     Text = ToLabelText($"{nameof(InitDatabase).ToCamelCaseSplit()}", "Started the initialization of the database"),
                     Action = (self) =>
                     {
@@ -86,9 +87,32 @@ namespace SETemplate.ConApp.Apps
                         ForegroundColor = ConsoleColor.Red,
 #endif
                 },
-
             };
-            AfterCreateMenuItems(ref mnuIdx, menuItems);
+            CreateImportMenuItems(ref mnuIdx, menuItems);
+
+#if ACCOUNT_ON
+            menuItems.Add(
+                new()
+                {
+                    Key = "----",
+                    Text = new string('-', 65),
+                    Action = (self) => { },
+                    ForegroundColor = ConsoleColor.DarkGreen,
+                });
+
+            menuItems.Add(
+                new()
+                {
+                    Key = $"{++mnuIdx}",
+                    OptionalKey = "create_acc",
+                    Text = ToLabelText($"{nameof(CreateAccount).ToCamelCaseSplit()}", "Started the creation of account"),
+                    Action = (self) =>
+                    {
+                        PrintHeader();
+                        CreateAccount();
+                    },
+                });
+#endif
             return [.. menuItems.Union(CreateExitMenuItems())];
         }
 
@@ -203,10 +227,12 @@ namespace SETemplate.ConApp.Apps
         #endregion app methods
 
         #region partial methods
-        partial void AfterCreateMenuItems(ref int menuIdx, List<MenuItem> menuItems);
         partial void BeforeInitDatabase();
         partial void AfterInitDatabase();
+        partial void CreateImportMenuItems(ref int menuIdx, List<MenuItem> menuItems);
+
 #if ACCOUNT_ON
+        static partial void CreateAccount();
         static partial void CreateAccounts();
 #endif
         #endregion partial methods

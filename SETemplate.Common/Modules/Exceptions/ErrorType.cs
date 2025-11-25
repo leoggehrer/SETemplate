@@ -6,9 +6,10 @@ namespace SETemplate.Common.Modules.Exceptions
     /// </summary>
     public static partial class ErrorType
     {
-        public const int InvalidEntitySet = 1;
-#if ACCOUNT_ON
+        public const int InvalidPropertyName =  1;
+        public const int InvalidEntitySet = 2;
 
+#if ACCOUNT_ON
         public const int InitAppAccess = 10;
         public const int AddAppAccess = 11;
         public const int InvalidAccount = 20;

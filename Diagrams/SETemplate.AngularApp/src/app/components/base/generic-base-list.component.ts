@@ -1,6 +1,6 @@
 ﻿//@CodeCopy
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Directive, inject } from "@angular/core";
+import { Directive, inject, OnInit } from "@angular/core";
 import { IdType, IdDefault } from "@app-models/i-key-model";
 import { IModel } from "@app-models/i-model";
 import { IQueryParams } from "@app-models/base/i-query-params";
@@ -17,7 +17,7 @@ import { Observable, finalize } from "rxjs";
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericBaseListComponent<T extends IModel> {
+export abstract class GenericBaseListComponent<T extends IModel> implements OnInit {
   /**
    * The list of data items displayed in the component.
    */
@@ -51,6 +51,14 @@ export abstract class GenericBaseListComponent<T extends IModel> {
    */
   constructor(protected viewService: IApiQueryBaseService<T>) { 
     
+  }
+
+  /**
+   * Lifecycle hook that is called after data-bound properties are initialized.
+   * Prepares the query parameters for data retrieval.
+   */
+  public ngOnInit(): void {
+    this.prepareQueryParams();
   }
 
   /**
@@ -137,6 +145,14 @@ export abstract class GenericBaseListComponent<T extends IModel> {
    */
   protected getItemKey(item: T): IdType {
     return IdDefault;
+  }
+
+  /**
+   * Prepares the query parameters before reloading data.
+   * Subclasses can override this method to customize the query parameters.
+   */
+  protected prepareQueryParams(): void {
+    // Kann in Subklassen überschrieben werden, um die Query-Parameter anzupassen
   }
 
   /**

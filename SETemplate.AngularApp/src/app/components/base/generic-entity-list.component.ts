@@ -12,7 +12,7 @@ import { Observable, take } from "rxjs";
  * @template T - A type that extends the IKey interface.
  */
 @Directive()
-export abstract class GenericEntityListComponent<T extends IKeyModel> extends GenericBaseListComponent<T> implements OnInit {
+export abstract class GenericEntityListComponent<T extends IKeyModel> extends GenericBaseListComponent<T> {
   /**
    * Constructor for the GenericListComponent.
    * 
@@ -28,7 +28,12 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
   private _canEdit: boolean = true;
   private _canDelete: boolean = true;
 
-  public ngOnInit(): void {
+  /**
+   * Initializes the component and sets up permissions for various operations.
+   */
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
     this.entityService.hasCurrentUserPermission("Query").pipe(take(1)).subscribe(permission => {
       this._canSearch = permission;
     });
@@ -42,6 +47,7 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
       this._canDelete = permission;
     });
   }
+
   /**
    * Indicates whether the search functionality is enabled for the entity list.
    * Always returns true, allowing search operations.
