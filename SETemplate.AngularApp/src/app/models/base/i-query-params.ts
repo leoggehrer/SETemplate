@@ -1,6 +1,7 @@
 ﻿//@BaseCode
 export interface IQueryParams {
+  includes: string[];
   filter: string;
   values: string[];
-  includes: string[];
+  sortBy: string;
 }

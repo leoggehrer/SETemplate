@@ -31,7 +31,7 @@ namespace SETemplate.Logic.Contracts
         /// This method queries entities without change tracking for better performance when read-only access is needed.
         /// The results are automatically limited to the maximum count defined by <see cref="MaxCount"/> to prevent excessive data retrieval.
         /// </remarks>
-        Task<IEnumerable<TView>> GetAsync();
+        Task<IEnumerable<TView>> GetAllAsync();
 
         /// <summary>
         /// Queries entities from the set based on the provided query parameters.

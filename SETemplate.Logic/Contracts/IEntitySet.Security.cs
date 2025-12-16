@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 #if ACCOUNT_ON
 using SETemplate.Logic.Entities;
 

@@ -1,4 +1,4 @@
-﻿//@CodeCopy
+﻿//@BaseCode
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,13 +6,15 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MessageBoxService } from '@app-services/message-box-service.service';
 import { ErrorHandlerService } from '@app-services/error-handler.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private messageBoxService: MessageBoxService,
     private errorHandlerService: ErrorHandlerService,
-    private router: Router
+    private router: Router,
+    private translateService: TranslateService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -56,8 +58,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           // Detaillierte Fehlermeldung vom ErrorHandlerService
           const details = this.errorHandlerService.extractErrorDetails(error);
           
-          // Zeige MessageBox mit Fehlerdetails
-          this.messageBoxService.show(errorMessage, errorTitle, 'OK', details);
+          // Übersetze den Titel und zeige MessageBox mit Fehlerdetails
+          const translatedTitle = this.translateService.instant(errorTitle);
+          this.messageBoxService.show(errorMessage, translatedTitle, 'OK', details);
         }
         
         // Fehler weitergeben für spezifische Behandlung in Komponenten

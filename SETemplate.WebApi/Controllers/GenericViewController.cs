@@ -107,7 +107,7 @@ namespace SETemplate.WebApi.Controllers
         {
             var authHeader = HttpContext.Request.Headers.Authorization;
 
-            var query = await ViewSet.GetAsync();
+            var query = await ViewSet.GetAllAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);

@@ -25,7 +25,7 @@ namespace SETemplate.WebApi.Controllers
             }
             else if (actionName.Equals("get", StringComparison.CurrentCultureIgnoreCase))
             {
-                result = EntitySet.HasCurrentUserPermission(nameof(EntitySet.GetAsync));
+                result = EntitySet.HasCurrentUserPermission(nameof(EntitySet.GetAllAsync));
             }
             else if (actionName.Equals("query", StringComparison.CurrentCultureIgnoreCase))
             {

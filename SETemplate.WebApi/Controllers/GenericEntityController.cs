@@ -130,7 +130,7 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual async Task<ActionResult<IEnumerable<TModel>>> GetAsync()
         {
-            var query = await EntitySet.GetAsync();
+            var query = await EntitySet.GetAllAsync();
             var result = query.Select(e => ToModel(e));
 
             return Ok(result);

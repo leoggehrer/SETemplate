@@ -154,7 +154,7 @@ namespace SETemplate.Logic.DataContext
         /// This method queries entities without change tracking for better performance when read-only access is needed.
         /// The results are automatically limited to the maximum count defined by <see cref="MaxCount"/> to prevent excessive data retrieval.
         /// </remarks>
-        internal virtual Task<IEnumerable<TEntity>> ExecuteGetAsync()
+        internal virtual Task<IEnumerable<TEntity>> ExecuteGetAllAsync()
         {
             return ExecuteAsNoTrackingSet().Take(MaxCount).ToArrayAsync().ContinueWith(t => (IEnumerable<TEntity>)t.Result);
         }
@@ -181,11 +181,39 @@ namespace SETemplate.Logic.DataContext
 
                 foreach (var include in queryParams.Includes ?? [])
                 {
+                    // There is no ThenInclude overload for string-based includes in EF Core.
+                    // Only the first-level .Include(string) is supported for string paths (dot-separated).
+                    // For nested navigation properties, use a single string with dot-notation: Include("Parent.Child.GrandChild")
+                    // So, just call set = set.Include(include); once per include string.
                     if (!string.IsNullOrWhiteSpace(include))
                     {
-                        CheckQueryIncludeAccess(typeof(TEntity), include);
+#if ACCOUNT_ON                        
+                        var entityType = typeof(TEntity);
+                        var includeItems = include.Split('.');
+
+                        for (int i = 0; i < includeItems.Length; i++)
+                        {
+                            if (i == 0)
+                            {
+                                CheckQueryIncludeAccess(entityType, includeItems[i]);
+                            }
+                            else
+                            {
+                                var navPropertyType = GetNavigationPropertyType(entityType, includeItems[i - 1])
+                                                   ?? throw new Modules.Exceptions.LogicException($"The navigation property '{includeItems[i - 1]}' does not exist on type '{entityType.FullName}'.");
+
+                                entityType = navPropertyType;
+                                CheckQueryIncludeAccess(entityType, includeItems[i]);
+                            }
+                        }
+#endif
                         set = set.Include(include);
                     }
+                }
+
+                if (string.IsNullOrWhiteSpace(queryParams.SortBy) == false)
+                {
+                    set = set.OrderBy(queryParams.SortBy);
                 }
 
                 if (queryParams.Filter != null
@@ -203,7 +231,6 @@ namespace SETemplate.Logic.DataContext
                                      .ToArrayAsync()
                                      .ConfigureAwait(false);
                 }
-
                 return query;
             }
             catch (ParseException ex)

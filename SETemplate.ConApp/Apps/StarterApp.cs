@@ -189,6 +189,15 @@ namespace SETemplate.ConApp.Apps
             PrintLine("Init database...");
 
             BeforeInitDatabase();
+            try
+            {
+                Logic.DataContext.Factory.InitDatabase();
+            }
+            catch (Exception ex)
+            {
+                PrintLine($"Error initing database: {ex.Message}");
+                ReadLine("Press ENTER to continue...");
+            }
             Logic.DataContext.Factory.InitDatabase();
             AfterInitDatabase();
 #if ACCOUNT_ON

@@ -1,5 +1,5 @@
 ﻿//@BaseCode
-import { Directive, OnInit } from "@angular/core";
+import { Directive } from "@angular/core";
 import { IdType, IKeyModel } from "@app/models/i-key-model";
 import { IApiEntityBaseService } from "@app/services/i-api-entity-base.service";
 import { GenericBaseListComponent } from "./generic-base-list.component";
@@ -23,11 +23,6 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
     super(entityService);
   }
 
-  private _canSearch: boolean = true;
-  private _canAdd: boolean = true;
-  private _canEdit: boolean = true;
-  private _canDelete: boolean = true;
-
   /**
    * Initializes the component and sets up permissions for various operations.
    */
@@ -36,48 +31,30 @@ export abstract class GenericEntityListComponent<T extends IKeyModel> extends Ge
 
     this.entityService.hasCurrentUserPermission("Query").pipe(take(1)).subscribe(permission => {
       this._canSearch = permission;
+      this.afterSetPermissions("Query");
     });
     this.entityService.hasCurrentUserPermission("Create").pipe(take(1)).subscribe(permission => {
       this._canAdd = permission;
+      this.afterSetPermissions("Create");
     });
     this.entityService.hasCurrentUserPermission("Update").pipe(take(1)).subscribe(permission => {
       this._canEdit = permission;
+      this.afterSetPermissions("Update");
     });
     this.entityService.hasCurrentUserPermission("Delete").pipe(take(1)).subscribe(permission => {
       this._canDelete = permission;
+      this.afterSetPermissions("Delete");
     });
   }
 
   /**
-   * Indicates whether the search functionality is enabled for the entity list.
-   * Always returns true, allowing search operations.
+   * Method called after permissions are set for an operation.
+   * Can be overridden in derived classes to implement custom logic.
+   * 
+   * @param permission - The permission type that was set.
    */
-  public override get canSearch(): boolean {
-    return this._canSearch;
-  }
-
-  /**
-   * Indicates whether the add functionality is enabled for the entity list.
-   * Always returns true, allowing add operations.
-   */
-  public override get canAdd(): boolean {
-    return this._canAdd;
-  }
-
-  /**
-   * Indicates whether the edit functionality is enabled for the entity list.
-   * Always returns true, allowing edit operations.
-   */
-  public override get canEdit(): boolean {
-    return this._canEdit;
-  }
-
-  /**
-   * Indicates whether the delete functionality is enabled for the entity list.
-   * Always returns true, allowing delete operations.
-   */
-  public override get canDelete(): boolean {
-    return this._canDelete;
+  protected afterSetPermissions(permission: string): void {
+    // Override this method to implement custom logic after permissions are set
   }
 
   /**

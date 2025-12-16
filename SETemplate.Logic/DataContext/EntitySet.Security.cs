@@ -52,6 +52,67 @@ namespace SETemplate.Logic.DataContext
             }
             return result;
         }
+        /// <summary>
+        /// Gets a <see cref="Type"/> by searching loaded assemblies for a type with the specified namespace part and type name.
+        /// </summary>
+        /// <param name="partOfNamespace">The part of the namespace to search for.</param>
+        /// <param name="typeName">The name of the type to search for.</param>
+        /// <returns>The <see cref="Type"/> if found; otherwise, null.</returns>
+        protected static Type? GetTypeBy(string partOfNamespace, string typeName)
+        {
+            var result = default(Type?);
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var enumerator = assemblies.GetEnumerator();
+
+            while (result == null && enumerator.MoveNext())
+            {
+                var assembly = (Assembly)enumerator.Current;
+
+                if (assembly != null)
+                {
+                    result = assembly.GetTypes().FirstOrDefault(t => t.Namespace != null && t.Namespace.Contains(partOfNamespace, StringComparison.OrdinalIgnoreCase) && t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// Gets the type of a navigation property for a given entity type.
+        /// </summary>
+        /// <param name="entityType">The type of the entity.</param>
+        /// <param name="navigationPropertyName">The name of the navigation property.</param>
+        /// <returns>The type of the navigation property, or null if not found.</returns>
+        protected static Type? GetNavigationPropertyType(Type entityType, string navigationPropertyName)
+        {
+            var result = default(Type?);
+            var navPropertyInfo = entityType.GetProperty(navigationPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (navPropertyInfo != null && navPropertyInfo.PropertyType.IsGenericType)
+            {
+                result = navPropertyInfo.PropertyType.GetGenericArguments().First();
+            }
+            else if (navPropertyInfo != null && navPropertyInfo.PropertyType.IsClass)
+            {
+                result = navPropertyInfo.PropertyType;
+            }
+            return result;
+        }
+        /// <summary>
+        /// Gets the entity set type for a given navigation property of an entity type.
+        /// </summary>
+        /// <param name="entityType">The type of the entity.</param>
+        /// <param name="navigationPropertyName">The name of the navigation property.</param>
+        /// <returns>The type of the navigation entity set, or null if not found.</returns>
+        protected static Type? GetNavigationEntitySetType(Type entityType, string navigationPropertyName)
+        {
+            var result = default(Type?);
+            var navPropertyType = GetNavigationPropertyType(entityType, navigationPropertyName);
+
+            if (navPropertyType != null)
+            {
+                result = GetTypeBy("Logic.DataContext", $"{navPropertyType.Name}Set");
+            }
+            return result;
+        }
         #endregion methods
 
         #region methods authorization
@@ -77,7 +138,7 @@ namespace SETemplate.Logic.DataContext
         /// <param name="authorize">The authorization settings to apply.</param>
         internal static void SetAuthorization4Read(Type type, Modules.Security.AuthorizeAttribute authorize)
         {
-            SetAuthorization(type, nameof(EntitySet<TEntity>.GetAsync), authorize);
+            SetAuthorization(type, nameof(EntitySet<TEntity>.GetAllAsync), authorize);
             SetAuthorization(type, nameof(EntitySet<TEntity>.GetByIdAsync), authorize);
             SetAuthorization(type, nameof(EntitySet<TEntity>.QueryByIdAsync), authorize);
             SetAuthorization(type, nameof(EntitySet<TEntity>.QueryAsync), authorize);
@@ -273,48 +334,13 @@ namespace SETemplate.Logic.DataContext
         /// <exception cref="LogicException"></exception>
         partial void CheckQueryIncludeAccess(Type entityType, string navigationPropertyName)
         {
-            static Type? GetTypeBy(string partOfNamespace, string typeName)
-            {
-                var result = default(Type?);
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                var enumerator = assemblies.GetEnumerator();
+            var navPropertySetType = GetNavigationEntitySetType(entityType, navigationPropertyName)
+                                  ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The entity set for the navigation property '{navigationPropertyName}' does not exist in the context.");
 
-                while (result == null && enumerator.MoveNext())
-                {
-                    var assembly = (Assembly)enumerator.Current;
+            var methodBase = navPropertySetType.GetMethod("QueryAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                          ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The method 'QueryAsync' does not exist on entity set type '{navPropertySetType.FullName}'.");
 
-                    if (assembly != null)
-                    {
-                        result = assembly.GetTypes().FirstOrDefault(t => t.Namespace != null && t.Namespace.Contains(partOfNamespace, StringComparison.OrdinalIgnoreCase) && t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
-                    }
-                }                    
-                return result;
-            }
-
-            var navPropertyInfo = entityType.GetProperty(navigationPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                               ?? throw new LogicException(ErrorType.InvalidPropertyName, $"The navigation property '{navigationPropertyName}' does not exist on type '{entityType.FullName}'.");
-
-            if (navPropertyInfo.PropertyType.IsGenericType)
-            {
-                var subType = navPropertyInfo.PropertyType.GetGenericArguments().First()
-                           ?? throw new LogicException(ErrorType.InvalidPropertyName, $"The navigation property '{navigationPropertyName}' on type '{entityType.FullName}' does not have a valid generic argument.");
-                var dbSetType = GetTypeBy("Logic.DataContext", $"{subType.Name}Set")
-                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The entity set for type '{subType.FullName}' does not exist in the context.");
-                var methodBase = dbSetType.GetMethod("QueryAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The method 'QueryAsync' does not exist on entity set type '{dbSetType.FullName}'.");
-
-                CheckReadAccessing(dbSetType, methodBase);
-            }
-            else if (navPropertyInfo.PropertyType.IsClass)
-            {
-                var propertyType = navPropertyInfo.PropertyType;
-                var dbSetType = GetTypeBy("Logic.DataContext", $"{propertyType.Name}Set")
-                             ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The entity set for type '{propertyType.FullName}' does not exist in the context.");
-                var methodBase = dbSetType.GetMethod("QueryAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                              ?? throw new LogicException(ErrorType.InvalidEntitySet, $"The method 'QueryAsync' does not exist on entity set type '{dbSetType.FullName}'.");
-
-                CheckReadAccessing(dbSetType, methodBase);
-            }
+            CheckReadAccessing(navPropertySetType, methodBase);
         }
         #endregion partial methods
 

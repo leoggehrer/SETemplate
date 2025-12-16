@@ -62,11 +62,11 @@ namespace SETemplate.Logic.DataContext
         /// This method queries entities without change tracking for better performance when read-only access is needed.
         /// The results are automatically limited to the maximum count defined by <see cref="MaxCount"/> to prevent excessive data retrieval.
         /// </remarks>
-        public virtual Task<IEnumerable<TView>> GetAsync()
+        public virtual Task<IEnumerable<TView>> GetAllAsync()
         {
             BeforeAccessing(MethodBase.GetCurrentMethod()!.GetAsyncOriginal());
 
-            return ExecuteGetAsync();
+            return ExecuteGetAllAsync();
         }
 
         /// <summary>

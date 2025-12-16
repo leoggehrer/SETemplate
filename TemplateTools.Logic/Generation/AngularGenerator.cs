@@ -389,8 +389,9 @@ namespace TemplateTools.Logic.Generation
         {
             var result = new List<Models.GeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
+            var entityTypes = entityProject.SetEntityTypes.Where(e => EntityProject.IsAccountEntity(e) == false);
 
-            foreach (var type in entityProject.AllEntityTypes)
+            foreach (var type in entityTypes)
             {
                 if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptService, type, StaticLiterals.Generate, GenerateServices.ToString()))
                 {
@@ -431,7 +432,7 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { IdType, IdDefault } from '@app-models/i-key-model';");
             result.Add("import { Injectable } from '@angular/core';");
             result.Add("import { HttpClient } from '@angular/common/http';");
-            result.Add("import { ApiEntityBaseService } from '@app/services/api-entity-base.service';");
+            result.Add("import { ApiEntityBaseService } from '@app-services/api-entity-base.service';");
             result.Add("import { environment } from '@environment/environment';");
             result.Add(CreateImport("@app-models", modelName, subPath));
 
@@ -490,7 +491,7 @@ namespace TemplateTools.Logic.Generation
             StartCreateService(type, result.Source);
             result.Add("import { Injectable } from '@angular/core';");
             result.Add("import { HttpClient } from '@angular/common/http';");
-            result.Add("import { ApiViewBaseService } from '@app/services/api-view-base.service';");
+            result.Add("import { ApiViewBaseService } from '@app-services/api-view-base.service';");
             result.Add("import { environment } from '@environment/environment';");
             result.Add(CreateImport("@app-models", modelName, subPath));
 
@@ -654,10 +655,10 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateListComponent(type, result.Source);
-            result.Add("import { Directive } from '@angular/core';");
+            result.Add("import { Directive, inject } from '@angular/core';");
             result.Add("import { GenericEntityListComponent } from '@app/components/base/generic-entity-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
-            result.Add(CreateImport("@app/services/http", serviceName, subPath));
+            result.Add(CreateImport("@app-services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -665,11 +666,9 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("@Directive()");
             result.Add($"export abstract class {entityName}BaseListComponent extends GenericEntityListComponent<{modelName}>" + " {");
-            result.Add("  constructor(");
-            result.Add($"              protected dataAccessService: {serviceName}");
-            result.Add($"            )");
+            result.Add("  constructor()");
             result.Add("  {");
-            result.Add("    super(dataAccessService);");
+            result.Add($"    super(inject({serviceName}));");
             result.Add("  }");
 
             result.Add("  override ngOnInit(): void {");
@@ -773,10 +772,10 @@ namespace TemplateTools.Logic.Generation
             };
 
             StartCreateListComponent(type, result.Source);
-            result.Add("import { Directive } from '@angular/core';");
+            result.Add("import { Directive, inject } from '@angular/core';");
             result.Add("import { GenericViewListComponent } from '@app/components/base/generic-view-list.component';");
             result.Add(CreateImport("@app-models", modelName, subPath));
-            result.Add(CreateImport("@app/services/http", serviceName, subPath));
+            result.Add(CreateImport("@app-services/http", serviceName, subPath));
 
             result.Add(StaticLiterals.CustomImportBeginLabel);
             result.AddRange(ReadCustomImports(projectPath, result));
@@ -784,11 +783,9 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("@Directive()");
             result.Add($"export abstract class {entityName}BaseListComponent extends GenericViewListComponent<{modelName}>" + " {");
-            result.Add("  constructor(");
-            result.Add($"              protected dataAccessService: {serviceName}");
-            result.Add("             )");
+            result.Add("  constructor()"); 
             result.Add("  {");
-            result.Add("    super(dataAccessService);");
+            result.Add($"    super(inject({serviceName}));");
             result.Add("  }");
             result.Add("}");
 
@@ -836,23 +833,17 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { CommonModule } from '@angular/common';");
             result.Add("import { FormsModule } from '@angular/forms';");
             result.Add("import { RouterModule } from '@angular/router';");
-
             result.Add("import { TranslateModule } from '@ngx-translate/core';");
+
+            result.Add("import { IQueryParams } from '@app/models/base/i-query-params';");
             result.Add(CreateImport("@app-models", modelName, subPath));
             result.Add("import { " + $"{entityName}BaseListComponent" + " }" + $"from '@app/components/{baseSubFilePath}';");
-
             result.Add("import { " + $"{entityName}EditComponent" + " }" + $"from '@app/components/{editSubFilePath}';");
 
 #if ACCOUNT_ON
-            result.Add("import { AuthService } from '@app/services/auth.service';");
+            result.Add("import { AuthService } from '@app-services/auth.service';");
             result.Add("import { Role } from '@app/models/account/role';");
 #endif
-
-            result.Add(CreateImport("@app/services/http", serviceName, subPath));
-
-            result.Add(StaticLiterals.CustomImportBeginLabel);
-            result.AddRange(ReadCustomImports(projectPath, result));
-            result.Add(StaticLiterals.CustomImportEndLabel);
 
             result.Add("@Component({");
             result.Add($"  standalone: true,");
@@ -863,15 +854,14 @@ namespace TemplateTools.Logic.Generation
             result.Add("})");
             result.Add($"export class {entityName}ListComponent extends {entityName}BaseListComponent" + " {");
 #if ACCOUNT_OFF
-            result.Add($"  constructor(protected override dataAccessService: {serviceName})");
+            result.Add("  constructor()");
 #else
             result.Add("  constructor(");
-            result.Add($"              protected override dataAccessService: {serviceName},");
             result.Add($"              private authService: AuthService");
             result.Add($"             )");
 #endif
             result.Add("  {");
-            result.Add("    super(dataAccessService);");
+            result.Add("    super();");
             result.Add("  }");
 
             result.Add("  override ngOnInit(): void {");
@@ -879,9 +869,9 @@ namespace TemplateTools.Logic.Generation
             result.Add("    this.reloadData();");
             result.Add("  }");
 
-            result.Add("  override prepareQueryParams(): void {");
-            result.Add("    super.prepareQueryParams();");
-            result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
+            result.Add("  override prepareQueryParams(queryParams: IQueryParams): void {");
+            result.Add("    super.prepareQueryParams(queryParams);");
+            result.Add($"    queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("  }");
 
 #if EXTERNALGUID_ON
@@ -904,9 +894,6 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("}");
 
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
-            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
             FinishCreateListComponent(type, result.Source);
             return result;
         }
@@ -997,11 +984,8 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("import { " + $"{entityName}BaseEditComponent" + " }" + $"from '@app/components/{baseSubFilePath}';");
 
-            result.Add(StaticLiterals.CustomImportBeginLabel);
-            result.AddRange(ReadCustomImports(projectPath, result));
-            result.Add(StaticLiterals.CustomImportEndLabel);
-
             result.Add("@Component({");
+            result.Add($"  standalone: true,");
             result.Add($"  selector:'app-{ConvertFileItem(entityName)}-edit',");
             result.Add($"  imports: [ CommonModule, FormsModule, TranslateModule],");
             result.Add($"  templateUrl: './{ConvertFileItem(entityName)}-edit.component.html',");
@@ -1011,9 +995,6 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("}");
 
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
-            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
             FinishCreateListComponent(type, result.Source);
             return result;
         }
@@ -1107,17 +1088,14 @@ namespace TemplateTools.Logic.Generation
             result.Add("import { " + $"{entityName}BaseListComponent" + " }" + $"from '@app/components/{baseSubFilePath}';");
 
 #if ACCOUNT_ON
-            result.Add("import { AuthService } from '@app/services/auth.service';");
+            result.Add("import { AuthService } from '@app-services/auth.service';");
             result.Add("import { Role } from '@app/models/account/role';");
 #endif
 
-            result.Add(CreateImport("@app/services/http", serviceName, subPath));
-
-            result.Add(StaticLiterals.CustomImportBeginLabel);
-            result.AddRange(ReadCustomImports(projectPath, result));
-            result.Add(StaticLiterals.CustomImportEndLabel);
+            result.Add(CreateImport("@app-services/http", serviceName, subPath));
 
             result.Add("@Component({");
+            result.Add($"  standalone: true,");
             result.Add($"  selector:'app-{ConvertFileItem(entityName)}-list',");
             result.Add($"  imports: [ CommonModule, FormsModule, TranslateModule ],");
             result.Add($"  templateUrl: './{ConvertFileItem(entityName)}-list.component.html',");
@@ -1125,21 +1103,24 @@ namespace TemplateTools.Logic.Generation
             result.Add("})");
             result.Add($"export class {entityName}ListComponent extends {entityName}BaseListComponent" + " {");
 #if ACCOUNT_OFF
-            result.Add($"  constructor(protected override dataAccessService: {serviceName})");
+            result.Add($"  constructor()");
 #else
             result.Add("  constructor(");
-            result.Add($"              protected override dataAccessService: {serviceName},");
             result.Add($"              private authService: AuthService");
             result.Add($"             )");
 #endif
             result.Add("  {");
-            result.Add("    super(dataAccessService);");
+            result.Add("    super();");
             result.Add("  }");
 
             result.Add("  override ngOnInit(): void {");
             result.Add("    super.ngOnInit();");
-            result.Add($"    this._queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("    this.reloadData();");
+            result.Add("  }");
+
+            result.Add("  override prepareQueryParams(queryParams: IQueryParams): void {");
+            result.Add("    super.prepareQueryParams(queryParams);");
+            result.Add($"    queryParams.filter = '{CreateListFilterFromType(type, unitType)}';");
             result.Add("  }");
 
             result.Add("  override get pageTitle(): string {");
@@ -1148,9 +1129,6 @@ namespace TemplateTools.Logic.Generation
 
             result.Add("}");
 
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeBeginLabel);
-            result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
-            result.Source.Insert(result.Source.Count - 1, StaticLiterals.CustomCodeEndLabel);
             FinishCreateListComponent(type, result.Source);
             return result;
         }

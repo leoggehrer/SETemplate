@@ -27,17 +27,22 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * The current search term used for filtering the data items.
    */
   protected _searchTerm: string = '';
+  protected _canSearch: boolean = true;
+  protected _canAdd: boolean = true;
+  protected _canEdit: boolean = true;
+  protected _canDelete: boolean = true;
 
   /**
    * The query parameters used for filtering and querying data items.
    */
   protected _queryParams: IQueryParams = {
+    includes: [],
     filter: '',
     values: [],
-    includes: [],
+    sortBy: '',
   };
 
-    // Injizierte Services
+  // Injizierte Services
   protected modal = inject(NgbModal);
   protected messageBoxService = inject(MessageBoxService);
   protected translateService = inject(TranslateService);
@@ -49,8 +54,8 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * @param modal - The modal service for opening modals.
    * @param messageBoxService - The service for displaying message boxes.
    */
-  constructor(protected viewService: IApiQueryBaseService<T>) { 
-    
+  constructor(protected viewService: IApiQueryBaseService<T>) {
+
   }
 
   /**
@@ -58,7 +63,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * Prepares the query parameters for data retrieval.
    */
   public ngOnInit(): void {
-    this.prepareQueryParams();
+    this.prepareQueryParams(this._queryParams);
   }
 
   /**
@@ -103,7 +108,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * @returns True if refresh is enabled; otherwise, false.
    */
   public get canRefresh(): boolean {
-    return true;
+    return this._canSearch;
   }
 
   /**
@@ -113,7 +118,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * @returns True if add is enabled; otherwise, false.
    */
   public get canAdd(): boolean {
-    return false;
+    return this._canAdd;
   }
 
   /**
@@ -123,7 +128,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * @returns True if edit is enabled; otherwise, false.
    */
   public get canEdit(): boolean {
-    return false;
+    return this._canEdit;
   }
 
   /**
@@ -133,7 +138,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * @returns True if delete is enabled; otherwise, false.
    */
   public get canDelete(): boolean {
-    return false;
+    return this._canDelete;
   }
 
   /**
@@ -151,7 +156,7 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * Prepares the query parameters before reloading data.
    * Subclasses can override this method to customize the query parameters.
    */
-  protected prepareQueryParams(): void {
+  protected prepareQueryParams(queryParams: IQueryParams): void {
     // Kann in Subklassen überschrieben werden, um die Query-Parameter anzupassen
   }
 
@@ -159,8 +164,13 @@ export abstract class GenericBaseListComponent<T extends IModel> implements OnIn
    * Reloads the data items based on the current query parameters.
    */
   protected reloadData() {
-    if (this._queryParams.includes.length === 0 
-        && this._queryParams.values.length === 0) {
+    this.viewService.query(this._queryParams)
+      .subscribe(data => {
+        this.dataItems = this.sortData(data);
+      });
+    return;
+    if (this._queryParams.includes.length === 0
+      && this._queryParams.values.length === 0) {
       this.viewService.getAll()
         .subscribe(data => {
           this.dataItems = this.sortData(data);
