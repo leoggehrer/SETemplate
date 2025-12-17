@@ -19,7 +19,12 @@ namespace SETemplate.ConApp.Apps
         /// </summary>
         private static string SAPwd => PwdPrefix + SAUser;
 
-        static (string UserName, string Email, string Password, int Timeout, string Role) CreateAccountData(string userName)
+        /// <summary>
+        /// Creates account data based on the provided username.
+        /// </summary>
+        /// <param name="userName">The username for which to create account data.</param>
+        /// <returns>A tuple containing the username, email, password, timeout, and role.</returns>
+        private static (string UserName, string Email, string Password, int Timeout, string Role) CreateAccountData(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
                 throw new ArgumentException("Benutzername darf nicht leer sein.", nameof(userName));
@@ -30,8 +35,50 @@ namespace SETemplate.ConApp.Apps
 
             return (userName, email, password, 30, role);
         }
+        /// <summary>
+        /// Creates a user account by prompting for input.
+        /// </summary>
+        static partial void CreateAccount()
+        {
+            static string ReadInput(string prompt)
+            {
+                Console.Write(prompt);
+                return Console.ReadLine() ?? string.Empty;
+            }
+            PrintLine("Create an user account:");
+            PrintLine("");
 
-        partial void CreateAccounts()
+            var name = ReadInput("Name:     ");
+            var email = ReadInput("Email:    ");
+            var password = ReadInput("Password: ");
+            var roles = ReadInput("Role(s) (comma separated): ");
+                        
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AddAppAccessAsync(SAEmail, SAPwd, name, email, password, 30, roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+                    PrintLine("");
+                    PrintLine($"Account for user '{name}' created successfully.");
+                }
+                catch (Exception ex)
+                {
+                    var saveColor = ForegroundColor;
+                    PrintLine("");
+                    ForegroundColor = ConsoleColor.Red;
+                    PrintLine($"Error during account creation: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        PrintLine($"Inner exception: {ex.InnerException.Message}");
+                    }
+                    ForegroundColor = saveColor;
+                }
+            }).Wait();
+        }
+        /// <summary>
+        /// Creates predefined accounts for the application.
+        /// </summary>
+        static partial void CreateAccounts()
         {
             Task.Run(async () =>
             {
@@ -47,6 +94,7 @@ namespace SETemplate.ConApp.Apps
                 account = CreateAccountData("G.Gehrer");
                 await AddAppAccessAsync(SAEmail, SAPwd, account.UserName, "   g.gehrer@htl-leonding.ac.at ", account.Password, account.Timeout, account.Role);
             }).Wait();
+            AfterCreateAccountsCustom();
         }
 
         /// <summary>
@@ -67,6 +115,10 @@ namespace SETemplate.ConApp.Apps
             await Logic.AccountAccess.AddAppAccessAsync(login!.SessionToken, user, email, pwd, timeOutInMinutes, roles);
             await Logic.AccountAccess.LogoutAsync(login!.SessionToken);
         }
+
+        #region partial methods
+        static partial void AfterCreateAccountsCustom();
+        #endregion partial methods
     }
 }
 #endif
