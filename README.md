@@ -1,5 +1,7 @@
 # SETemplate – Vorlage für SE-Architektur-Projekte
 
+> **Version:** 2.0 | **Letzte Aktualisierung:** Januar 2026
+
 **Inhaltsverzeichnis:**
 
 - [SETemplate – Vorlage für SE-Architektur-Projekte](#setemplate--vorlage-für-se-architektur-projekte)
@@ -70,10 +72,10 @@ Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzep
 |**SETemplate.WebApi**|In diesem Projekt ist die REST-Schnittstelle implementiert. Dieses Modul stellt eine API (Aplication Programming Interface) für den Zugriff auf das System über das Netzwerk zur Verfügung.| Host | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.ConApp**|Dieses Projekt dient als Initial-Anwendung zum Erstellen bzw. Abgleichen der Datenbank, das Anlegen von Konten falls die Authentifizierung aktiv ist und zum Importieren von bestehenden Daten. Nach der Initialisierung wird diese Anwendung kaum verwendet.| Console | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.MVVMApp**|Diese Projekt beinhaltet die Basisfunktionen für eine Wpf-Anwendung (Avalonia) und kann als Vorlage für die Entwicklung einer Wpf-Anwendung mit dem SETemplate Framework verwendet werden.|Host| SETemplate.Logic, SETemplate.Common |
-|**SETemplate.AngularApp**|Diese Projekt beinhaltet die Vorlage für die Erstellung einer **Angular 19** Anwendung. Als Styling-Framework ist **Bootstrap 5.3** vorinstalliert. Die Internationalisierung erfolgt über **ngx-translate**. Die Komponenten verwenden eine **Module-basierte Architektur** (nicht standalone).| Host | --- |
+|**SETemplate.AngularApp**|Diese Projekt beinhaltet die Vorlage für die Erstellung einer **Angular 19** Anwendung. Als Styling-Framework ist **Bootstrap 5.3** vorinstalliert. Die Internationalisierung erfolgt über **ngx-translate**. Die Komponenten verwenden eine **Standalone-Architektur** (standalone: true).| Host | --- |
 |**TemplateTools.ConApp**|Console-Anwendung mit den Hauptfunktionen: Copier, Preprocessor, CodeGenerator, Synchronization, Cleanup und erweiterten Tools.| Console | TemplateTools.Logic, SETemplate.Common |
 |**TemplateTools.Logic**|Kern-Bibliothek für alle Template-Tools mit Code-Generierung, Template-Verarbeitung und Projektmanagement.| Library | SETemplate.Common |
-|**TemplateMcp.ConApp**|**Model Context Protocol (MCP) Server** für die Integration mit KI-Assistenten wie Claude. Stellt Template-Strukturen und Entwicklungsrichtlinien über standardisierte MCP-Schnittstelle zur Verfügung.| MCP Server | keine |
+|**SETemplate.McpSrv**|**Model Context Protocol (MCP) Server** für die Integration mit KI-Assistenten wie Claude. Stellt Template-Strukturen und Entwicklungsrichtlinien über standardisierte MCP-Schnittstelle zur Verfügung.| MCP Server | keine |
 
 ## Technologie-Stack
 
@@ -93,7 +95,7 @@ Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzep
 - **Angular Translate (ngx-translate)** - Internationalisierung (i18n)
 - **RxJS** - Reactive Programming
 - **TypeScript** - Typisierte JavaScript-Alternative
-- **Module-basierte Architektur** - Komponenten sind nicht standalone (standalone: false)
+- **Standalone-Komponenten** - Moderne Angular-Architektur (standalone: true)
 
 ### Code-Generierung
 
@@ -161,7 +163,7 @@ Nach der Code-Generierung werden TypeScript-Models und Services automatisch erst
 
 ### 4. Code-Marker-System beachten
 
-- `//@BaseCode` - Template-Code (wird zu `//@BaseCode` beim Kopieren)
+- `//@BaseCode` - Template-Code (wird zu `//@CodeCopy` beim Kopieren)
 - `//@GeneratedCode` - Generierter Code (wird bei erneuter Generierung überschrieben!)
 - `//@CustomCode` - Benutzerdefinierte Erweiterungen (entstehen wenn `//@GeneratedCode` Dateien geändert werden)
 - `//@AiCode` - Manuell erstellter Code (z.B. für Entities und Validierungen)
@@ -175,17 +177,19 @@ Für Testdaten können CSV-Import-Routinen in `SETemplate.ConApp/Apps/StarterApp
 - Format: `entityname_set.csv`
 - Import-Logik als partial-Methoden implementieren
 
-## Helper-Scripts und Batch-Dateien
+## Wichtige Kommandos
 
-Das Template enthält mehrere praktische Scripts für häufige Entwicklungsaufgaben:
+Das Template verwendet **TemplateTools.ConApp** für alle Verwaltungsaufgaben. Die wichtigsten Kommandos:
 
-| Script | Funktion | Beschreibung |
-|--------|----------|-------------|
-| `gencode.cmd` | Code-Generierung | Führt automatisch CodeGenerator (4,9,x,x) aus |
-| `delgencode.cmd` | Generierte Dateien löschen | Entfernt alle `//@GeneratedCode` Dateien |
-| `all-cleanup.bat` | Repository säubern | Löscht bin/, obj/ und temporäre Dateien |
-| `git-pull-all.bat` | Git Pull | Führt `git pull` für alle verwandten Repositories aus |
-| `git-commit-push-all.bat` | Git Push | Commit und Push für alle verwandten Repositories |
+| Kommando | Beschreibung |
+|----------|-------------|
+| `dotnet run --project TemplateTools.ConApp -- AppArg=3,2,x,x` | Authentifizierung ein/ausschalten |
+| `dotnet run --project TemplateTools.ConApp -- AppArg=3,8,x,x` | PostgreSQL aktivieren |
+| `dotnet run --project TemplateTools.ConApp -- AppArg=3,9,x,x` | MSSQL Server aktivieren |
+| `dotnet run --project TemplateTools.ConApp -- AppArg=3,10,x,x` | SQLite aktivieren |
+| `dotnet run --project TemplateTools.ConApp -- AppArg=4,7,x,x` | Generierte Klassen löschen |
+| `dotnet run --project TemplateTools.ConApp -- AppArg=4,9,x,x` | Code-Generierung ausführen |
+| `dotnet run --project SETemplate.ConApp -- AppArg=1,2,x` | Datenbank erstellen |
 
 ### Code-Templates für Entwickler
 
@@ -203,18 +207,68 @@ Das Template enthält mehrere praktische Scripts für häufige Entwicklungsaufga
 
 Die nachfolgenden Abbildung zeigt den schematischen Erstellungs-Prozess für ein Domain-Projekt:  
   
-![Projekterstellung](img/template_copier.png)  
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         PROJEKTERSTELLUNG                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────┐                      ┌─────────────────────┐
+    │                     │                      │                     │
+    │     SETemplate      │      ─────────►      │    Domain-Projekt   │
+    │     (Vorlage)       │       Kopieren       │   (z.B. SEBookStore)│
+    │                     │                      │                     │
+    └─────────────────────┘                      └─────────────────────┘
+             │                                             │
+             │                                             │
+             ▼                                             ▼
+    ┌─────────────────────┐                      ┌─────────────────────┐
+    │ TemplateTools.ConApp│                      │ SEBookStore.Logic   │
+    │ SETemplate.Logic    │                      │ SEBookStore.WebApi  │
+    │ SETemplate.WebApi   │    ─────────►        │ SEBookStore.ConApp  │
+    │ SETemplate.ConApp   │     Umbenennen       │ SEBookStore.MVVMApp │
+    │ SETemplate.MVVMApp  │                      │ SEBookStore.Angular │
+    │ SETemplate.Angular  │                      │        ...          │
+    └─────────────────────┘                      └─────────────────────┘
+
+                        ┌───────────────────────────────┐
+                        │     Während des Kopierens:    │
+                        │                               │
+                        │  • SETemplate → SEBookStore   │
+                        │  • @BaseCode  → @CodeCopy     │
+                        │  • Namespaces anpassen        │
+                        │  • Projektverweise anpassen   │
+                        └───────────────────────────────┘
+```
   
 Als Ausgangsbasis wird die Vorlage ***SETemplate*** verwendet. Diese Vorlage beinhaltet das Hilfsprogramm ***'TemplateTools.ConApp'***. Mit Hilfe dieses Programms kann eine Kopie (Domain-Projekt) in ein Verzeichnis eigener Wahl erstellt werden. Bei der Erstellung des Domain-Projektes, zum Beispiel das Projekt **SEBookStore**, werden die folgenden Aktionen ausgeführt:
 
 - Alle Projektteile aus der Vorlage werden in das Zielverzeichnis kopiert.
 - Die Namen der Projekte und Komponenten werden entsprechend angepasst.
 - Alle Projekte mit dem Präfix **SETemplate** werden mit dem domainspezifischen Namen ersetzt.
-- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
+- Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt (Diese Labels werden für einen späteren Abgleich-Prozess verwendet).
 
 Nachdem der Erstellungsprozess ausgeführt wurde, haben Sie ein weiters Projekt (Solution) erhalten - ein Domain-Projekt.
 
-![Projekterstellung2](img/template_copier2.png)  
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    ERGEBNIS: ZWEI UNABHÄNGIGE PROJEKTE                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌───────────────────────────┐         ┌───────────────────────────┐
+  │                           │         │                           │
+  │       SETemplate          │         │      SEBookStore          │
+  │       (Vorlage)           │◄───────►│    (Domain-Projekt)       │
+  │                           │ Sync    │                           │
+  └───────────────────────────┘         └───────────────────────────┘
+           │                                       │
+           │                                       │
+           ▼                                       ▼
+  ┌───────────────────────────┐         ┌───────────────────────────┐
+  │ Marker: @BaseCode         │         │ Marker: @CodeCopy         │
+  │ Original-Template         │         │ Angepasster Code          │
+  │ Basis für Updates         │         │ Domain-spezifisch         │
+  └───────────────────────────┘         └───────────────────────────┘
+```  
 
 > **Hinweis:** Die beiden Projekte **SETemplate** und **DomainProjekt** können zu einem späteren Zeitpunkt abgeglichen werden.
 
@@ -229,15 +283,9 @@ cd SETemplate
 
 ### Schnellstart
 
-Für die schnelle Code-Generierung können Sie die bereitgestellten Batch-/Script-Dateien verwenden:
+Für die schnelle Code-Generierung verwenden Sie den folgenden Befehl:
 
-**Windows:**
-
-```bash
-gencode.cmd
-```
-
-**macOS/Linux:**
+**Windows/macOS/Linux:**
 
 ```bash
 dotnet run --project TemplateTools.ConApp -- AppArg=4,9,x,x
@@ -346,49 +394,41 @@ Template Copier
 Choose [n|n,n|a...all|x|X]:  
 ```
 
-*Menü-Auswahl:* `1`
-
-| Auswahl | Funktion            | Beschreibung |
-|---------|---------------------|--------------|
-| 1       | Change depth        | Ändert die Pfad-Tiefe für die Auswahl eines Pfades. |
-
-| Ablauf  | Beschreibung                               |
-|---------|--------------------------------------------|
-| 1       | Geben Sie eine Zahl >= 0 ein.              |
-
 *Menü-Auswahl:* `Source path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 2       | Source path         | Ändert den Pfad der Vorlage. |
+| 1       | Source path         | Ändert den Quell-Pfad der Vorlage. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein: |
-| 3       | Prüfung, ob das Verzeichnis existiert?     |
-| 4       | Wenn ja, dann wird die Änderung übernommen,  <br/>*sonst* wird die Änderung verworfen. |
-| 5       | Zurück in die Menü-Optionen.               |
+| 1       | Öffnet die Pfad-Auswahl (PathChanger).     |
+| 2       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 3       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein. |
+| 4       | Prüfung, ob das Verzeichnis existiert?     |
+| 5       | Wenn ja, dann wird die Änderung übernommen,  <br/>*sonst* wird die Änderung verworfen. |
+| 6       | Zurück in die Menü-Optionen.               |
 
 *Menü-Auswahl:* `Target path`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 3       | Target path         | Ändern Sie den Pfad für die Erstellung. |
+| 2       | Target path         | Ändert den Ziel-Pfad für die Erstellung. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein: |
-| 3       | Prüfung, ob das Verzeichnis existiert?     |
-| 4       | Wenn ja, dann wird die Änderung übernommen,  <br/>*sonst* wird die Änderung verworfen. |
-| 5       | Zurück in die Menü-Optionen.               |
+| 1       | Öffnet die Pfad-Auswahl (PathChanger).     |
+| 2       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 3       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein. |
+| 4       | Prüfung, ob das Verzeichnis existiert?     |
+| 5       | Wenn ja, dann wird die Änderung übernommen,  <br/>*sonst* wird die Änderung verworfen. |
+| 6       | Zurück in die Menü-Optionen.               |
 
 *Menü-Auswahl:* `Target name`
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 4       | Target name         | Ändern den Namen für das Domain-Projekt. |
+| 3       | Target name         | Ändert den Namen für das Domain-Projekt. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
@@ -398,14 +438,14 @@ Choose [n|n,n|a...all|x|X]:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 5       | Start               | Startet der Kopier-Prozess mit den entsprechenden Einstellungen. |
+| 4       | Start               | Startet den Kopier-Prozess mit den entsprechenden Einstellungen. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
 | 1       | Das Verzeichnis `Target path` und `Target name` wird erstellt. |
 | 2       | Alle Projekte die nicht den Präfix **SETemplate** haben, werden in das Verzeichnis `Target path` und `Target name` kopiert. |
 | 3       | Alle Projekte mit dem Präfix **SETemplate** werden in das Verzeichnis `Traget path` und `Target name` kopiert und der Präfix **SETemplate** wird durch den **Target name** erstezt. |
-| 4       | Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@BaseCode** ersetzt.  <br/>**INFO:** Diese Labels werden für einen späteren Abgleich-Prozess verwendet. |
+| 4       | Beim Kopieren der Dateien wird der Label **@BaseCode** mit dem Label **@CodeCopy** ersetzt.  <br/>**INFO:** Diese Labels werden für einen späteren Abgleich-Prozess verwendet. |
 | 5       | Nachdem der Kopierprozess fertig gestellt wurde, wird der Datei-Explorer geöffnet.  <br/>**INFO:** Gilt nur für Windows-Betriebssysteme. |
 | 6       | Zurück in die Menü-Optionen.               |
 
@@ -489,7 +529,7 @@ Solution path: ...\SETemplate
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
-Choose [n|n,n|a...all|x|X]:  
+Choose [n|n,n|x|X]:  
 ```
 
 Erklärung der `Konstanten`:
@@ -506,7 +546,7 @@ Erklärung der `Konstanten`:
 | SQLSERVER_ON     | Schaltet die Verwendung der SQL-Server-Datenbank ein. |
 | SQLITE_ON        | Schaltet die Verwendung der SQLITE-Datenbank ein.     |
 | DOCKER_ON        | Zeigt an, dass `Docker` verwendet wird.  <br/>**HINWEIS:** Wird derzeit nicht verwendet. |
-| DEVELOPER_ON     | Zeigt an, dass sich das Projekt im Entwicklerstatus befindet.  <br/>**HINWEIS:** Mit diesem Schalter können Entwickler-Funktionen ein.- bzw. ausgeschaltet werden. |
+| DEVELOP_ON       | Zeigt an, dass sich das Projekt im Entwicklerstatus befindet.  <br/>**HINWEIS:** Mit diesem Schalter können Entwickler-Funktionen ein.- bzw. ausgeschaltet werden. |
 | DBOPERATION_ON   | Schaltet die Operationen  <br/>`public static void CreateDatabase()` und  <br/>`public static void InitDatabase()` ein.  <br/>**HINWEIS:** Zusätzlich müssen die `Defines` 'DEBUG' und 'DEVELOP_ON' eingeschaltet sein. |
 | GENERATEDCODE_ON | Zeigt an, dass die Code-Generierung durchgeführt wurde.  <br/>**HINWEIS:** Diese `Konstante` wird automatisch vom `Code-Generator` gesetzt. |
 
@@ -605,7 +645,7 @@ Exclude generated files from GIT: True
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
-Choose [n|n,n|a...all|x|X]:  
+Choose [n|n,n|x|X]:  
 ```
 
 *Menü-Auswahl:* `Generation file`
@@ -652,12 +692,13 @@ Choose [n|n,n|a...all|x|X]:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 2       | Source path         | Ändert den Pfad der Vorlage. |
+| 5       | Source path         | Ändert den Pfad der Vorlage. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
-| 2       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein: |
+| 1       | Öffnet die Pfad-Auswahl (PathChanger).     |
+| 2       | In Abhängigkeit der Pfad-Tiefe werden alle Verzeichnisse aufgelistet. |
+| 3       | Wählen Sie einen Pfad mit der angegebenen Nummer aus  <br/>oder geben Sie den Pfad ein. |
 | 3       | Prüfung, ob das Verzeichnis existiert?     |
 | 4       | Wenn ja, dann wird die Änderung übernommen,  <br/>*sonst* wird die Änderung verworfen. |
 | 5       | Zurück in die Menü-Optionen.               |
@@ -684,7 +725,7 @@ Template Code Generator
 
 Solution path:                    ...\SETemplate
 ---------------------------------
-Write generated source into:      Singel files
+Write generated source into:      Single files
 Write info header into source:    True
 Delete empty folders in the path: True
 Exclude generated files from GIT: True
@@ -829,16 +870,18 @@ Template Synchronization
 ========================
 
 Balance labels(s):
+  @BaseCode       => @CodeCopy
   @BaseCode       => @BaseCode
-  @BaseCode       => @BaseCode
-Source code path:    ...\SETemplate
+Solution path:       ...\SETemplate
+--------------------
+Repos path:          ...\repos
 
 [-----] -----------------------------------------------------------------
-[    1] Path................Change the source solution path
+[    1] Path................Change the repos path
 [    2] Add path............Add a target path
 [-----] -----------------------------------------------------------------
-[    3] Synchronize with   .\SEContactManager
-[    4] Synchronize with   .\SETranslator
+[    3] Synchronize with....\SEContactManager
+[    4] Synchronize with....\SETranslator
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
@@ -849,8 +892,8 @@ Choose [n|n,n|a...all|x|X]:
 
 | Auswahl | Funktion            | Beschreibung |
 |---------|---------------------|--------------|
-| 1       | Path                | Ändert das Verzeichnis (Pfad), in dem das aktuelle Template liegt. |
-|         |                     | *Change path:* ...\SETemplate zeigt den aktuellen Template-Pfad an. |
+| 1       | Path                | Ändert das Repos-Verzeichnis (Pfad), in dem die Zielprojekte gesucht werden. |
+|         |                     | *Repos path:* ...\repos zeigt den aktuellen Repos-Pfad an. |
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
@@ -889,14 +932,14 @@ Template Partial Synchronization
 ================================
 
 Balance labels(s):
-  @BaseCode       =>             @BaseCode
+  @BaseCode       =>             @CodeCopy
   @BaseCode       =>             @BaseCode
 --------------------------------
 Source code path:                ...\SETemplate
 Target code path:                ...\SETranslator
 
 [-----] -----------------------------------------------------------------
-[    1] 1...................Change max sub path depth
+[    1] Depth...............Change max sub path depth
 [-----] -----------------------------------------------------------------
 [    2] Synchronize with....\Diagrams
 [    3] Synchronize with....\SETranslator.AngularApp
@@ -924,10 +967,10 @@ Mit diesem Menü besteht die Möglichkeit, einzelne Module zu synchronisieren. D
 
 | Ablauf  | Beschreibung                               |
 |---------|--------------------------------------------|
-| 1       | Im Zielpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
-| 2       | Alle Dateien mit dem Label `@BaseCode` werden aus dem Zielpfad entfernt. |
+| 1       | Im Zielpfad werden alle Dateien mit dem Label `@CodeCopy` ermittelt. |
+| 2       | Alle Dateien mit dem Label `@CodeCopy` werden aus dem Zielpfad entfernt. |
 | 3       | Im Quellpfad werden alle Dateien mit dem Label `@BaseCode` ermittelt. |
-| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert.  <br/>Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@BaseCode` ersetzt. |
+| 4       | Alle Dateien mit dem Label `@BaseCode` aus dem Quellpfad werden in den Zielpfad kopiert.  <br/>Bei diesem Kopieren werden die Labels `@BaseCode` durch den Label `@CodeCopy` ersetzt. |
 
 *Menü-Auswahl:* `Exit`
 
@@ -945,16 +988,18 @@ Template Synchronization
 ========================
 
 Balance labels(s):
+  @BaseCode       => @CodeCopy
   @BaseCode       => @BaseCode
-  @BaseCode       => @BaseCode
-Source code path:    ...\SETemplate
+Solution path:       ...\SETemplate
+--------------------
+Repos path:          ...\repos
 
 [-----] -----------------------------------------------------------------
-[    1] Path................Change the source solution path
+[    1] Path................Change the repos path
 [    2] Add path............Add a target path
 [-----] -----------------------------------------------------------------
-[    3] Synchronize with   .\SEContactManager
-[    4] Synchronize with   .\SETranslator
+[    3] Synchronize with....\SEContactManager
+[    4] Synchronize with....\SETranslator
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
@@ -1011,7 +1056,7 @@ Choose [n|n,n|a...all|x|X]:
 Template Cleanup Directories
 ============================
 
-Drop folders: \bin, \obj, \target
+Drop folders: bin, obj, target, node_modules
 Cleanup path: ...\repos
 
 [  ---] -----------------------------------------------------------------
@@ -1153,10 +1198,10 @@ Solution path: ...\SETemplate
 [-----] -----------------------------------------------------------------
 [  x|X] Exit................Exits the application
 
-Choose [n|n,n|a...all|x|X]:  
+Choose [n|n,n|x|X]:  
 ```
 
-### Rollenbasiertes Zugriffssytem
+### Rollenbasiertes Zugriffssystem
 
 Das Authentifizierungssystem unterstützt ein rollenbasiertes Zugriffssystem, um den Zugriff auf verschiedene Bereiche und Funktionen der Anwendung zu steuern. Dieses System ermöglicht es, Benutzern spezifische Rollen zuzuweisen, die ihre Berechtigungen innerhalb der Anwendung definieren.
 
@@ -1170,7 +1215,58 @@ Das rollenbasierte Zugriffssystem basiert auf den folgenden Konzepten:
 
 **Datenmodell:**
 
-![Datenmodell](/img/account.png)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         ACCOUNT DATENMODELL                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────┐
+  │        Identity         │
+  ├─────────────────────────┤
+  │ + Id: int               │
+  │ + Guid: Guid            │
+  │ + Name: string          │
+  │ + Email: string         │
+  │ + TimeOutInMinutes: int │
+  │ + EnableJwtAuth: bool   │
+  │ + AccessFailedCount: int│
+  │ + State: State          │
+  └───────────┬─────────────┘
+              │
+              │ erbt von
+              ▼
+  ┌─────────────────────────┐
+  │     SecureIdentity      │
+  ├─────────────────────────┤
+  │ + PasswordHash: byte[]  │
+  │ + PasswordSalt: byte[]  │
+  └───────────┬─────────────┘
+              │
+              │ 1:n
+              ▼
+  ┌─────────────────────────┐         ┌─────────────────────────┐
+  │     IdentityXRole       │         │         Role            │
+  ├─────────────────────────┤  n:1    ├─────────────────────────┤
+  │ + IdentityId: int       │────────►│ + Id: int               │
+  │ + RoleId: int           │         │ + Designation: string   │
+  │ + Identity: Identity    │         │ + Description: string   │
+  │ + Role: Role            │         │                         │
+  └─────────────────────────┘         └─────────────────────────┘
+
+              │
+              │ 1:n
+              ▼
+  ┌─────────────────────────┐
+  │      LoginSession       │
+  ├─────────────────────────┤
+  │ + Id: int               │
+  │ + IdentityId: int       │
+  │ + SessionToken: string  │
+  │ + LoginTime: DateTime   │
+  │ + LastAccess: DateTime  │
+  │ + LogoutTime: DateTime? │
+  └─────────────────────────┘
+```
 
 Das zentrale Element in diesem Model ist das `Identity`-Objekt. Dies stellt eine Registrierung im System dar und kann mit beliebig vielen Rollen verknüpft sein. In einer Ableitung (`SecureIdentity`) von `Identity`, sind die beiden verschlüsselten Daten `PasswordHash` und `PasswordSalt` abgelegt.
 
