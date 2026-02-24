@@ -1,0 +1,145 @@
+{
+  "APP": {
+    "TITLE": "SETemplate",
+    "BRAND": "SETemplate"
+  },
+  "NAVIGATION": {
+    "DASHBOARD": "Dashboard"
+  },
+  "LANDING": {
+    "HERO": {
+      "BADGE": "Angular 19 + Bootstrap 5",
+      "TITLE": "Willkommen bei SETemplate",
+      "SUBTITLE": "Dein moderner Startpunkt für Angular-Anwendungen. Schnell, sicher und vollständig anpassbar.",
+      "CTA_PRIMARY": "Jetzt starten",
+      "CTA_SECONDARY": "Dashboard ansehen"
+    },
+    "STATS": {
+      "RESPONSIVE": "Responsiv",
+      "LANGUAGES": "Sprachen",
+      "POSSIBILITIES": "Möglichkeiten"
+    },
+    "FEATURES": {
+      "TITLE": "Leistungsstarke Funktionen",
+      "SUBTITLE": "Alles was du brauchst, um moderne Webanwendungen zu erstellen",
+      "SECURE": {
+        "TITLE": "Sicher",
+        "TEXT": "JWT-basierte Authentifizierung und geschützte Routen für maximale Sicherheit."
+      },
+      "FAST": {
+        "TITLE": "Blitzschnell",
+        "TEXT": "Optimierte Performance mit Lazy Loading und effizienter Change Detection."
+      },
+      "MODERN": {
+        "TITLE": "Modern",
+        "TEXT": "Standalone Komponenten und neueste Angular-Technologien."
+      },
+      "RESPONSIVE": {
+        "TITLE": "Responsiv",
+        "TEXT": "Perfekte Darstellung auf allen Geräten dank Bootstrap 5."
+      },
+      "FLEXIBLE": {
+        "TITLE": "Flexibel",
+        "TEXT": "Code-Generierung und anpassbare Templates für schnelle Entwicklung."
+      },
+      "I18N": {
+        "TITLE": "Mehrsprachig",
+        "TEXT": "Vollständige Internationalisierung mit Deutsch und Englisch."
+      }
+    },
+    "CTA": {
+      "TITLE": "Bereit durchzustarten?",
+      "TEXT": "Melde dich an und entdecke alle Funktionen.",
+      "BUTTON": "Anmelden"
+    },
+    "FOOTER": {
+      "TEXT": "© 2025 SETemplate. Mit ❤️ erstellt."
+    }
+  },
+  "AUTH": {
+    "LOGIN": "Anmelden",
+    "LOGOUT": "Abmelden",
+    "EMAIL": "E-Mail",
+    "PASSWORD": "Passwort",
+    "LOGIN_ERROR": "Anmeldung fehlgeschlagen"
+  },
+  "COMMON": {
+    "SAVE": "Speichern",
+    "CANCEL": "Abbrechen",
+    "DELETE": "Löschen",
+    "EDIT": "Bearbeiten",
+    "ADD": "Hinzufügen",
+    "CLOSE": "Schließen",
+    "REFRESH": "Aktualisieren",
+    "SEARCH": "Suchen",
+    "SEARCH_PLACEHOLDER": "Suche...",
+    "CONFIRM": "Bestätigen",
+    "YES": "Ja",
+    "NO": "Nein",
+    "OK": "OK",
+    "DELETE_CONFIRM": "Möchten Sie den Eintrag '{{item}}' löschen?",
+    "DELETE_TITLE": "Löschen bestätigen"
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "WELCOME": "Willkommen im SETemplate!",
+    "PUBLIC_ACCESS": "Öffentlicher Bereich",
+    "PUBLIC_DESCRIPTION": "Diese Module sind für alle Benutzer zugänglich.",
+    "PROTECTED_AREA": "Geschützter Bereich",
+    "PROTECTED_DESCRIPTION": "Für diese Module ist eine Anmeldung erforderlich.",
+    "STATISTICS": "Statistiken",
+    "RECENT_ACTIVITIES": "Letzte Aktivitäten",
+    "STATS": {
+      "MODULES": "Module",
+      "STATUS": "Anmeldung",
+      "LANGUAGES": "Sprachen"
+    },
+    "EMPTY": {
+      "TITLE": "Dashboard ist bereit",
+      "TEXT": "Hier werden deine Module angezeigt, sobald sie hinzugefügt werden. Nutze den Code-Generator, um neue Entitäten zu erstellen.",
+      "HINT1": "Füge neue Entitäten im Backend hinzu",
+      "HINT2": "Führe den Code-Generator aus",
+      "HINT3": "Die Karten erscheinen automatisch hier"
+    },
+    "CARDS": {
+      "DASHBOARD_TITLE": "Dashboard",
+      "DASHBOARD_TEXT": "Übersicht"
+    }
+  },
+  "MESSAGE_BOX": {
+    "TITLE": "Hinweis",
+    "CONFIRM_TITLE": "Bitte bestätigen",
+    "CONFIRM": "Bestätigen",
+    "CANCEL": "Abbrechen",
+    "OK": "OK",
+    "CLOSE": "Schließen",
+    "YES": "Ja",
+    "NO": "Nein",
+    "SHOW_DETAILS": "Details anzeigen",
+    "HIDE_DETAILS": "Details ausblenden",
+    "DETAILS": "Details"
+  },
+  "ERRORS": {
+    "GENERAL": "Ein Fehler ist aufgetreten",
+    "NETWORK": "Netzwerkfehler",
+    "VALIDATION": "Validierungsfehler",
+    "NOT_FOUND": "Nicht gefunden",
+    "UNAUTHORIZED": "Nicht autorisiert",
+    "FORBIDDEN": "Zugriff verweigert",
+    "SERVER_ERROR": "Serverfehler",
+    "CREATE_FAILED": "Fehler beim Erstellen",
+    "SAVE_FAILED": "Fehler beim Speichern",
+    "DELETE_FAILED": "Fehler beim Löschen",
+    "LOAD_TEMPLATE_FAILED": "Fehler beim Laden der Vorlage"
+  },
+  "LANGUAGE": {
+    "TITLE": "Sprache"
+  },
+  "THEME": {
+    "TITLE": "Design",
+    "LIGHT": "Hell",
+    "DARK": "Dunkel",
+    "SWITCH_TO_LIGHT": "Zu hellem Design wechseln",
+    "SWITCH_TO_DARK": "Zu dunklem Design wechseln"
+  }
+}

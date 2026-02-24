@@ -1,0 +1,3 @@
+//@BaseCode
+export interface IViewModel {
+}

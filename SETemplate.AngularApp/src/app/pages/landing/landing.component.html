@@ -1,0 +1,120 @@
+<!--@AiCode-->
+<div class="landing-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="hero-content text-center">
+        <div class="hero-badge mb-4">
+          <span class="badge-text">
+            <i class="bi bi-stars me-2"></i>
+            {{ 'LANDING.HERO.BADGE' | translate }}
+          </span>
+        </div>
+        <h1 class="hero-title">
+          {{ 'LANDING.HERO.TITLE' | translate }}
+        </h1>
+        <p class="hero-subtitle">
+          {{ 'LANDING.HERO.SUBTITLE' | translate }}
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/auth/login" class="btn btn-hero-primary">
+            <i class="bi bi-rocket-takeoff me-2"></i>
+            {{ 'LANDING.HERO.CTA_PRIMARY' | translate }}
+          </a>
+          <a routerLink="/dashboard" class="btn btn-hero-secondary">
+            <i class="bi bi-grid-3x3-gap me-2"></i>
+            {{ 'LANDING.HERO.CTA_SECONDARY' | translate }}
+          </a>
+        </div>
+        <div class="hero-stats mt-5">
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">{{ 'LANDING.STATS.RESPONSIVE' | translate }}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">2+</span>
+            <span class="stat-label">{{ 'LANDING.STATS.LANGUAGES' | translate }}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">∞</span>
+            <span class="stat-label">{{ 'LANDING.STATS.POSSIBILITIES' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <i class="bi bi-chevron-double-down"></i>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 class="section-title">{{ 'LANDING.FEATURES.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'LANDING.FEATURES.SUBTITLE' | translate }}</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features; let i = index" [style.animation-delay]="(i * 0.1) + 's'">
+          <div class="feature-icon">
+            <i class="bi" [ngClass]="feature.icon"></i>
+          </div>
+          <h3 class="feature-title">{{ feature.titleKey | translate }}</h3>
+          <p class="feature-text">{{ feature.textKey | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-content">
+          <h2 class="cta-title">{{ 'LANDING.CTA.TITLE' | translate }}</h2>
+          <p class="cta-text">{{ 'LANDING.CTA.TEXT' | translate }}</p>
+        </div>
+        <div class="cta-actions">
+          <a routerLink="/auth/login" class="btn btn-cta">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            {{ 'LANDING.CTA.BUTTON' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <i class="bi bi-hexagon-fill me-2"></i>
+          <span>SETemplate</span>
+        </div>
+        <p class="footer-text">{{ 'LANDING.FOOTER.TEXT' | translate }}</p>
+        <div class="footer-links">
+          <a href="#" class="footer-link">
+            <i class="bi bi-github"></i>
+          </a>
+          <a href="#" class="footer-link">
+            <i class="bi bi-linkedin"></i>
+          </a>
+          <a href="#" class="footer-link">
+            <i class="bi bi-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SETemplate.CodeGenApp": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

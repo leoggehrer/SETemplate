@@ -1,0 +1,148 @@
+<!--@AiCode-->
+<div class="dashboard-container">
+  <!-- Hero Section -->
+  <div class="dashboard-hero">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="dashboard-title">
+            <i class="bi bi-grid-1x2-fill me-3"></i>
+            {{ 'DASHBOARD.TITLE' | translate }}
+          </h1>
+          <p class="dashboard-subtitle">{{ 'DASHBOARD.WELCOME' | translate }}</p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+          <div class="hero-actions" *ngIf="isLoginRequired">
+            <button *ngIf="isLoggedIn" class="btn btn-light btn-lg" (click)="logout()">
+              <i class="bi bi-box-arrow-left me-2"></i>
+              {{ 'AUTH.LOGOUT' | translate }}
+            </button>
+            <a *ngIf="!isLoggedIn" class="btn btn-light btn-lg" routerLink="/auth/login">
+              <i class="bi bi-box-arrow-in-right me-2"></i>
+              {{ 'AUTH.LOGIN' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Quick Stats Section -->
+    <div class="quick-stats">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary-gradient">
+          <i class="bi bi-collection"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ visiblePublicCards.length + visibleAuthCards.length }}</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.MODULES' | translate }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-success-gradient">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ isLoggedIn ? '✓' : '–' }}</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.STATUS' | translate }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-info-gradient">
+          <i class="bi bi-translate"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">2</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.LANGUAGES' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public Cards Section -->
+    <ng-container *ngIf="visiblePublicCards.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-globe me-2"></i>
+          {{ 'DASHBOARD.PUBLIC_ACCESS' | translate }}
+        </h2>
+        <p class="section-description">{{ 'DASHBOARD.PUBLIC_DESCRIPTION' | translate }}</p>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-lg-4 col-xl-3" *ngFor="let card of visiblePublicCards">
+          <a [routerLink]="[card.type]" class="dashboard-card-link">
+            <div class="dashboard-card" [ngClass]="card.bg">
+              <div class="dashboard-card-icon">
+                <i class="bi" [ngClass]="card.icon"></i>
+              </div>
+              <div class="dashboard-card-content">
+                <h5 class="dashboard-card-title">{{ card.title | translate }}</h5>
+                <p class="dashboard-card-text">{{ card.text | translate }}</p>
+              </div>
+              <div class="dashboard-card-arrow">
+                <i class="bi bi-arrow-right"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Auth Cards Section -->
+    <ng-container *ngIf="visibleAuthCards.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-lock me-2"></i>
+          {{ 'DASHBOARD.PROTECTED_AREA' | translate }}
+        </h2>
+        <p class="section-description">{{ 'DASHBOARD.PROTECTED_DESCRIPTION' | translate }}</p>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-lg-4 col-xl-3" *ngFor="let card of visibleAuthCards">
+          <a [routerLink]="[card.type]" class="dashboard-card-link">
+            <div class="dashboard-card" [ngClass]="card.bg">
+              <div class="dashboard-card-icon">
+                <i class="bi" [ngClass]="card.icon"></i>
+              </div>
+              <div class="dashboard-card-content">
+                <h5 class="dashboard-card-title">{{ card.title | translate }}</h5>
+                <p class="dashboard-card-text">{{ card.text | translate }}</p>
+              </div>
+              <div class="dashboard-card-arrow">
+                <i class="bi bi-arrow-right"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty State (wenn keine Karten vorhanden) -->
+    <div *ngIf="visiblePublicCards.length === 0 && visibleAuthCards.length === 0" class="empty-dashboard">
+      <div class="empty-dashboard-content">
+        <div class="empty-icon">
+          <i class="bi bi-inbox"></i>
+        </div>
+        <h3 class="empty-title">{{ 'DASHBOARD.EMPTY.TITLE' | translate }}</h3>
+        <p class="empty-text">{{ 'DASHBOARD.EMPTY.TEXT' | translate }}</p>
+        <div class="empty-hints">
+          <div class="hint-card">
+            <i class="bi bi-lightbulb"></i>
+            <span>{{ 'DASHBOARD.EMPTY.HINT1' | translate }}</span>
+          </div>
+          <div class="hint-card">
+            <i class="bi bi-code-slash"></i>
+            <span>{{ 'DASHBOARD.EMPTY.HINT2' | translate }}</span>
+          </div>
+          <div class="hint-card">
+            <i class="bi bi-rocket-takeoff"></i>
+            <span>{{ 'DASHBOARD.EMPTY.HINT3' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
