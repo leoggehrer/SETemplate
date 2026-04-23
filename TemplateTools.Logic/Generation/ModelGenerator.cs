@@ -187,8 +187,9 @@ namespace TemplateTools.Logic.Generation
             var attributes = QuerySetting<string>(unitType, itemType, type, StaticLiterals.Attribute, string.Empty);
             var contractType = ItemProperties.CreateFullCommonContractType(type);
             var typeProperties = type.GetAllPropertyInfos();
-            var generationProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false
-                                                              && StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
+            var generationProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
+            //var generationProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false
+            //                                                  && StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? [];
             GeneratedItem result = new(unitType, itemType)
             {
                 FullName = modelFullName,
@@ -290,7 +291,7 @@ namespace TemplateTools.Logic.Generation
             var modelSubFilePath = ConvertModelSubPath(ItemProperties.CreateModelSubPath(type, ".Factory", StaticLiterals.CSharpFileExtension));
             var modelBaseType = ConvertModelBaseType(GetBaseClassByType(type));
             var typeProperties = type.GetAllPropertyInfos();
-            var generationProperties = typeProperties.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false) ?? [];
+            var generationProperties = typeProperties;//.Where(e => EntityProject.IsAccountEntity(e.PropertyType) == false) ?? [];
             var result = new GeneratedItem(unitType, itemType)
             {
                 FullName = modelFullName,
@@ -459,4 +460,3 @@ namespace TemplateTools.Logic.Generation
         #endregion Partial methods
     }
 }
-

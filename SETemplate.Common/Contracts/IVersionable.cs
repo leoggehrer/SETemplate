@@ -24,6 +24,26 @@ namespace SETemplate.Common.Contracts
         byte[]? RowVersion { get; protected set; }
 #endif
 
+        void CopyProperties(IVersionable other)
+        {
+            bool handled = false;
+            // Allows custom logic to be executed before copying properties.
+            BeforeCopyProperties(other, ref handled);
+            if (handled == false)
+            {
+                ((IIdentifiable)this).CopyProperties(other);
+                // Copies the RowVersion property from the other instance.
+#if SQLITE_OFF
+                RowVersion = other.RowVersion;
+#endif
+            }
+            // Allows custom logic to be executed after copying properties.
+            AfterCopyProperties(other);
+        }
+
+        partial void BeforeCopyProperties(IVersionable other, ref bool handled);
+        partial void AfterCopyProperties(IVersionable other);
+
 #endif
     }
 }

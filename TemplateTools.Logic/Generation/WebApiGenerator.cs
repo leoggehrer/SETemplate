@@ -92,6 +92,7 @@ namespace TemplateTools.Logic.Generation
                 {
                     result.Add(CreateModelFromType(type, UnitType.WebApi, ItemType.WebApiModel));
                     result.Add(CreateModelInheritance(type, UnitType.WebApi, ItemType.WebApiModel));
+                    result.Add(CreateModelFactoryMethods(type, UnitType.WebApi, ItemType.WebApiModel));
                     result.Add(CreateEditModelFromType(type, UnitType.WebApi, ItemType.WebApiEditModel));
                 }
             }
@@ -281,11 +282,11 @@ namespace TemplateTools.Logic.Generation
             result.Add($"protected override TModel ToModel(TView view)");
             result.Add("{");
             result.Add($"var handled = false;");
-            result.Add($"var result = new TModel();");
+            result.Add($"var result = default(TModel);");
             result.Add("BeforeToModel(view, ref result, ref handled);");
-            result.Add("if (handled == false)");
+            result.Add("if (handled == false || result is null)");
             result.Add("{");
-            result.Add($"(result as TContract).CopyProperties(view);");
+            result.Add($"result = TModel.Create(view);");
             result.Add("}");
             result.Add("AfterToModel(view, result);");
             result.Add($"return result;");

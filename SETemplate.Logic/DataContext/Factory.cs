@@ -31,7 +31,7 @@ namespace SETemplate.Logic.DataContext
         /// </remarks>
         public static void CreateDatabase()
         {
-            var context = new ProjectDbContext();
+            using var context = new ProjectDbContext();
 
             BevoreCreateDatabase(context);
             context.Database.EnsureDeleted();
@@ -40,28 +40,49 @@ namespace SETemplate.Logic.DataContext
         }
 
         /// <summary>
-        /// Initializes the database by creating it and allowing for data import.
+        /// Resets the database by dropping and recreating it from scratch.
         /// </summary>
         /// <remarks>
-        /// This method is intended for use in development environments. It ensures the database is created
-        /// and provides hooks for custom logic before and after initialization. Data import can also be performed
-        /// within this method.
+        /// This method is intended for use in development environments only — it is destructive
+        /// and deletes all existing data. It provides hooks for custom logic before and after the reset.
+        /// Data import can also be performed within this method.
         /// </remarks>
-        public static void InitDatabase()
+        public static void ResetDatabase()
         {
-            BeforeInitDatabase();
+            BeforeResetDatabase();
             CreateDatabase();
 
             // Hier koennen Daten importiert werden
-            AfterInitDatabase();
+            AfterResetDatabase();
+        }
+#endif
+
+#if DBOPERATION_ON
+        /// <summary>
+        /// Applies all pending Entity Framework Core migrations to the database.
+        /// </summary>
+        /// <remarks>
+        /// This method is safe for use in production environments. Unlike <see cref="ResetDatabase"/>,
+        /// it does not delete existing data — it only applies migrations that have not yet been executed.
+        /// If the database does not exist, it will be created based on the migration history.
+        /// </remarks>
+        public static void MigrateDatabase()
+        {
+            using var context = new ProjectDbContext();
+
+            BeforeMigrateDatabase(context);
+            context.Database.Migrate();
+            AfterMigrateDatabase(context);
         }
 #endif
 
         #region partial methods
-        static partial void BeforeInitDatabase();
-        static partial void AfterInitDatabase();
+        static partial void BeforeResetDatabase();
+        static partial void AfterResetDatabase();
         static partial void BevoreCreateDatabase(ProjectDbContext context);
         static partial void AfterCreateDatabase(ProjectDbContext context);
+        static partial void BeforeMigrateDatabase(ProjectDbContext context);
+        static partial void AfterMigrateDatabase(ProjectDbContext context);
         #endregion partial methods
     }
 }

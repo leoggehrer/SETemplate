@@ -163,11 +163,11 @@ namespace TemplateTools.Logic.Generation
             var typeProperties = type.GetProperties().Where(pi => pi.DeclaringType == type);
             var generationProperties = typeProperties.Where(e => StaticLiterals.VersionProperties.Any(p => p.Equals(e.Name)) == false
                                                                 && ItemProperties.IsListType(e.PropertyType) == false
-                                                                && (e.PropertyType.IsEnum 
-                                                                    || e.PropertyType.IsValueType 
+                                                                && (e.PropertyType.IsEnum
+                                                                    || e.PropertyType.IsValueType
                                                                     || e.PropertyType.IsPrimitive
                                                                     || ItemProperties.IsPrimitiveArrayType(e)
-                                                                    || ItemProperties.IsPrimitiveNullable(e) 
+                                                                    || ItemProperties.IsPrimitiveNullable(e)
                                                                     || e.PropertyType == typeof(string)));
             return generationProperties ?? [];
         }
@@ -388,7 +388,7 @@ namespace TemplateTools.Logic.Generation
             CreateGetPropertyAttributes(propertyInfo, result);
             result.Add("get");
             result.Add("{");
-            result.Add($"return Model.{propName};");
+            result.Add($"return DataModel.{propName};");
             result.Add("}");
             return result;
         }
@@ -405,7 +405,7 @@ namespace TemplateTools.Logic.Generation
             CreateSetPropertyAttributes(propertyInfo, result);
             result.Add("set");
             result.Add("{");
-            result.Add($"Model.{propName} = value;");
+            result.Add($"DataModel.{propName} = value;");
             result.Add($"OnPropertyChanged();");
             result.Add("}");
             return result;

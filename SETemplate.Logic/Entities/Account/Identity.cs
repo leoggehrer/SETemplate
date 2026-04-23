@@ -6,12 +6,12 @@ namespace SETemplate.Logic.Entities.Account
     /// Represents an identity in the account system.
     /// </summary>
 #if SQLITE_ON
-        [Table("Identities")]
+    [Table("Identities")]
 #else
     [Table("Identities", Schema = "account")]
 #endif
     [Index(nameof(Email), IsUnique = true)]
-    internal partial class Identity : VersionEntityObject
+    public partial class Identity : VersionEntityObject
     {
         /// <summary>
         /// Gets or sets the name.

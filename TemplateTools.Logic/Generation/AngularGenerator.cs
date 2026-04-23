@@ -961,7 +961,6 @@ namespace TemplateTools.Logic.Generation
         private Models.GeneratedItem CreateEntityEditComponentFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
         {
             var subPath = ConvertPathItem(ItemProperties.CreateSubPathFromType(type));
-            var projectPath = Path.Combine(SolutionProperties.SolutionPath, SolutionProperties.AngularAppProjectName);
             var entityName = ItemProperties.CreateEntityName(type);
             var fileName = $"{ConvertFileItem($"{entityName}Edit")}.component{StaticLiterals.TSFileExtension}";
             var baseFileName = $"{ConvertFileItem($"{entityName}BaseEdit")}.component";

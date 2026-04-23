@@ -36,7 +36,7 @@ namespace TemplateTools.ConApp.Apps
         public CleanupApp()
         {
             Constructing();
-            PageSize = 15;
+            PageSize = 30;
             Constructed();
         }
         /// <summary>
@@ -112,7 +112,7 @@ namespace TemplateTools.ConApp.Apps
             };
 
             var executionPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var subPaths = TemplatePath.GetSubPaths(CleanupPath, 1)
+            var subPaths = TemplatePath.GetSubPaths(CleanupPath, 10)
                                        .Where(p => DropFolderNames.Any(x => ContainsFolder(p, x))
                                                 && executionPath!.StartsWith(p) == false)
                                        .ToArray();

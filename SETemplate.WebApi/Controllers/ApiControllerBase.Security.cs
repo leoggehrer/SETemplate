@@ -49,33 +49,44 @@ namespace SETemplate.WebApi.Controllers
 
             if (authHeader.HasContent())
             {
-                if (authHeader.StartsWith("Bearer"))
+                try
                 {
-                    var encoding = System.Text.Encoding.GetEncoding("iso-8859-1");
-                    var encodedToken = authHeader["Bearer ".Length..].Trim();
+                    if (authHeader.StartsWith("Bearer"))
+                    {
+                        var encoding = System.Text.Encoding.GetEncoding("iso-8859-1");
+                        var encodedToken = authHeader["Bearer ".Length..].Trim();
 
-                    result = encoding.GetString(Convert.FromBase64String(encodedToken));
-                }
-                else if (authHeader.StartsWith("Basic"))
-                {
-                    var encodedUseridPassword = authHeader["Basic ".Length..].Trim();
-                    System.Text.Encoding encoding = System.Text.Encoding.GetEncoding("iso-8859-1");
-                    var useridPassword = encoding.GetString(Convert.FromBase64String(encodedUseridPassword));
+                        result = encoding.GetString(Convert.FromBase64String(encodedToken));
+                    }
+                    else if (authHeader.StartsWith("Basic"))
+                    {
+                        var encodedUseridPassword = authHeader["Basic ".Length..].Trim();
+                        System.Text.Encoding encoding = System.Text.Encoding.GetEncoding("iso-8859-1");
+                        var useridPassword = encoding.GetString(Convert.FromBase64String(encodedUseridPassword));
 
-                    var seperatorIndex = useridPassword.IndexOf(':');
-                    var userid = useridPassword[..seperatorIndex];
-                    var password = useridPassword[(seperatorIndex + 1)..];
-                    var login = await Logic.AccountAccess.LoginAsync(userid, password, string.Empty).ConfigureAwait(false);
+                        var seperatorIndex = useridPassword.IndexOf(':');
+                        if (seperatorIndex < 0)
+                        {
+                            return string.Empty;
+                        }
+                        var userid = useridPassword[..seperatorIndex];
+                        var password = useridPassword[(seperatorIndex + 1)..];
+                        var login = await Logic.AccountAccess.LoginAsync(userid, password, string.Empty).ConfigureAwait(false);
 
-                    result = login.SessionToken;
+                        result = login.SessionToken;
+                    }
+                    else if (authHeader.StartsWith("SessionToken"))
+                    {
+                        result = authHeader["SessionToken ".Length..].Trim();
+                    }
+                    else
+                    {
+                        result = authHeader;
+                    }
                 }
-                else if (authHeader.StartsWith("SessionToken"))
+                catch (FormatException)
                 {
-                    result = authHeader["SessionToken ".Length..].Trim();
-                }
-                else
-                {
-                    result = authHeader;
+                    result = string.Empty;
                 }
             }
             return result;

@@ -22,14 +22,15 @@ namespace SETemplate.Common
             ];
             TemplateProjectExtensions =
             [
+                AngularExtension,
                 CommonExtension,
                 ConsoleExtension,
-                CodeGenerationExtension,
                 LogicExtension,
                 LogicUnitTestExtension,
-                WebApiExtension,
                 MVVMAppExtension,
-                AngularExtension,
+                WebApiExtension,
+                McpSrvExtension,
+                CodeGenerationExtension,
             ];
             GenerationIgnoreFolders = IgnoreSubFolders;
             AfterClassInitialize();
@@ -89,6 +90,10 @@ namespace SETemplate.Common
         /// </summary>
         /// <returns>The extension for Angular app files.</returns>
         public static string AngularExtension => ".AngularApp";
+        /// <summary>
+        /// Gets the extension for Mcp App files.
+        /// </summary>
+        public static string McpSrvExtension => ".McpSrv";
         #endregion Template project extensions
         
         /// <summary>

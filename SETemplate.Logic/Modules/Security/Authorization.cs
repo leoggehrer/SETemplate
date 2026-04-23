@@ -32,6 +32,13 @@ namespace SETemplate.Logic.Modules.Security
         static Authorization()
         {
             ClassConstructing();
+
+            var configTimeout = Common.Modules.Configuration.AppSettings.Instance["Security:SessionTimeOutInMinutes"];
+            if (int.TryParse(configTimeout, out var timeout) && timeout > 0)
+            {
+                DefaultTimeOutInMinutes = timeout;
+            }
+
             ClassConstructed();
         }
         /// <summary>
@@ -56,7 +63,7 @@ namespace SETemplate.Logic.Modules.Security
         /// <returns>A task representing the asynchronous operation.</returns>
         internal static void CheckAuthorization(string? sessionToken, AuthorizeAttribute authorizeAttribute, params string[] roles)
         {
-            if (string.IsNullOrEmpty(sessionToken))
+            if (string.IsNullOrWhiteSpace(sessionToken))
             {
                 if (authorizeAttribute.Required)
                 {
@@ -114,7 +121,7 @@ namespace SETemplate.Logic.Modules.Security
         /// <returns>A task representing the asynchronous operation.</returns>
         internal static void CheckAuthorization(string? sessionToken, Type type, params string[] roles)
         {
-            if (string.IsNullOrEmpty(sessionToken))
+            if (string.IsNullOrWhiteSpace(sessionToken))
             {
                 if (IsAuthorizedRequired(type))
                 {
@@ -203,7 +210,7 @@ namespace SETemplate.Logic.Modules.Security
         /// <returns>A task representing the asynchronous operation.</returns>
         internal static void CheckAuthorization(string? sessionToken, MethodBase methodBase, params string[] roles)
         {
-            if (string.IsNullOrEmpty(sessionToken))
+            if (string.IsNullOrWhiteSpace(sessionToken))
             {
                 if (IsAuthorizedRequired(methodBase))
                 {
@@ -234,7 +241,7 @@ namespace SETemplate.Logic.Modules.Security
         /// <param name="roles">The roles.</param>
         internal static void CheckAuthorizationInternal(string? sessionToken, MethodBase methodBase, params string[] roles)
         {
-            if (string.IsNullOrEmpty(sessionToken))
+            if (string.IsNullOrWhiteSpace(sessionToken))
             {
                 if (IsAuthorizedRequired(methodBase))
                 {

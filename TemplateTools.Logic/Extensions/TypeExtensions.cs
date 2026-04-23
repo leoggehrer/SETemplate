@@ -13,7 +13,7 @@ namespace TemplateTools.Logic.Extensions
     {
         private const char GenericSpecialChar = '`';
         private const string GenericSeparator = ", ";
-        
+
         /// <summary>
         /// Returns the clean name of the specified <paramref name="type"/>.
         /// </summary>
@@ -22,7 +22,7 @@ namespace TemplateTools.Logic.Extensions
         public static string GetCleanName(this Type type)
         {
             var name = type.Name;
-            
+
             if (type.IsGenericType)
             {
                 name = name[..name.IndexOf(GenericSpecialChar)];
@@ -37,12 +37,12 @@ namespace TemplateTools.Logic.Extensions
         public static string GetCodeDefinition(this Type type)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendFormat("{0}.{1}", type.Namespace, type.GetCleanName());
             if (type.IsGenericType)
             {
                 var names = from genericArg in type.GetGenericArguments()
-                select GetCodeDefinition(genericArg);
+                            select GetCodeDefinition(genericArg);
                 sb.Append('<');
                 sb.Append(string.Join(GenericSeparator, [.. names]));
                 sb.Append('>');
@@ -52,7 +52,7 @@ namespace TemplateTools.Logic.Extensions
             {
                 sb.Replace("System.Nullable<", string.Empty);
                 sb.Replace(">", string.Empty);
-                
+
                 sb.Append('?');
             }
             return sb.ToString();
@@ -64,8 +64,12 @@ namespace TemplateTools.Logic.Extensions
         /// <returns></returns>
         public static bool IsNavigationProperties(this PropertyInfo property)
         {
-            return ItemProperties.IsEntityType(property.PropertyType) || ItemProperties.IsEntityListType(property.PropertyType);
+            return ItemProperties.IsEntityType(property.PropertyType)
+                || ItemProperties.IsEntityListType(property.PropertyType)
+                || ItemProperties.IsEntityArrayType(property.PropertyType)
+                || ItemProperties.IsViewType(property.PropertyType)
+                || ItemProperties.IsViewListType(property.PropertyType)
+                || ItemProperties.IsViewArrayType(property.PropertyType);
         }
     }
 }
-

@@ -62,7 +62,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Guid == guid);
+                var entity = await EntitySet.GetByGuidAsync(guid);
 
                 if (entity != null)
                 {
@@ -92,7 +92,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Guid == guid);
+                var entity = await EntitySet.GetByGuidAsync(guid);
 
                 if (entity != null)
                 {
@@ -125,7 +125,7 @@ namespace SETemplate.WebApi.Controllers
         {
             try
             {
-                var entity = await NoTrackingSet.FirstOrDefaultAsync(e => e.Guid == guid);
+                var entity = await EntitySet.GetByGuidAsync(guid);
 
                 if (entity != null)
                 {

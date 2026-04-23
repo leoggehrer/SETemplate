@@ -519,11 +519,11 @@ namespace TemplateTools.ConApp.Apps
                     temperature = 0.2
                 };
 
-                var httpClient = new HttpClient() { Timeout = new TimeSpan(0, 5, 0) }; // Set a timeout of 5 minutes
+                using var httpClient = new HttpClient() { Timeout = new TimeSpan(0, 5, 0) }; // Set a timeout of 5 minutes
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ChatGptApiKey);
 
                 var json = JsonSerializer.Serialize(requestBody);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await httpClient.PostAsync(ChatGptUrl, content);
                 response.EnsureSuccessStatusCode();

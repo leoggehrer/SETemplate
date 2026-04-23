@@ -5,20 +5,20 @@ using System.Windows.Input;
 
 namespace SETemplate.MVVMApp.ViewModels
 {
-    public abstract partial class GenericItemViewModel<TModel> : ViewModelBase
-        where TModel : CommonModels.ModelObject, new()
+    public abstract partial class GenericItemViewModel<TDataModel> : ViewModelBase
+        where TDataModel : CommonModels.ModelObject, new()
     {
         #region fields
-        private TModel model = new();
+        private TDataModel dataModel = new();
         #endregion fields
 
         #region properties
-        public virtual string RequestUri => $"{typeof(TModel).Name.CreatePluralWord()}";
+        public virtual string RequestUri => $"{typeof(TDataModel).Name.CreatePluralWord()}";
         public Action? CloseAction { get; set; }
-        public TModel Model
+        public TDataModel DataModel
         {
-            get => model;
-            set => model = value ?? new();
+            get => dataModel;
+            set => dataModel = value ?? new();
         }
         #endregion properties
 
@@ -26,6 +26,7 @@ namespace SETemplate.MVVMApp.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
         #endregion commands
+
         public GenericItemViewModel()
         {
             CancelCommand = new RelayCommand(() => Close());

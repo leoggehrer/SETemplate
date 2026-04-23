@@ -1,4 +1,6 @@
 ﻿//@BaseCode
+using System.Collections.Concurrent;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SETemplate.Logic.Contracts;
 
@@ -6,6 +8,32 @@ namespace SETemplate.Logic.DataContext
 {
     partial class ProjectDbContext
     {
+        // Cache EntitySet properties per concrete DbContext type to avoid reflection on every SaveChanges call
+        private static readonly ConcurrentDictionary<Type, System.Reflection.PropertyInfo[]> EntitySetPropertyCache = new();
+
+        private List<object> GetEntitySets()
+        {
+            var type = GetType();
+            var props = EntitySetPropertyCache.GetOrAdd(type, t =>
+                t.GetProperties()
+                 .Where(p => p.PropertyType.GetInterfaces()
+                              .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>)))
+                 .Where(p =>
+                 {
+                     var entitySetInterface = p.PropertyType.GetInterfaces()
+                         .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>));
+                     if (entitySetInterface != null)
+                     {
+                         var genericArg = entitySetInterface.GetGenericArguments()[0];
+                         return genericArg.IsSubclassOf(typeof(Entities.EntityObject)) && !genericArg.IsAbstract;
+                     }
+                     return false;
+                 })
+                 .ToArray());
+
+            return props.Select(p => p.GetValue(this)).Where(es => es != null).ToList()!;
+        }
+
         /// <summary>
         /// Saves all changes made in this context to the underlying database.
         /// </summary>
@@ -16,23 +44,7 @@ namespace SETemplate.Logic.DataContext
                                               .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
                                               .Select(e => new ChangedEntry(e))
                                               .ToList();
-            var entitySets = GetType().GetProperties()
-                                      .Where(p => p.PropertyType.GetInterfaces()
-                                                 .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>)))
-                                      .Select(p => p.GetValue(this))
-                                      .Where(es => es != null)
-                                      .Where(es =>
-                                      {
-                                          var entitySetInterface = es!.GetType().GetInterfaces()
-                                              .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>));
-                                          if (entitySetInterface != null)
-                                          {
-                                              var genericArg = entitySetInterface.GetGenericArguments()[0];
-                                              return genericArg.IsSubclassOf(typeof(Entities.EntityObject)) && !genericArg.IsAbstract;
-                                          }
-                                          return false;
-                                      })
-                                      .ToList();
+            var entitySets = GetEntitySets();
 
             foreach (var entitySet in entitySets)
             {
@@ -87,24 +99,8 @@ namespace SETemplate.Logic.DataContext
                                               .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
                                               .Select(e => new ChangedEntry(e))
                                               .ToList();
-            // Query all IEntitySet<T> Properties
-            var entitySets = GetType().GetProperties()
-                                      .Where(p => p.PropertyType.GetInterfaces()
-                                                   .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>)))
-                                      .Select(p => p.GetValue(this))
-                                      .Where(es => es != null)
-                                      .Where(es =>
-                                      {
-                                          var entitySetInterface = es!.GetType().GetInterfaces()
-                                              .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntitySet<>));
-                                          if (entitySetInterface != null)
-                                          {
-                                              var genericArg = entitySetInterface.GetGenericArguments()[0];
-                                              return genericArg.IsSubclassOf(typeof(Entities.EntityObject)) && !genericArg.IsAbstract;
-                                          }
-                                          return false;
-                                      })
-                                      .ToList();
+            // Use cached EntitySet property lookup to avoid reflection overhead on every save
+            var entitySets = GetEntitySets();
 
             foreach (var entitySet in entitySets)
             {
@@ -160,14 +156,14 @@ namespace SETemplate.Logic.DataContext
         /// Allows custom logic to be executed prior to persisting changes to the database.
         /// </summary>
         /// <param name="changedEntry">The entity entry that is about to be saved.</param>
-        partial void BeforeSaveChanges(ChangedEntry changedEntry);
+        static partial void BeforeSaveChanges(ChangedEntry changedEntry);
 
         /// <summary>
         /// Partial method invoked after saving changes for the specified entity entry.
         /// Allows custom logic to be executed after changes have been persisted to the database.
         /// </summary>
         /// <param name="changedEntry">The entity entry that has been saved.</param>
-        partial void AfterSaveChanges(ChangedEntry changedEntry);
+        static partial void AfterSaveChanges(ChangedEntry changedEntry);
         #endregion partial methods
     }
 }

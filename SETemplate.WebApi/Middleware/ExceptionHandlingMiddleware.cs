@@ -13,16 +13,18 @@ namespace SETemplate.WebApi.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        private readonly IHostEnvironment _environment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExceptionHandlingMiddleware"/> class.
         /// </summary>
         /// <param name="next">The next middleware in the pipeline.</param>
         /// <param name="logger">The logger instance.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger, IHostEnvironment environment)
         {
             _next = next;
             _logger = logger;
+            _environment = environment;
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace SETemplate.WebApi.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex, _environment.IsDevelopment());
             }
         }
 
@@ -47,9 +49,9 @@ namespace SETemplate.WebApi.Middleware
         /// </summary>
         /// <param name="context">The HTTP context.</param>
         /// <param name="exception">The exception to handle.</param>
-        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception, bool isDevelopment)
         {
-            var (statusCode, errorResponse) = MapExceptionToResponse(exception);
+            var (statusCode, errorResponse) = MapExceptionToResponse(exception, isDevelopment);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
@@ -67,12 +69,14 @@ namespace SETemplate.WebApi.Middleware
         /// </summary>
         /// <param name="exception">The exception to map.</param>
         /// <returns>A tuple containing the HTTP status code and error response.</returns>
-        private static (HttpStatusCode statusCode, ErrorResponse errorResponse) MapExceptionToResponse(Exception exception)
+        private static (HttpStatusCode statusCode, ErrorResponse errorResponse) MapExceptionToResponse(Exception exception, bool isDevelopment)
         {
+            // Never expose raw exception messages or stack traces in the HTTP response.
+            // Details are logged server-side; the client only receives a safe message.
             var errorResponse = new ErrorResponse
             {
-                Message = exception.Message,
-                Details = GetFullExceptionMessage(exception)
+                Message = GetUserFriendlyMessage(exception),
+                Details = null
             };
 
             // Handle ModuleException and its derived types
@@ -176,19 +180,20 @@ namespace SETemplate.WebApi.Middleware
         }
 
         /// <summary>
-        /// Gets the full exception message including inner exceptions.
+        /// Returns a safe, user-friendly message that does not leak internal details.
+        /// Technical details are written to the server-side log only.
         /// </summary>
-        /// <param name="ex">The exception.</param>
-        /// <returns>The full error message.</returns>
-        private static string GetFullExceptionMessage(Exception? ex)
+        private static string GetUserFriendlyMessage(Exception exception)
         {
-            var messages = new List<string>();
-            while (ex != null)
+            return exception switch
             {
-                messages.Add($"{ex.GetType().Name}: {ex.Message}");
-                ex = ex.InnerException;
-            }
-            return string.Join(" -> ", messages);
+                CommonModules.Exceptions.ModuleException moduleEx => moduleEx.Message,
+                ArgumentNullException or ArgumentException => "Invalid request parameters.",
+                InvalidOperationException => "The operation could not be completed.",
+                UnauthorizedAccessException => "Access denied.",
+                KeyNotFoundException => "The requested resource was not found.",
+                _ => "An unexpected error occurred. Please try again later."
+            };
         }
     }
 

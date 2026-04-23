@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 using TemplateTools.Logic;
 
 namespace TemplateTools.ConApp.Apps
@@ -59,7 +58,7 @@ namespace TemplateTools.ConApp.Apps
             var solutionProperties = SolutionProperties.Create(SourceSolutionPath);
             var sourceSolutionName = solutionProperties.SolutionName;
             var sourceLabel = $"'{sourceSolutionName}' from:";
-            var targetLabel = $"'{TargetSolutionName}' to:";
+            var targetLabel = $"'{TargetSolutionName}' to:  ";
 
             List<KeyValuePair<string, object>> headerParams =
             [

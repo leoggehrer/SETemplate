@@ -10,12 +10,12 @@ namespace SETemplate.Logic.DataContext
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="context">The database context.</param>
     /// <param name="dbSet">The set of entities.</param>
-    internal abstract partial class EntitySet<TEntity> : IEntitySet<TEntity>, IDisposable
+    internal abstract partial class EntitySet<TEntity> : SetBase<TEntity>, IEntitySet<TEntity>
         where TEntity : Entities.EntityObject, new()
     {
         #region constructors
         /// <summary>
-        /// Initializes the static ApiControllerBase class.
+        /// Initializes the static EntitySet class.
         /// </summary>
         static EntitySet()
         {
@@ -25,9 +25,6 @@ namespace SETemplate.Logic.DataContext
         /// <summary>
         /// Represents a partial method called before the constructor of the class is executed.
         /// </summary>
-        /// <remarks>
-        /// This method is automatically generated and can be implemented in partial classes.
-        /// </remarks>
         static partial void ClassConstructing();
         /// <summary>
         /// This method is called after the class is constructed.
@@ -35,45 +32,23 @@ namespace SETemplate.Logic.DataContext
         static partial void ClassConstructed();
 
         /// <summary>
-        /// Initializes a new instance of the ApiControllerBase class.
+        /// Initializes a new instance of the EntitySet class.
         /// </summary>
         internal EntitySet(ProjectDbContext context, DbSet<TEntity> dbSet)
+            : base(context, dbSet)
         {
             Constructing();
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _dbSet = dbSet ?? throw new ArgumentNullException(nameof(dbSet));
             Constructed();
         }
         /// <summary>
         /// This method is called during the construction of the object.
         /// </summary>
-        /// <remarks>
-        /// This method can be overridden by a partial class to include additional custom logic.
-        /// It is defined as "partial" so that multiple partial classes can provide their own implementation of this method.
-        /// </remarks>
         partial void Constructing();
         /// <summary>
         /// This method is called after the object has been initialized.
-        /// It represents a partial method without an implementation.
         /// </summary>
         partial void Constructed();
         #endregion constructors
-
-        #region fields
-        private ProjectDbContext? _context;
-        private DbSet<TEntity>? _dbSet;
-        #endregion fields
-
-        #region properties
-        /// <summary>
-        /// Gets the database context.
-        /// </summary>
-        internal ProjectDbContext Context => _context!;
-        /// <summary>
-        /// Gets the database context.
-        /// </summary>
-        protected DbSet<TEntity> DbSet => _dbSet!;
-        #endregion properties
 
         #region methods
         /// <summary>
@@ -204,15 +179,6 @@ namespace SETemplate.Logic.DataContext
             return ExecuteRemoveAsync(id);
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _dbSet = null;
-            _context = null;
-            GC.SuppressFinalize(this);
-        }
         #endregion methods
 
         #region internal methods

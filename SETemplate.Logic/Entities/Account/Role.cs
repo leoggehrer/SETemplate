@@ -11,7 +11,7 @@ namespace SETemplate.Logic.Entities.Account
     [Table("Roles", Schema = "account")]
 #endif
     [Index(nameof(Designation), IsUnique = true)]
-    internal partial class Role : VersionEntityObject
+    public partial class Role : VersionEntityObject
     {
         /// <summary>
         /// <summary>

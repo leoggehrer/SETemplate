@@ -10,6 +10,7 @@ global using IdType = System.Guid;
 global using IdType = System.Int32;
 #endif
 global using Common = SETemplate.Common;
+global using CommonEnums = SETemplate.Common.Enums;
 global using CommonContracts = SETemplate.Common.Contracts;
 global using CommonModels = SETemplate.Common.Models;
 global using CommonModules = SETemplate.Common.Modules;

@@ -1,5 +1,4 @@
 ﻿//@BaseCode
-
 using System.Reflection;
 using System.Text;
 
@@ -312,7 +311,7 @@ namespace TemplateTools.Logic.Generation
         /// <summary>
         /// This method creates the model sub namespace from a project type.
         /// For example:
-        ///     FullName SETemplate.Logic.Entities.Base.Artist becomes SubName Models.Base.Artist.
+        ///     FullName SEeImmoVita.Logic.Entities.Base.Artist becomes SubName Models.Base.Artist.
         /// </summary>
         /// <param name="type">The Type from which the subnamespace is created.</param>
         /// <returns>The subnamespace as a string.</returns>
@@ -809,17 +808,6 @@ namespace TemplateTools.Logic.Generation
             return type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null;
         }
         /// <summary>
-        /// Determines whether the given type is an view type.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        /// <c>true</c> if the given type is an entity type; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsViewType(Type type)
-        {
-            return type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.ViewObjectName)) != null;
-        }
-        /// <summary>
         /// Checks if the specified type is a List type containing entities.
         /// </summary>
         /// <param name="type">The type to be checked.</param>
@@ -850,6 +838,51 @@ namespace TemplateTools.Logic.Generation
                 var arrayType = type.GetElementType();
 
                 result = arrayType != default && IsEntityType(arrayType);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Determines whether the given type is an view type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <c>true</c> if the given type is an entity type; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsViewType(Type type)
+        {
+            return type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.ViewObjectName)) != null;
+        }
+        /// <summary>
+        /// Checks if the specified type is a List type containing views.
+        /// </summary>
+        /// <param name="type">The type to be checked.</param>
+        /// <returns>True if the type is a List type containing views, otherwise false.</returns>
+        public static bool IsViewListType(Type type)
+        {
+            var result = false;
+
+            if (type.IsGenericType && IsListType(type))
+            {
+                var genericType = type.GetGenericArguments()[0];
+
+                result = IsViewType(genericType);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Checks if the specified type is a Array type containing views.
+        /// </summary>
+        /// <param name="type">The type to be checked.</param>
+        /// <returns>True if the type is a Array type containing views, otherwise false.</returns>
+        public static bool IsViewArrayType(Type type)
+        {
+            var result = false;
+
+            if (IsArrayType(type))
+            {
+                var arrayType = type.GetElementType();
+
+                result = arrayType != default && IsViewType(arrayType);
             }
             return result;
         }

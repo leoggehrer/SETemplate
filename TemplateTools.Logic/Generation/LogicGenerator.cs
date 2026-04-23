@@ -180,97 +180,107 @@ namespace TemplateTools.Logic.Generation
                 }
             }
             result.Add("}");
-            result.AddRange(CreateComment());
-            result.Add($"partial void GetGeneratorEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.{StaticLiterals.EntityObjectName}, new()");
-            result.Add("{");
 
-            first = false;
-
-            foreach (var type in entityProject.SetEntityTypes)
+            if (entityProject.SetEntityTypes.Any())
             {
-                var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
+                result.AddRange(CreateComment());
+                result.Add($"partial void GetGeneratorEntitySet<E>(ref EntitySet<E>? entitySet, ref bool handled) where E : Entities.{StaticLiterals.EntityObjectName}, new()");
+                result.Add("{");
+                result.Add("#pragma warning disable CA2000 // Dispose objects before losing scope");
 
-                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                first = false;
+
+                foreach (var type in entityProject.SetEntityTypes)
                 {
-                    var entityType = ItemProperties.GetModuleSubType(type);
-                    var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
-                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
-                    var entitySetName = ItemProperties.CreateEntitySetName(type);
-                    var entitySetType = $"{subNamespace}.{entitySetName}";
-                    var dbSetName = $"Db{type.Name}Set";
+                    var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
-                    result.Add($"{(first ? "else " : string.Empty)}if (typeof(E) == typeof({entityType}))");
-                    result.Add("{");
-                    result.Add($"entitySet = new {entitySetType}(this,{dbSetName}) as {StaticLiterals.EntitySetName}<E>;");
-                    result.Add("handled = true;");
-                    result.Add("}");
-                    first = true;
-                }
-            }
-            result.Add("}");
-
-            result.AddRange(CreateComment());
-            result.Add($"partial void GetGeneratorViewSet<E>(ref ViewSet<E>? viewSet, ref bool handled) where E : Entities.{StaticLiterals.ViewObjectName}, new()");
-            result.Add("{");
-
-            first = false;
-
-            foreach (var type in entityProject.ViewSetTypes)
-            {
-                var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
-
-                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
-                {
-                    var entityType = ItemProperties.GetModuleSubType(type);
-                    var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
-                    var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
-                    var viewSetName = ItemProperties.CreateViewSetName(type);
-                    var viewSetType = $"{subNamespace}.{viewSetName}";
-                    var dbSetName = $"Db{type.Name}Set";
-
-                    result.Add($"{(first ? "else " : string.Empty)}if (typeof(E) == typeof({entityType}))");
-                    result.Add("{");
-                    result.Add($"viewSet = new {viewSetType}(this,{dbSetName}) as {StaticLiterals.ViewSetName}<E>;");
-                    result.Add("handled = true;");
-                    result.Add("}");
-                    first = true;
-                }
-            }
-            result.Add("}");
-
-            result.AddRange(CreateComment());
-            result.Add($"static partial void OnViewModelCreating(ModelBuilder modelBuilder)");
-            result.Add("{");
-
-            foreach (var type in entityProject.ViewSetTypes)
-            {
-                var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
-
-                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
-                {
-                    var viewAttribute = type.GetCustomAttribute<CommonModules.Attributes.ViewAttribute>();
-
-                    if (viewAttribute != null)
+                    if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                     {
-                        var viewName = viewAttribute.Name.HasContent() ? viewAttribute.Name : type.Name.CreatePluralWord();
-                        var viewShema = viewAttribute.Schema;
+                        var entityType = ItemProperties.GetModuleSubType(type);
+                        var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
                         var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
+                        var entitySetName = ItemProperties.CreateEntitySetName(type);
+                        var entitySetType = $"{subNamespace}.{entitySetName}";
+                        var dbSetName = $"Db{type.Name}Set";
 
-                        result.Add($"modelBuilder.Entity<{entitySubType}>()");
-                        if (viewShema.HasContent())
-                        {
-                            result.Add($".ToView(\"{viewName}\", \"{viewShema}\")");
-                        }
-                        else
-                        {
-                            result.Add($".ToView(\"{viewName}\")");
-                        }
-                        result.Add($".HasNoKey();");
+                        result.Add($"{(first ? "else " : string.Empty)}if (typeof(E) == typeof({entityType}))");
+                        result.Add("{");
+                        result.Add($"entitySet = new {entitySetType}(this,{dbSetName}) as {StaticLiterals.EntitySetName}<E>;");
+                        result.Add("handled = true;");
+                        result.Add("}");
+                        first = true;
                     }
                 }
+                result.Add("#pragma warning restore CA2000 // Dispose objects before losing scope");
+                result.Add("}");
             }
 
-            result.Add("}");
+            if (entityProject.ViewSetTypes.Any())
+            {
+                result.AddRange(CreateComment());
+                result.Add($"partial void GetGeneratorViewSet<E>(ref ViewSet<E>? viewSet, ref bool handled) where E : Entities.{StaticLiterals.ViewObjectName}, new()");
+                result.Add("{");
+                result.Add("#pragma warning disable CA2000 // Dispose objects before losing scope");
+
+                first = false;
+
+                foreach (var type in entityProject.ViewSetTypes)
+                {
+                    var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
+
+                    if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                    {
+                        var entityType = ItemProperties.GetModuleSubType(type);
+                        var subNamespace = ItemProperties.CreateSubNamespaceFromType(type).Replace(StaticLiterals.EntitiesFolder, StaticLiterals.DataContextFolder);
+                        var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
+                        var viewSetName = ItemProperties.CreateViewSetName(type);
+                        var viewSetType = $"{subNamespace}.{viewSetName}";
+                        var dbSetName = $"Db{type.Name}Set";
+
+                        result.Add($"{(first ? "else " : string.Empty)}if (typeof(E) == typeof({entityType}))");
+                        result.Add("{");
+                        result.Add($"viewSet = new {viewSetType}(this,{dbSetName}) as {StaticLiterals.ViewSetName}<E>;");
+                        result.Add("handled = true;");
+                        result.Add("}");
+                        first = true;
+                    }
+                }
+                result.Add("#pragma warning restore CA2000 // Dispose objects before losing scope");
+                result.Add("}");
+
+                result.AddRange(CreateComment());
+                result.Add($"static partial void OnViewModelCreating(ModelBuilder modelBuilder)");
+                result.Add("{");
+
+                foreach (var type in entityProject.ViewSetTypes)
+                {
+                    var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
+
+                    if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                    {
+                        var viewAttribute = type.GetCustomAttribute<CommonModules.Attributes.ViewAttribute>();
+
+                        if (viewAttribute != null)
+                        {
+                            var viewName = viewAttribute.Name.HasContent() ? viewAttribute.Name : type.Name.CreatePluralWord();
+                            var viewShema = viewAttribute.Schema;
+                            var entitySubType = $"{StaticLiterals.EntitiesFolder}.{ItemProperties.CreateSubTypeFromEntity(type)}";
+
+                            result.Add($"modelBuilder.Entity<{entitySubType}>()");
+                            if (viewShema.HasContent())
+                            {
+                                result.Add($".ToView(\"{viewName}\", \"{viewShema}\")");
+                            }
+                            else
+                            {
+                                result.Add($".ToView(\"{viewName}\")");
+                            }
+                            result.Add($".HasNoKey();");
+                        }
+                    }
+                }
+                result.Add("}");
+            }
             result.Add("#endregion partial methods");
 
             result.Add("}");

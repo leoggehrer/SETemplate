@@ -57,7 +57,7 @@ namespace SETemplate.MVVMApp.ViewModels
             {
                 var requestUri = "Accounts/Logon";
                 using var httpClient = CreateHttpClient();
-                var jsonModel = new StringContent(JsonSerializer.Serialize(new { Email, Password }), Encoding.UTF8, "application/json");
+                using var jsonModel = new StringContent(JsonSerializer.Serialize(new { Email, Password }), Encoding.UTF8, "application/json");
                 var response = httpClient.PostAsync(requestUri, jsonModel).Result;
 
                 if (response.IsSuccessStatusCode)

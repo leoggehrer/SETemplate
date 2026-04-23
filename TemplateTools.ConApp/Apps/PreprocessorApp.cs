@@ -143,7 +143,7 @@ namespace TemplateTools.ConApp.Apps
                 {
                     hiddenKey = define.Replace("_OFF", "_ON");
                     description = $" ==> {define.Replace("_OFF", "_ON")}";
-                    foreColor = ConsoleColor.Yellow;
+                    foreColor = ConsoleColor.DarkYellow;
                 }
 
                 if (define.StartsWith("IDINT_") || define.StartsWith("ROWVERSION_") || define.StartsWith("POSTGRES_") || define.StartsWith("DOCKER_"))

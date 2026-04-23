@@ -12,7 +12,7 @@ namespace SETemplate.ConApp.Apps
         /// <summary>
         /// Initializes the <see cref="Program"/> class.
         /// This static constructor sets up the necessary properties for the program.
-        /// </remarks>
+        /// </summary>
         static StarterApp()
         {
             ClassConstructing();
@@ -62,6 +62,7 @@ namespace SETemplate.ConApp.Apps
             var mnuIdx = 0;
             var menuItems = new List<MenuItem>
             {
+#if DEBUG && DEVELOP_ON && DBOPERATION_ON
                 new()
                 {
                     Key = "----",
@@ -73,20 +74,27 @@ namespace SETemplate.ConApp.Apps
                 new()
                 {
                     Key = $"{++mnuIdx}",
-                    OptionalKey = "init_db",
-                    Text = ToLabelText($"{nameof(InitDatabase).ToCamelCaseSplit()}", "Started the initialization of the database"),
+                    OptionalKey = "reset_db",
+                    Text = ToLabelText($"{nameof(ResetDatabase).ToCamelCaseSplit()}", "Drop and recreate the database (destructive, dev only)"),
                     Action = (self) =>
                     {
-#if DEBUG && DEVELOP_ON
-                        InitDatabase();
-#endif
+                        ResetDatabase();
                     },
-#if DEBUG && DEVELOP_ON
-                        ForegroundColor = ConsoleApplication.ForegroundColor,
-#else
-                        ForegroundColor = ConsoleColor.Red,
-#endif
                 },
+#endif
+
+#if DBOPERATION_ON
+                new()
+                {
+                    Key = $"{++mnuIdx}",
+                    OptionalKey = "migrate_db",
+                    Text = ToLabelText($"{nameof(MigrateDatabase).ToCamelCaseSplit()}", "Apply pending EF Core migrations (production-safe)"),
+                    Action = (self) =>
+                    {
+                        MigrateDatabase();
+                    },
+                },
+#endif
             };
             CreateImportMenuItems(ref mnuIdx, menuItems);
 
@@ -181,29 +189,56 @@ namespace SETemplate.ConApp.Apps
         #endregion overrides
 
         #region app methods
-        private void InitDatabase()
+        private void ResetDatabase()
         {
-#if DEBUG
+#if DEBUG && DEVELOP_ON && DBOPERATION_ON
             PrintHeader();
             StartProgressBar();
-            PrintLine("Init database...");
+            PrintLine("Reset database...");
 
-            BeforeInitDatabase();
+            BeforeResetDatabase();
             try
             {
-                Logic.DataContext.Factory.InitDatabase();
+                Logic.DataContext.Factory.ResetDatabase();
             }
             catch (Exception ex)
             {
-                PrintLine($"Error initing database: {ex.Message}");
+                PrintLine($"Error resetting database: {ex.Message}");
                 ReadLine("Press ENTER to continue...");
             }
-            Logic.DataContext.Factory.InitDatabase();
-            AfterInitDatabase();
+            AfterResetDatabase();
+
 #if ACCOUNT_ON
             PrintLine("Create accounts...");
             CreateAccounts();
 #endif
+            StopProgressBar();
+#endif
+        }
+        private void MigrateDatabase()
+        {
+#if DBOPERATION_ON
+            PrintHeader();
+            StartProgressBar();
+            PrintLine("Migrate database...");
+
+            BeforeMigrateDatabase();
+            try
+            {
+                Logic.DataContext.Factory.MigrateDatabase();
+                PrintLine("Migration completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                PrintLine($"Error migrating database: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    PrintLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                ReadLine("Press ENTER to continue...");
+            }
+            AfterMigrateDatabase();
+
             StopProgressBar();
 #endif
         }
@@ -236,8 +271,10 @@ namespace SETemplate.ConApp.Apps
         #endregion app methods
 
         #region partial methods
-        partial void BeforeInitDatabase();
-        partial void AfterInitDatabase();
+        partial void BeforeResetDatabase();
+        partial void AfterResetDatabase();
+        partial void BeforeMigrateDatabase();
+        partial void AfterMigrateDatabase();
         partial void CreateImportMenuItems(ref int menuIdx, List<MenuItem> menuItems);
 
 #if ACCOUNT_ON

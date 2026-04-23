@@ -176,21 +176,23 @@ namespace TemplateTools.Logic.Generation
                       || type.FullName!.EndsWith($".{StaticLiterals.Account}.IdentityXRole")
                       || type.FullName!.EndsWith($".{StaticLiterals.Account}.LoginSession")
                       || type.FullName!.EndsWith($".{StaticLiterals.Account}.Role")
-                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity")
-                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.User");
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity");
 
             return result;
         }
         /// <summary>
-        /// Determines whether the specified type is an access entity.
+        /// Determines if the specified type is a security entity.
         /// </summary>
-        /// <param name="type">The type to be checked.</param>
+        /// <param name="type">The type to check.</param>
         /// <returns>
-        ///   <c>true</c> if the specified type is an access entity; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified type is a security entity; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsAccessEntity(Type type)
+        public static bool IsSecurityEntity(Type type)
         {
-            return type.FullName!.EndsWith($".{StaticLiterals.Access}.AccessRule");
+            var result = type.FullName!.EndsWith($".{StaticLiterals.Account}.LoginSession")
+                      || type.FullName!.EndsWith($".{StaticLiterals.Account}.SecureIdentity");
+
+            return result;
         }
         /// <summary>
         /// Determines whether the specified type is a logging entity.
@@ -223,7 +225,7 @@ namespace TemplateTools.Logic.Generation
         ///<returns>True if the type is a system entity, false otherwise.</returns>
         public static bool IsSystemEntity(Type type)
         {
-            return IsAccountEntity(type) || IsAccessEntity(type) || IsLoggingEntity(type) || IsRevisionEntity(type);
+            return IsAccountEntity(type);
         }
         ///<summary>
         ///Checks if the given type is a custom entity.

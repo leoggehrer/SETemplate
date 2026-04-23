@@ -29,11 +29,11 @@ namespace SETemplate.Common.Modules.Security
         /// <summary>
         /// Gets the minimum length value.
         /// </summary>
-        public static int MinimumLength => 6;
+        public static int MinimumLength => 8;
         /// <summary>
         /// Gets the maximum length of the property.
         /// </summary>
-        public static int MaximumLength => 30;
+        public static int MaximumLength => 128;
         ///<summary>
         /// Gets the minimum letter count.
         ///</summary>
@@ -47,13 +47,13 @@ namespace SETemplate.Common.Modules.Security
         /// </summary>
         public static int MinLowerLetterCount => 1;
         /// <summary>
-        /// Gets the minimum count of special letters allowed.
+        /// Gets the minimum count of special characters required.
         /// </summary>
-        public static int MinSpecialCharCount => 0;
+        public static int MinSpecialCharCount => 1;
         /// <summary>
-        /// Gets the minimum number of digits allowed.
+        /// Gets the minimum number of digits required.
         /// </summary>
-        public static int MinDigitCount => 0;
+        public static int MinDigitCount => 1;
         
         public const int MinLoginFails = 0;
         public const int MaxLoginFails = 20;

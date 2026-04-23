@@ -145,9 +145,6 @@ namespace SETemplate.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual async Task<ActionResult<IEnumerable<TModel>>> QueryAsync([FromBody] Logic.Models.QueryParams queryParams)
         {
-            if (string.IsNullOrWhiteSpace(queryParams.Filter))
-                return BadRequest("The filter printout must not be empty.");
-
             var query = await EntitySet.QueryAsync(queryParams);
             var result = query.Select(e => ToModel(e));
 

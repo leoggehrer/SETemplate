@@ -37,9 +37,9 @@
 				</StackPanel>
 			</Button>
 
-			<TextBox Grid.Column="1" Grid.Row="0" 
-				Watermark="Geben Sie hier eine Filter ein"
-				Text="{Binding Filter}" 
+			<TextBox Grid.Column="1" Grid.Row="0"
+				Watermark="Geben Sie hier einen Filter ein"
+				Text="{Binding Filter}"
 				HorizontalAlignment="Stretch" />
 
 			<!-- Button mit fester Breite -->

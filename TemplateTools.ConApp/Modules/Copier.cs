@@ -81,6 +81,7 @@ namespace TemplateTools.ConApp.Modules
             ".esproj",
             ".html",
             ".js",
+            ".json",
             ".less",
             ".manifest",
             ".md",
@@ -101,6 +102,7 @@ namespace TemplateTools.ConApp.Modules
         /// </value>
         private static string[] ReplaceFiles { get; } =
         [
+            ".gitignore",
             "appsettings.json",
             "appsettings.Development.json",
             "launchSettings.json",
@@ -491,18 +493,26 @@ namespace TemplateTools.ConApp.Modules
                                                              .ToList();
             var vscodePath = Path.Combine(sourceSolutionPath, ".vscode");
             var githubPath = Path.Combine(sourceSolutionPath, ".github");
+            var claudePath = Path.Combine(sourceSolutionPath, ".claude");
 
             if (Directory.Exists(vscodePath))
             {
-                var files = new DirectoryInfo(vscodePath).GetFiles("*", SearchOption.TopDirectoryOnly)
-                                                               .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase)));
+                var files = new DirectoryInfo(vscodePath).GetFiles("*", SearchOption.AllDirectories)
+                                                         .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase)));
 
                 solutionFiles.AddRange(files);
             }
             if (Directory.Exists(githubPath))
             {
-                var files = new DirectoryInfo(githubPath).GetFiles("*", SearchOption.TopDirectoryOnly)
-                                                               .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase)));
+                var files = new DirectoryInfo(githubPath).GetFiles("*", SearchOption.AllDirectories)
+                                                         .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase)));
+
+                solutionFiles.AddRange(files);
+            }
+            if (Directory.Exists(claudePath))
+            {
+                var files = new DirectoryInfo(claudePath).GetFiles("*", SearchOption.AllDirectories)
+                                                         .Where(f => SolutionExtenions.Any(e => e.Equals(f.Extension, StringComparison.CurrentCultureIgnoreCase)));
 
                 solutionFiles.AddRange(files);
             }
@@ -609,7 +619,7 @@ namespace TemplateTools.ConApp.Modules
                 WriteAllLines(targetFilePath, [.. targetLines], Encoding.Default);
             }
             else if (ReplaceFiles.Any(f => f.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
-            || ReplaceExtensions.Any(i => i.Equals(extension, StringComparison.CurrentCultureIgnoreCase)))
+                     || ReplaceExtensions.Any(i => i.Equals(extension, StringComparison.CurrentCultureIgnoreCase)))
             {
                 var targetLines = new List<string>();
                 var sourceLines = File.ReadAllLines(sourceFilePath, Encoding.Default);

@@ -6,7 +6,7 @@ namespace SETemplate.Common.Models
     /// <summary>
     /// Represents an abstract partial class for version management.
     /// </summary>
-    public abstract partial class VersionModelObject : ModelObject, Contracts.IVersionable
+    public abstract partial class VersionModelObject : ModelObject, Contracts.IIdentifiable
     {
         #region properties
 #if ROWVERSION_ON

@@ -806,13 +806,8 @@ namespace SETemplate.Logic.Modules.Account
         {
             using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            var result = computedHash.Length == passwordHash.Length;
-
-            for (int i = 0; i < passwordHash.Length && result; i++)
-            {
-                result = passwordHash[i] == computedHash[i];
-            }
-            return result;
+            // Use constant-time comparison to prevent timing attacks
+            return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(computedHash, passwordHash);
         }
         #endregion Helpers
     }

@@ -10,7 +10,7 @@ using Avalonia;
 
 namespace SETemplate.MVVMApp.ViewModels
 {
-    partial class GenericItemViewModel<TModel>
+    partial class GenericItemViewModel<TDataModel>
     {
         protected virtual async void Save()
         {
@@ -19,9 +19,11 @@ namespace SETemplate.MVVMApp.ViewModels
 
             try
             {
-                if (Model.Id == default)
+                if (DataModel.Id == default)
                 {
-                    var response = httpClient.PostAsync(RequestUri, new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    var response = httpClient.PostAsync(RequestUri, new StringContent(JsonSerializer.Serialize(DataModel), Encoding.UTF8, "application/json")).Result;
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -38,7 +40,9 @@ namespace SETemplate.MVVMApp.ViewModels
                 }
                 else
                 {
-                    var response = httpClient.PutAsync($"{RequestUri}/{Model.Id}", new StringContent(JsonSerializer.Serialize(Model), Encoding.UTF8, "application/json")).Result;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    var response = httpClient.PutAsync($"{RequestUri}/{DataModel.Id}", new StringContent(JsonSerializer.Serialize(DataModel), Encoding.UTF8, "application/json")).Result;
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
                     if (response.IsSuccessStatusCode)
                     {

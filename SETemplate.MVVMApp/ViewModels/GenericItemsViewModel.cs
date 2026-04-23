@@ -162,7 +162,7 @@ namespace SETemplate.MVVMApp.ViewModels
 
             viewModel.CloseAction = viewModelWindow.Close;
             viewModelWindow.DataContext = viewModel;
-            viewModel.Model = model;
+            viewModel.DataModel = model;
 
             // Set the current main window as the parent
             var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

@@ -73,8 +73,8 @@ namespace TemplateTools.Logic
                     var generatedItems = new List<IGeneratedItem>();
 
                     WriteLogging("Create Entity-Diagrams...");
-                    generatedItems.AddRange(generator.GenerateEntityDiagrams());
-                    result.AddRangeSafe(generatedItems);
+//                    generatedItems.AddRange(generator.GenerateEntityDiagrams());
+//                    result.AddRangeSafe(generatedItems);
                 }));
             }
             #endregion Logic

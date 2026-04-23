@@ -11,7 +11,7 @@ namespace SETemplate.Logic.Entities.Account
 #else
     [Table("LoginSessions", Schema = "account")]
 #endif
-    internal partial class LoginSession : VersionEntityObject
+    internal partial class LoginSession : EntityObject
     {
         private DateTime? _logoutTime;
         private SecureIdentity? _identity;
