@@ -25,7 +25,7 @@ export class AccountService {
 
   public logout(sessionToken: string): Promise<any> {
     return firstValueFrom(
-      this.httpClient.delete<any>(`${this.BASE_URL}/${sessionToken}`)
+      this.httpClient.delete<any>(`${this.BASE_URL}/logout`)
     );
   }
 

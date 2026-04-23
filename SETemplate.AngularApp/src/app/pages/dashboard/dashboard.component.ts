@@ -46,7 +46,8 @@ export class DashboardComponent {
     return this.authService.isLoggedIn;
   }
 
-  public logout() {
-    this.authService.logout();
+  public async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/auth/login']);
   }
 }

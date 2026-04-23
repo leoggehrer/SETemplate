@@ -85,8 +85,6 @@ export class AuthService {
       if (this._user) {
         await this.accountService.logout(this._user.sessionToken);
       }
-      // Optionally, you can reload the application to reset state
-      window.location.reload();
     }
     finally {
       this.removeUserFromStorage();

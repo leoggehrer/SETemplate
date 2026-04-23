@@ -54,8 +54,8 @@ export class AppComponent {
     });
   }
 
-  public logout() {
-    this.authService.logout();
+  public async logout() {
+    await this.authService.logout();
     this.router.navigate(['/dashboard']);
   }
 
