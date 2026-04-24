@@ -380,5 +380,3 @@ FodyWeavers.xsd
 #SETemplateEnd
 SETemplate.AngularApp/obj/Debug//package.g.props
 /SETemplate.AngularApp/package-lock.json
-# Ignore Development Configuration Files with Secrets
-**/appsettings.Development.json
