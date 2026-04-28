@@ -78,7 +78,7 @@ namespace TemplateTools.ConApp.Apps
         /// <value>
         /// <c>true</c> to exclude generated files from GIT; otherwise, <c>false</c> to include generated files in GIT.
         /// </value>
-        private bool ExcludeGeneratedFilesFromGIT { get; set; } = true;
+        private bool ExcludeGeneratedFilesFromGIT { get; set; } = false;
         /// <summary>
         /// Gets or sets the path of the solution.
         /// </summary>

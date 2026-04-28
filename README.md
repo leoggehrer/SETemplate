@@ -7,7 +7,7 @@
   - [Projektübersicht](#projektübersicht)
   - [Technologie-Stack](#technologie-stack)
     - [Backend (.NET 8.0)](#backend-net-80)
-    - [Frontend (Angular 19)](#frontend-angular-19)
+    - [Frontend (Angular 21)](#frontend-angular-19)
     - [Code-Generierung](#code-generierung)
   - [Voraussetzungen](#voraussetzungen)
     - [Empfohlene VS Code Extensions](#empfohlene-vs-code-extensions)
@@ -70,7 +70,7 @@ Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzep
 |**SETemplate.WebApi**|In diesem Projekt ist die REST-Schnittstelle implementiert. Dieses Modul stellt eine API (Aplication Programming Interface) für den Zugriff auf das System über das Netzwerk zur Verfügung.| Host | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.ConApp**|Dieses Projekt dient als Initial-Anwendung zum Erstellen bzw. Abgleichen der Datenbank, das Anlegen von Konten falls die Authentifizierung aktiv ist und zum Importieren von bestehenden Daten. Nach der Initialisierung wird diese Anwendung kaum verwendet.| Console | SETemplate.Logic, SETemplate.Common |
 |**SETemplate.MVVMApp**|Diese Projekt beinhaltet die Basisfunktionen für eine Wpf-Anwendung (Avalonia) und kann als Vorlage für die Entwicklung einer Wpf-Anwendung mit dem SETemplate Framework verwendet werden.|Host| SETemplate.Logic, SETemplate.Common |
-|**SETemplate.AngularApp**|Diese Projekt beinhaltet die Vorlage für die Erstellung einer **Angular 19** Anwendung. Als Styling-Framework ist **Bootstrap 5.3** vorinstalliert. Die Internationalisierung erfolgt über **ngx-translate**. Die Komponenten verwenden eine **Module-basierte Architektur** (nicht standalone).| Host | --- |
+|**SETemplate.AngularApp**|Diese Projekt beinhaltet die Vorlage für die Erstellung einer **Angular 21** Anwendung. Als Styling-Framework ist **Bootstrap 5.3** vorinstalliert. Die Internationalisierung erfolgt über **ngx-translate**. Die Komponenten verwenden eine **Module-basierte Architektur** (nicht standalone).| Host | --- |
 |**TemplateTools.ConApp**|Console-Anwendung mit den Hauptfunktionen: Copier, Preprocessor, CodeGenerator, Synchronization, Cleanup und erweiterten Tools.| Console | TemplateTools.Logic, SETemplate.Common |
 |**TemplateTools.Logic**|Kern-Bibliothek für alle Template-Tools mit Code-Generierung, Template-Verarbeitung und Projektmanagement.| Library | SETemplate.Common |
 |**TemplateMcp.ConApp**|**Model Context Protocol (MCP) Server** für die Integration mit KI-Assistenten wie Claude. Stellt Template-Strukturen und Entwicklungsrichtlinien über standardisierte MCP-Schnittstelle zur Verfügung.| MCP Server | keine |
@@ -84,9 +84,9 @@ Das **SETemplate** ist eine wiederverwendbare Projektvorlage, die auf dem Konzep
 - **SQLite/PostgreSQL/SQL Server** - Datenbankunterstützung
 - **Clean Architecture** - Strukturierte Schichtentrennung
 
-### Frontend (Angular 19)
+### Frontend (Angular 21)
 
-- **Angular 19** - Frontend Framework
+- **Angular 21** - Frontend Framework
 - **Bootstrap 5.3** - UI Framework mit responsivem Design
 - **Bootstrap Icons** - Icon-Set
 - **NgBootstrap** - Angular Bootstrap Components
