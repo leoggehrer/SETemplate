@@ -30,6 +30,7 @@ namespace SETemplate.Common
                 MVVMAppExtension,
                 WebApiExtension,
                 McpSrvExtension,
+                TestAppExtension,
                 CodeGenerationExtension,
             ];
             GenerationIgnoreFolders = IgnoreSubFolders;
@@ -94,6 +95,10 @@ namespace SETemplate.Common
         /// Gets the extension for Mcp App files.
         /// </summary>
         public static string McpSrvExtension => ".McpSrv";
+        /// <summary>
+        /// Gets the extension for Test App files.
+        /// </summary>
+        public static string TestAppExtension => ".TestApp";
         #endregion Template project extensions
         
         /// <summary>
